@@ -14,8 +14,7 @@ const albums = {
       { name: 'happier', reviews: ['5/5', '1/5', '2/5'] },
       { name: 'jealousy, jealousy', reviews: ['4/5', '3/5', '5/5'] },
       { name: 'favorite crime', reviews: ['2/5', '3/5', '3/5'] },
-      { name: 'hope ur ok', reviews: ['5/5', '3/5', '4/5'] },
-
+      { name: 'hope ur ok', reviews: ['5/5', '3/5', '4/5'] }
     ]
   },
   petal: {
@@ -56,80 +55,96 @@ const albums = {
       { name: 'No im not in love', reviews: ['5/5', '5/5', '5/5'] },
       { name: 'Means i care', reviews: ['4/5', '5/5', '4/5'] },
       { name: 'Greenlight', reviews: ['4/5', '4/5', '1/5'] },
-      { name: 'Nostalgia', reviews: ['4/5', '4/5', '3/5'] },
+      { name: 'Nostalgia', reviews: ['4/5', '4/5', '3/5'] }
     ]
   }
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  var params = new URLSearchParams(window.location.search);
-  var albumId = params.get('id') || 'sour';
-  var album = albums[albumId] || albums.sour;
+  // 1. Redirecionamento dos botões da página principal (index.html)
+  const albumIds = ['sour', 'petal', 'so-close-to-what'];
+  const botoesAvaliar = document.querySelectorAll('.botao-avaliar');
 
-  var albumName = document.getElementById('albumName');
-  var albumArtist = document.getElementById('albumArtist');
-  var albumCover = document.getElementById('albumCover');
-  var trackList = document.getElementById('trackList');
-  var trackReviews = document.getElementById('trackReviews');
-  var reviewForm = document.getElementById('albumReviewForm');
-  var avaliarBtn = document.getElementById('avaliarAlbumBtn');
-
-  if (albumName) {
-    albumName.textContent = album.name;
-  }
-
-  if (albumArtist) {
-    albumArtist.textContent = album.artist;
-  }
-
-  if (albumCover) {
-    albumCover.src = album.image;
-    albumCover.alt = album.name;
-  }
-
-  if (trackList) {
-    trackList.innerHTML = album.tracks.map(function (track, index) {
-      return '<div class="track-item"><strong>' + (index + 1) + '. ' + track.name + '</strong><span>' + track.reviews.join(' • ') + '</span></div>';
-    }).join('');
-  }
-
-  if (trackReviews) {
-    trackReviews.innerHTML = album.tracks.map(function (track) {
-      return '<div class="card mb-3 border-0 shadow-sm"><div class="card-body"><h5 class="card-title mb-2">' + track.name + '</h5><p class="mb-0 text-muted">' + track.reviews.join(' • ') + '</p></div></div>';
-    }).join('');
-  }
-
-  if (avaliarBtn && reviewForm) {
-    avaliarBtn.addEventListener('click', function () {
-      reviewForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
-
-  if (reviewForm) {
-    reviewForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      var rating = document.getElementById('albumRating').value;
-      var reviewText = document.getElementById('albumReviewText').value;
-
-      var item = document.createElement('div');
-      item.className = 'card mb-3 border-0 shadow-sm';
-      item.innerHTML = '<div class="card-body"><h5 class="card-title mb-2">Nova avaliação de ' + album.name + '</h5><p class="mb-1"><strong>Nota:</strong> ' + (rating || 'Sem nota') + '</p><p class="mb-0"><strong>Comentário:</strong> ' + (reviewText || 'Sem comentário') + '</p></div>';
-
-      if (trackReviews) {
-        trackReviews.prepend(item);
+  botoesAvaliar.forEach((button, index) => {
+    button.addEventListener('click', function () {
+      const id = albumIds[index];
+      if (id) {
+        window.location.href = `album.html?id=${id}`;
       }
-
-      reviewForm.reset();
-      alert('Avaliação salva para ' + album.name + '!');
-    });
-  }
-
-  var buttons = document.querySelectorAll('.botao-avaliar');
-  buttons.forEach(function (button) {
-    button.addEventListener('click', function (event) {
-      event.preventDefault();
-      window.location.href = button.getAttribute('href');
     });
   });
+
+  // 2. Preenchimento e eventos da página de detalhes (album.html)
+  const params = new URLSearchParams(window.location.search);
+  const albumId = params.get('id');
+
+  if (albumId && albums[albumId]) {
+    const album = albums[albumId];
+
+    const albumName = document.getElementById('albumName');
+    const albumArtist = document.getElementById('albumArtist');
+    const albumCover = document.getElementById('albumCover');
+    const trackList = document.getElementById('trackList');
+    const trackReviews = document.getElementById('trackReviews');
+
+    if (albumName) albumName.textContent = album.name;
+    if (albumArtist) albumArtist.textContent = album.artist;
+    if (albumCover) {
+      albumCover.src = album.image;
+      albumCover.alt = album.name;
+    }
+
+    if (trackList) {
+      trackList.innerHTML = album.tracks.map((track, index) => 
+        `<div class="track-item">
+          <strong>${index + 1}. ${track.name}</strong>
+          <span class="text-muted">${track.reviews.join(' • ')}</span>
+        </div>`
+      ).join('');
+    }
+
+    if (trackReviews) {
+      trackReviews.innerHTML = album.tracks.map(track => 
+        `<div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title mb-2 fw-bold">${track.name}</h5>
+            <p class="mb-0 text-muted">${track.reviews.join(' • ')}</p>
+          </div>
+        </div>`
+      ).join('');
+    }
+
+    const avaliarBtn = document.getElementById('avaliarAlbumBtn');
+    const reviewForm = document.getElementById('albumReviewForm');
+
+    if (avaliarBtn && reviewForm) {
+      avaliarBtn.addEventListener('click', function () {
+        reviewForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    if (reviewForm) {
+      reviewForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const rating = document.getElementById('albumRating').value;
+        const reviewText = document.getElementById('albumReviewText').value;
+
+        const item = document.createElement('div');
+        item.className = 'card mb-3 shadow-sm';
+        item.innerHTML = `
+          <div class="card-body">
+            <h5 class="card-title mb-2 fw-bold">Sua Avaliação</h5>
+            <p class="mb-1"><strong>Nota:</strong> ${rating} ★</p>
+            <p class="mb-0 text-muted">${reviewText || 'Sem comentário'}</p>
+          </div>`;
+
+        if (trackReviews) {
+          trackReviews.prepend(item);
+        }
+
+        reviewForm.reset();
+        alert('Avaliação salva com sucesso!');
+      });
+    }
+  }
 });
