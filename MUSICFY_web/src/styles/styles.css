@@ -3,17 +3,7 @@ body {
 }
 
 topo-pagina {
-    background: linear-gradient(to top right, #7c9bf0, #59f3cd);;
-}
-
-.botao-avaliar{
-    border: none;
     background: linear-gradient(to top right, #7c9bf0, #59f3cd);
-    color: white;
-    padding: 15px 20px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    font-weight: bold;
 }
 
 body {
@@ -81,6 +71,17 @@ body {
   filter: brightness(0.98);
 }
 
+.btn-outline-primary {
+  border-color: #7c9bf0;
+  color: #7c9bf0;
+}
+
+.btn-outline-primary:hover {
+  background: linear-gradient(to top right, #7c9bf0, #59f3cd);
+  border-color: transparent;
+  color: #fff;
+}
+
 .album-card {
   background: rgba(255, 255, 255, 0.85);
   border: none;
@@ -128,4 +129,240 @@ body {
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.profile-page {
+  padding-bottom: 30px;
+}
+
+.profile-header {
+  background: rgba(255, 255, 255, 0.75);
+  border: none;
+  border-radius: 28px;
+  box-shadow: 0 14px 30px rgba(60, 85, 120, 0.08);
+  padding: 2rem;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(to top right, #7c9bf0, #59f3cd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 14px 25px rgba(96, 124, 211, 0.28);
+}
+
+.profile-kicker {
+  margin-bottom: 0.4rem;
+  color: #7c9bf0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+}
+
+.profile-name {
+  margin-bottom: 0.3rem;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 700;
+  color: #1d2a3a;
+}
+
+.profile-handle {
+  margin-bottom: 0.9rem;
+  color: #5e6f85;
+  font-size: 1rem;
+}
+
+.profile-bio {
+  margin-bottom: 0;
+  color: #40566e;
+  line-height: 1.7;
+}
+
+.profile-stats,
+.recent-reviews {
+  background: rgba(255, 255, 255, 0.82);
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(60, 85, 120, 0.06);
+  padding: 1.5rem;
+}
+
+.profile-stats h3,
+.recent-reviews h3,
+.section-header h3 {
+  margin-bottom: 1rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #1d2a3a;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #edf5ff, #defaf3);
+  border: 1px solid #dfeaf7;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1d2a3a;
+}
+
+.stat-label {
+  color: #53677d;
+  font-size: 0.95rem;
+}
+
+.favorites-box {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e7eef8;
+}
+
+.favorites-box h4 {
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1d2a3a;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tags span {
+  display: inline-block;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #3b5fae;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.text-link {
+  color: #5789f5;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+.review-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 18px;
+  background: #f8fbff;
+  border: 1px solid #e4edf9;
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+.review-cover {
+  flex-shrink: 0;
+  width: 90px;
+  height: 90px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.review-cover img,
+.favorite-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.review-body {
+  flex: 1;
+}
+
+.review-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.review-top h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1d2a3a;
+}
+
+.rating {
+  color: #f4a62a;
+  font-size: 0.95rem;
+  letter-spacing: 0.1rem;
+}
+
+.review-meta {
+  margin: 0.35rem 0;
+  color: #6d8298;
+  font-size: 0.9rem;
+}
+
+.review-body p:last-child {
+  margin-bottom: 0;
+  color: #40566e;
+  line-height: 1.6;
+}
+
+.favorite-card {
+  overflow: hidden;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 25px rgba(60, 85, 120, 0.06);
+}
+
+.favorite-card img {
+  height: 240px;
+}
+
+.favorite-card .card-body {
+  padding: 1rem 1rem 0.5rem;
+}
+
+.botao-avaliar {
+    border: none;
+    background: linear-gradient(to top right, #7c9bf0, #59f3cd);
+    color: white;
+    padding: 15px 20px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    font-weight: bold;
 }
