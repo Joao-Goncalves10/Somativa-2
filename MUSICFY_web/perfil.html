@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>musicboxd - Perfil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/styles/styles.css">
+</head>
+<body>
+    <nav style="background: linear-gradient(to top right, #7c9bf0, #59f3cd);" class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">musicboxd</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="perfil.html">Perfil</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5 profile-page">
+        <section class="profile-header card">
+            <div class="row align-items-center g-4">
+                <div class="col-md-3 text-center">
+                    <div class="profile-avatar">LM</div>
+                </div>
+
+                <div class="col-md-6">
+                    <p class="profile-kicker">Perfil do usuário</p>
+                    <h1 class="profile-name">João Lucas</h1>
+                    <p class="profile-handle">@joao.lucas10</p>
+                    <p class="profile-bio"> Amante de pop, indie e playlists de chuva. </p>
+                </div>
+
+                <div class="col-md-3 d-flex flex-column gap-2">
+                    <button class="btn btn-primary rounded-pill">Editar perfil</button>
+                    <button class="btn btn-outline-primary rounded-pill">Compartilhar</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="row g-4 mt-1">
+            <div class="col-lg-4">
+                <aside class="card profile-stats h-100">
+                    <h3>Resumo</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value">128</span>
+                            <span class="stat-label">Avaliações</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">24</span>
+                            <span class="stat-label">Listas</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">Artistas favoritos</span>
+                        </div>
+                    </div>
+
+                    <div class="favorites-box">
+                        <h4>Gêneros favoritos</h4>
+                        <div class="tags">
+                            <span>Pop</span>
+                            <span>Indie</span>
+                            <span>R&B</span>
+                            <span>Alternativo</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="col-lg-8">
+                <section class="card recent-reviews">
+                    <div class="section-header">
+                        <h3>Últimas avaliações</h3>
+                        <a href="#" class="text-link">Ver todas</a>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="review-cover">
+                            <img src="src/img/SOUR_OliviaRodrigo_cover.jpg" alt="SOUR">
+                        </div>
+                        <div class="review-body">
+                            <div class="review-top">
+                                <h4>SOUR</h4>
+                                <span class="rating">★★★★★</span>
+                            </div>
+                            <p class="review-meta">Olivia Rodrigo • 3 horas atrás</p>
+                            <p>
+                                Um álbum cheio de vulnerabilidade e frases que parecem ter sido
+                                escritas por mim.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="review-cover">
+                            <img src="src/img/petal_cover.jpg" alt="Petal">
+                        </div>
+                        <div class="review-body">
+                            <div class="review-top">
+                                <h4>Petal</h4>
+                                <span class="rating">★★★★☆</span>
+                            </div>
+                            <p class="review-meta">Ariana Grande • Ontem</p>
+                            <p>
+                                Produção impecável, letras muito fortes e uma mistura de emoção
+                                e energia que funciona muito bem em qualquer playlist.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light py-3 text-center">
+        MUSICFY - todos os direitos reservados
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
