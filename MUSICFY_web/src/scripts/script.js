@@ -1,3 +1,4 @@
+// Armazena as informações dos álbuns, das músicas e das avaliações exibidas no site.
 const albums = {
   sour: {
     name: 'SOUR',
@@ -35,6 +36,24 @@ const albums = {
       { name: 'bad thing (bunny hop)', reviews: ['4/5', '4/5', '5/5'] },
       { name: 'nowhere, nobody', reviews: ['4/5', '4/5', '5/5'] }
     ]
+    },
+  prima: {
+    name: 'PRIMA',
+    artist: 'ADÉLA',
+    image: 'src/img/prima_cover_png.jpg',
+    tracks: [
+      { name: 'KGB', reviews: ['4/5'] },
+      { name: 'Nicole Kidman', reviews: ['5/5'] },
+      { name: 'Im The Man', reviews: ['4/5'] },
+      { name: 'Boys', reviews: ['4/5'] },
+      { name: 'Red Bottoms', reviews: ['5/5'] },
+      { name: 'Hitachi', reviews: ['4/5'] },
+      { name: 'Fantasize', reviews: ['4/5'] },
+      { name: 'Starving Artist', reviews: ['5/5'] },
+      { name: 'Marijuana', reviews: ['4/5'] },
+      { name: 'Therapy', reviews: ['4/5'] },
+      { name: 'Aint In LA', reviews: ['4/5'] },
+    ]
   },
   'so-close-to-what': {
     name: 'So Close to What',
@@ -61,12 +80,13 @@ const albums = {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  // 1. Redirecionamento dos botões da página principal (index.html)
+  // 1. Configura o redirecionamento dos botões da página principal (index.html).
   const albumIds = ['sour', 'petal', 'so-close-to-what'];
   const botoesAvaliar = document.querySelectorAll('.botao-avaliar');
 
   botoesAvaliar.forEach((button, index) => {
     button.addEventListener('click', function () {
+      // Usa a posição do botão para descobrir qual álbum deve ser aberto.
       const id = albumIds[index];
       if (id) {
         window.location.href = `album.html?id=${id}`;
@@ -74,19 +94,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // 2. Preenchimento e eventos da página de detalhes (album.html)
+  // 2. Lê o ID do álbum presente na URL da página de detalhes (album.html).
   const params = new URLSearchParams(window.location.search);
   const albumId = params.get('id');
 
   if (albumId && albums[albumId]) {
+    // Busca os dados do álbum somente quando o ID recebido é válido.
     const album = albums[albumId];
 
+    // Localiza os elementos HTML que receberão as informações do álbum.
     const albumName = document.getElementById('albumName');
     const albumArtist = document.getElementById('albumArtist');
     const albumCover = document.getElementById('albumCover');
     const trackList = document.getElementById('trackList');
     const trackReviews = document.getElementById('trackReviews');
 
+    // Preenche título, artista e imagem da capa do álbum.
     if (albumName) albumName.textContent = album.name;
     if (albumArtist) albumArtist.textContent = album.artist;
     if (albumCover) {
@@ -94,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
       albumCover.alt = album.name;
     }
 
+    // Monta a lista resumida de músicas e suas avaliações.
     if (trackList) {
       trackList.innerHTML = album.tracks.map((track, index) => 
         `<div class="track-item">
@@ -103,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ).join('');
     }
 
+    // Monta os cartões completos de avaliação de cada música.
     if (trackReviews) {
       trackReviews.innerHTML = album.tracks.map(track => 
         `<div class="card mb-3 shadow-sm">
@@ -119,16 +144,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (avaliarBtn && reviewForm) {
       avaliarBtn.addEventListener('click', function () {
+        // Leva o usuário suavemente até o formulário de avaliação.
         reviewForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     }
 
     if (reviewForm) {
       reviewForm.addEventListener('submit', function (event) {
+        // Impede o recarregamento da página e coleta os dados preenchidos.
         event.preventDefault();
         const rating = document.getElementById('albumRating').value;
         const reviewText = document.getElementById('albumReviewText').value;
 
+        // Cria um novo cartão com a avaliação enviada pelo usuário.
         const item = document.createElement('div');
         item.className = 'card mb-3 shadow-sm';
         item.innerHTML = `
@@ -138,10 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
             <p class="mb-0 text-muted">${reviewText || 'Sem comentário'}</p>
           </div>`;
 
+        // Exibe a nova avaliação no início da lista.
         if (trackReviews) {
           trackReviews.prepend(item);
         }
 
+        // Limpa o formulário e informa que a avaliação foi adicionada.
         reviewForm.reset();
         alert('Avaliação salva com sucesso!');
       });
