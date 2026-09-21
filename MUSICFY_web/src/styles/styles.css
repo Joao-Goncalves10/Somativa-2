@@ -158,6 +158,26 @@ body {
   flex: 1;
 }
 
+.explicit-badge {
+  display: inline-block;
+  padding: 0.12rem 0.3rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: #718096;
+  font-size: 0.62em;
+  font-weight: 800;
+  letter-spacing: 0.02rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.lyrics-hero .explicit-badge {
+  margin-left: 0.35rem;
+  color: #5789f5;
+  font-size: 0.42em;
+  vertical-align: 0.2em;
+}
+
 .track-play-button {
   display: inline-flex;
   align-items: center;
