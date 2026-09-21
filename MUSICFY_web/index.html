@@ -19,7 +19,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="index.html">Início</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Explorar</a></li>
+          <li class="nav-item"><a class="nav-link" href="explorar.html">Explorar</a></li>
           <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
         </ul>
       </div>
@@ -28,21 +28,31 @@
 
     <!-- Conteúdo Principal -->
     <main class="container my-5">
-        
-        <!-- Seção de Álbuns / Posts -->
-        <h3 class="mb-3">Álbuns Populares</h3>
-        <div class="row g-4">
-            
-            <div class="col-md-4">
-                <div style="border-color: #ffff; border-width: 2px; " class="card h-100 rounded-5">
-                    <img src="src/img/SOUR_OliviaRodrigo_cover.jpg" class="card-img-top rounded-top-5" alt="Álbum">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">SOUR</h5>
-                        <p class="card-text text-muted">Olivia Rodrigo</p>
+        <section class="hero-banner">
+            <div class="hero-copy">
+                <span class="section-pill">Novos lançamentos</span>
+                <h1>Descubra o som que define seu momento.</h1>
+                <p>
+                    Explore álbuns de artistas que estão marcando tendências, descubra novas
+                    referências e avalie cada faixa do jeito que você escuta.
+                </p>
+                <div class="hero-actions">
+                    <a href="explorar.html" class="btn btn-primary btn-lg rounded-pill px-4">Explorar</a>
+                    <a href="#albuns" class="btn btn-outline-primary btn-lg rounded-pill px-4">Ver álbuns</a>
+                </div>
+                <div class="hero-meta">
+                    <div>
+                        <strong>120+</strong>
+                        <span>recomendações</span>
                     </div>
-                    <button class="botao-avaliar">
-                        Avalie
-                    </button>
+                    <div>
+                        <strong>4.8/5</strong>
+                        <span>média</span>
+                    </div>
+                    <div>
+                        <strong>24h</strong>
+                        <span>atualizado</span>
+                    </div>
                 </div>
             </div>
 
@@ -80,11 +90,9 @@
                         <h5 class="card-title fw-bold">Petal</h5>
                         <p class="card-text text-muted">Ariana Grande</p>
                     </div>
-                    <button class="botao-avaliar">
-                        Avalie
-                    </button>
                 </div>
             </div>
+        </section>
 
             <div class="col-md-4">
                 <div style="border-color: #ffff; border-width: 2px;" class="card h-100 rounded-5">
@@ -93,12 +101,45 @@
                         <h5 class="card-title fw-bold">So Close to What</h5>
                         <p class="card-text text-muted">Tate Mcrae</p>
                     </div>
-                    <button class="botao-avaliar">
-                        Avalie
-                    </button>
                 </div>
-            </div> 
-        </div>
+
+                <div class="col-md-4">
+                    <div class="card album-showcase-card h-100">
+                        <img src="src/img/petal_cover.jpg" class="card-img-top" alt="Álbum">
+                        <div class="card-body">
+                            <div class="album-card-top">
+                                <h5 class="card-title fw-bold">Petal</h5>
+                                <span class="rating-pill">4.6</span>
+                            </div>
+                            <p class="card-text text-muted">Ariana Grande</p>
+                            <div class="album-tags">
+                                <span>Pop</span>
+                                <span>R&B</span>
+                            </div>
+                        </div>
+                        <button class="botao-avaliar">Avalie</button>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card album-showcase-card h-100">
+                        <img src="src/img/SoCloseToWhat_Tate_cover.jpg" class="card-img-top" alt="Álbum">
+                        <div class="card-body">
+                            <div class="album-card-top">
+                                <h5 class="card-title fw-bold">So Close to What</h5>
+                                <span class="rating-pill">4.7</span>
+                            </div>
+                            <p class="card-text text-muted">Tate McRae</p>
+                            <div class="album-tags">
+                                <span>Pop</span>
+                                <span>Dance</span>
+                            </div>
+                        </div>
+                        <button class="botao-avaliar">Avalie</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
     
