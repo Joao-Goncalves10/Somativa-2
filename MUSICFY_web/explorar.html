@@ -20,6 +20,10 @@
           <li class="nav-item"><a class="nav-link active" href="explorar.html">Explorar</a></li>
           <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
         </ul>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+          <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+          <span class="theme-toggle__label">Modo escuro</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -35,15 +39,15 @@
       </div>
       <div class="explore-stats">
         <div>
-          <strong>5</strong>
+            <strong>8</strong>
           <span>Álbuns</span>
         </div>
         <div>
-          <strong>12</strong>
+            <strong>78</strong>
           <span>Faixas</span>
         </div>
         <div>
-          <strong>5</strong>
+          <strong>7</strong>
           <span>Gêneros</span>
         </div>
       </div>
@@ -85,11 +89,34 @@
 
       <div class="col-md-6 col-xl-4">
         <article class="explore-album-card h-100">
-          <img src="src/img/petal_cover.jpg" alt="Petal" />
+          <img src="src/img/prima_cover.png.jpg" alt="PRIMA" />
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start gap-2">
               <div>
-                <h2>Petal</h2>
+                <h2>PRIMA</h2>
+                <p>ADÉLA</p>
+              </div>
+              <span class="score-badge">4.6</span>
+            </div>
+            <div class="album-meta">
+              <span>Pop</span>
+              <span>Alternativo</span>
+            </div>
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+              <small>11 faixas</small>
+              <a href="album.html?id=prima" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <article class="explore-album-card h-100">
+          <img src="src/img/petal_cover.jpg" alt="petal" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <h2>petal</h2>
                 <p>Ariana Grande</p>
               </div>
               <span class="score-badge">4.6</span>
@@ -108,53 +135,7 @@
 
       <div class="col-md-6 col-xl-4">
         <article class="explore-album-card h-100">
-          <img src="src/img/worstgirlinamerica_cover.png" alt="WOR$T GIRL IN AMERICA" />
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start gap-2">
-              <div>
-                <h2>WOR$T GIRL</h2>
-                <p>Slayyyter</p>
-              </div>
-              <span class="score-badge">4.9</span>
-            </div>
-            <div class="album-meta">
-              <span>Pop</span>
-              <span>Alternativo</span>
-            </div>
-            <div class="mt-3 d-flex justify-content-between align-items-center">
-              <small>10 faixas</small>
-              <a href="#" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="col-md-6 col-xl-4">
-        <article class="explore-album-card h-100">
-          <img src="src/img/prima_cover.png.jpg" alt="PRIMA" />
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start gap-2">
-              <div>
-                <h2>PRIMA</h2>
-                <p>ADÉLA</p>
-              </div>
-              <span class="score-badge">4.5</span>
-            </div>
-            <div class="album-meta">
-              <span>Indie</span>
-              <span>Alternativo</span>
-            </div>
-            <div class="mt-3 d-flex justify-content-between align-items-center">
-              <small>9 faixas</small>
-              <a href="#" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="col-md-6 col-xl-4">
-        <article class="explore-album-card h-100">
-          <img src="src/img/SoCloseToWhat_Tate_cover.jpg" alt="So Close to What" />
+          <img src="src/img/soclosetowhat_cover.png.jpg" alt="So Close to What" />
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start gap-2">
               <div>
@@ -174,6 +155,86 @@
           </div>
         </article>
       </div>
+
+      <div class="col-md-6 col-xl-4">
+        <article class="explore-album-card h-100">
+          <img src="src/img/ruby_jennie_cover.svg" alt="Ruby" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <h2>Ruby</h2>
+                <p>JENNIE</p>
+              </div>
+              <span class="score-badge">4.8</span>
+            </div>
+            <div class="album-meta"><span>Pop</span><span>K-pop</span></div>
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+              <small>8 faixas</small>
+              <a href="album.html?id=ruby" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <article class="explore-album-card h-100">
+          <img src="src/img/positions_ariana_cover.svg" alt="positions" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <h2>positions</h2>
+                <p>Ariana Grande</p>
+              </div>
+              <span class="score-badge">4.7</span>
+            </div>
+            <div class="album-meta"><span>Pop</span><span>R&amp;B</span></div>
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+              <small>14 faixas</small>
+              <a href="album.html?id=positions" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <article class="explore-album-card h-100">
+          <img src="src/img/worstgirlinamerica_cover.png" alt="WOR$T GIRL IN AMERICA" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <h2>WOR$T GIRL IN AMERICA</h2>
+                <p>Slayyyter</p>
+              </div>
+              <span class="score-badge">4.5</span>
+            </div>
+            <div class="album-meta"><span>Pop</span><span>Hyperpop</span></div>
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+              <small>6 faixas</small>
+              <a href="album.html?id=worst-girl-in-america" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <article class="explore-album-card h-100">
+          <img src="src/img/lemonade_aespa_cover.svg" alt="LEMONADE" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <h2>LEMONADE</h2>
+                <p>aespa</p>
+              </div>
+              <span class="score-badge">4.6</span>
+            </div>
+            <div class="album-meta"><span>K-pop</span><span>Dance</span></div>
+            <div class="mt-3 d-flex justify-content-between align-items-center">
+              <small>1 faixa</small>
+              <a href="album.html?id=lemonade" class="btn btn-primary btn-sm rounded-pill">Ver álbum</a>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 
@@ -182,5 +243,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="src/scripts/script.js"></script>
 </body>
 </html>

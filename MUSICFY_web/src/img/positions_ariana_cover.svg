@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
+  <title id="title">positions by Ariana Grande</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ead7cb"/>
+      <stop offset="0.55" stop-color="#a98e89"/>
+      <stop offset="1" stop-color="#302d38"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <circle cx="210" cy="180" r="170" fill="#fff1e8" opacity=".3"/>
+  <path d="M0 600 C180 500 310 700 480 575 S700 530 800 610 V800 H0Z" fill="#24202d" opacity=".6"/>
+  <text x="58" y="590" fill="#fff7f1" font-family="Arial, sans-serif" font-size="91" font-weight="700">positions</text>
+  <text x="64" y="670" fill="#f4ddd1" font-family="Arial, sans-serif" font-size="30" letter-spacing="5">ARIANA GRANDE</text>
+</svg>

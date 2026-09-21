@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin" />
   <title>musicboxd - Álbum</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="src/styles/styles.css" />
@@ -21,6 +22,10 @@
           <li class="nav-item"><a class="nav-link" href="explorar.html">Explorar</a></li>
           <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
         </ul>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+          <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+          <span class="theme-toggle__label">Modo escuro</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -43,6 +48,58 @@
             AVALIAR
           </button>
         </div>
+      </div>
+    </section>
+
+    <section class="music-player mt-4" aria-labelledby="playerTitle">
+      <div class="music-player__header">
+        <div class="music-player__identity">
+          <span class="music-player__icon" aria-hidden="true">♪</span>
+          <div>
+            <span class="section-kicker">Player do álbum</span>
+            <h2 id="playerTitle">Escolha uma faixa</h2>
+            <p id="playerStatus" class="music-player__status">Selecione uma faixa para começar a ouvir.</p>
+          </div>
+        </div>
+        <span class="music-player__badge">PLAYER</span>
+      </div>
+
+      <div class="music-player__sources">
+        <div class="music-source-card">
+          <div class="music-source-card__heading">
+            <span class="music-source-card__dot music-source-card__dot--local"></span>
+            <div>
+              <strong>Arquivo local</strong>
+              <small>Use um áudio salvo no computador</small>
+            </div>
+          </div>
+          <label class="audio-upload-button" for="audioFilesInput">
+            <span aria-hidden="true">＋</span> Carregar áudios
+          </label>
+          <input id="audioFilesInput" class="visually-hidden" type="file" accept="audio/*" multiple>
+        </div>
+
+        <div class="music-source-card youtube-connect">
+          <div class="music-source-card__heading">
+            <span class="music-source-card__dot music-source-card__dot--youtube"></span>
+            <div>
+              <strong>YouTube</strong>
+              <small>Conecte o vídeo da faixa selecionada</small>
+            </div>
+          </div>
+          <div class="youtube-connect__controls">
+            <label class="visually-hidden" for="youtubeUrlInput">URL do vídeo do YouTube</label>
+            <input id="youtubeUrlInput" class="form-control" type="url" placeholder="Cole o link do YouTube">
+            <button id="connectYoutubeBtn" class="btn btn-primary" type="button">Conectar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="youtubePlayer" class="youtube-player" aria-label="Player do YouTube"></div>
+      <a id="youtubeFallbackLink" class="youtube-fallback-link" href="#" target="_blank" rel="noopener noreferrer" hidden>O vídeo não carregou? Abrir no YouTube</a>
+      <div class="native-player">
+        <span class="native-player__label">Áudio local</span>
+        <audio id="audioPlayer" controls preload="metadata"></audio>
       </div>
     </section>
 
