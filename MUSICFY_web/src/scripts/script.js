@@ -40,7 +40,7 @@ const albums = {
   prima: {
     name: 'PRIMA',
     artist: 'ADÉLA',
-    image: 'src/img/prima_cover_png.jpg',
+    image: 'src/img/prima_cover.png.jpg',
     tracks: [
       { name: 'KGB', reviews: ['4/5'] },
       { name: 'Nicole Kidman', reviews: ['5/5'] },
@@ -81,13 +81,12 @@ const albums = {
 
 document.addEventListener('DOMContentLoaded', function () {
   // 1. Configura o redirecionamento dos botões da página principal (index.html).
-  const albumIds = ['sour', 'petal', 'so-close-to-what'];
   const botoesAvaliar = document.querySelectorAll('.botao-avaliar');
 
-  botoesAvaliar.forEach((button, index) => {
+  botoesAvaliar.forEach((button) => {
     button.addEventListener('click', function () {
-      // Usa a posição do botão para descobrir qual álbum deve ser aberto.
-      const id = albumIds[index];
+      // O ID acompanha o próprio cartão, então a ordem visual não altera o destino.
+      const id = button.dataset.albumId;
       if (id) {
         window.location.href = `album.html?id=${id}`;
       }
