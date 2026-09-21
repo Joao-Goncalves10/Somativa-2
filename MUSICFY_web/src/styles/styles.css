@@ -1345,30 +1345,6 @@ body.dark-mode footer {
 }
 
 @media (max-width: 767px) {
-  .album-card .row {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .hero-banner {
-    grid-template-columns: 1fr;
-    padding: 1.25rem;
-  }
-
-  .hero-meta {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-header,
-  .profile-stats,
-  .recent-reviews {
-    padding: 1.25rem;
-  }
-
-  .review-item {
-    align-items: flex-start;
-  }
-
   .explore-hero {
     flex-direction: column;
     align-items: flex-start;
