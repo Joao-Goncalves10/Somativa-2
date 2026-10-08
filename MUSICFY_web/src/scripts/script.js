@@ -6,8 +6,100 @@ const albums = {
     image: 'src/img/SOUR_OliviaRodrigo_cover.jpg',
     tracks: [
       { name: 'brutal', reviews: ['5/5'],
-         lyrics: ``,    
-translation: ``
+         lyrics: `i want it to be, like, messy
+
+i'm so insecure, i  think
+that i'll die before i drink
+and i'm so caught up in the news
+of who likes me, and who hates you
+and i'm so tired that i might
+quit my job, start a new life
+and they'd all be so disappointed
+'cause, who am i, if not exploited?
+
+and i'm so sick of 17
+where's my fucking teenage dream?
+if someone tells me one more time
+"enjoy your youth," i'm gonna cry
+and i don't stick up for myself
+i'm anxious and nothing can help
+and i wish i'd done this before
+and i wish people liked me more
+
+all i did was try my best
+this the kind of thanks i get?
+unrelentlessly upset (ah, ah, ah)
+they say these are the golden years
+but i wish i could disappear
+ego crush is so severe
+god, it's brutal out here
+
+I feel like no one wants me
+And I hate the way I'm perceived
+I only have two real friends
+And lately, I'm a nervous wreck
+'Cause I love people I don't like
+And I hate every song I write
+And I'm not cool and I'm not smart
+And I can't even parallel park
+
+all i did was try my best
+this the kind of thanks i get?
+unrelentlessly upset (ah, ah, ah)
+they say these are the golden years
+but i wish i could disappear
+ego crush is so severe
+god, it's brutal out here
+
+got a broken ego, broken heart (yeah, it's brutal out here, yeah, it's brutal out here)
+and god, i don't even know where to start`,    
+translation: `eu quero que seja, tipo, uma bagunça
+
+estou tão insegura, acho
+que vou morrer antes de beber
+e estou tão presa nas notícias
+de quem gosta de mim e quem odeia você
+e estou tão cansada que talvez
+largue meu emprego, comece uma vida nova
+e todos ficariam tão decepcionados
+porque, quem sou eu, se não alguém explorada?
+
+e estou tão farta dos 17 anos
+cadê o meu maldito sonho de adolescente?
+se alguém me disser mais uma vez
+"aproveite a juventude", eu vou chorar
+e não sei me defender
+estou ansiosa e nada ajuda
+e queria ter feito isso antes
+e queria que as pessoas gostassem mais de mim
+
+tudo o que fiz foi dar o meu melhor
+é esse o tipo de agradecimento que recebo?
+constantemente chateada (ah, ah, ah)
+dizem que estes são os anos dourados
+mas queria poder desaparecer
+o golpe no ego é tão forte
+meu Deus, é brutal aqui fora
+
+Sinto que ninguém me quer
+E odeio a forma como sou vista
+Só tenho dois amigos de verdade
+E, ultimamente, estou um caco de nervos
+Porque amo pessoas de quem não gosto
+E odeio cada música que escrevo
+E não sou legal nem inteligente
+E nem sei estacionar em baliza
+
+tudo o que fiz foi dar o meu melhor
+é esse o tipo de agradecimento que recebo?
+constantemente chateada (ah, ah, ah)
+dizem que estes são os anos dourados
+mas queria poder desaparecer
+o golpe no ego é tão forte
+meu Deus, é brutal aqui fora
+
+ego despedaçado, coração partido (é, é brutal aqui fora, é, é brutal aqui fora)
+e meu Deus, nem sei por onde começar`
        },
       { name: 'traitor', reviews: ['4/5'],
          lyrics: ``,    
@@ -49,6 +141,2137 @@ translation: ``
          lyrics: ``,    
 translation: ``
       }
+    ]
+  },
+  youSeemPrettySad: {
+    name: 'you seem pretty sad for a girl so in luv',
+    artist: 'Olivia Rodrigo',
+    image: 'src/img/you-seem-pretty-sad-olivia-rodrigo.png',
+    tracks: [
+      { name: 'drop dead', reviews: [] },
+      { name: 'stupid song', reviews: [] },
+      { name: 'honeybee', reviews: [] },
+      { name: 'maggots for brains', reviews: [] },
+      { name: 'u + me = <3', reviews: [] },
+      { name: 'my way', reviews: [] },
+      { name: 'purple', reviews: [] },
+      { name: 'the cure', reviews: [] },
+      { name: 'begged', reviews: [] },
+      { name: "what's wrong with me (feat. Robert Smith)", reviews: [] },
+      { name: 'less', reviews: [] },
+      { name: 'expectations', reviews: [] },
+      { name: 'cigarette smoke', reviews: [] }
+    ]
+  },
+  guts: {
+    name: 'GUTS',
+    artist: 'Olivia Rodrigo',
+    image: 'src/img/guts_olivia_rodrigo_cover.png',
+    versionGroup: 'guts',
+    versionLabel: 'Edição padrão',
+    tracks: [
+      { name: 'all-american bitch', reviews: ['5/5'] },
+      { name: 'bad idea right?', reviews: ['4/5'] },
+      { name: 'vampire', reviews: ['5/5'] },
+      { name: 'lacy', reviews: ['4/5'] },
+      { name: 'ballad of a homeschooled girl', reviews: ['4/5'] },
+      { name: 'making the bed', reviews: ['4/5'] },
+      { name: 'logical', reviews: ['4/5'] },
+      { name: 'get him back!', reviews: ['5/5'] },
+      { name: 'love is embarrassing', reviews: ['5/5'] },
+      { name: 'the grudge', reviews: ['4/5'] },
+      { name: "pretty isn't pretty", reviews: ['4/5'] },
+      { name: 'teenage dream', reviews: ['4/5'] }
+    ]
+  },
+  gutsSpilled: {
+    name: 'GUTS (spilled)',
+    artist: 'Olivia Rodrigo',
+    image: 'src/img/guts_olivia_rodrigo_cover.png',
+    versionGroup: 'guts',
+    versionLabel: 'Deluxe · GUTS (spilled)',
+    tracks: [
+      { name: 'all-american bitch', reviews: ['5/5'] },
+      { name: 'bad idea right?', reviews: ['4/5'] },
+      { name: 'vampire', reviews: ['5/5'] },
+      { name: 'lacy', reviews: ['4/5'] },
+      { name: 'ballad of a homeschooled girl', reviews: ['4/5'] },
+      { name: 'making the bed', reviews: ['4/5'] },
+      { name: 'logical', reviews: ['4/5'] },
+      { name: 'get him back!', reviews: ['5/5'] },
+      { name: 'love is embarrassing', reviews: ['5/5'] },
+      { name: 'the grudge', reviews: ['4/5'] },
+      { name: "pretty isn't pretty", reviews: ['4/5'] },
+      { name: 'teenage dream', reviews: ['4/5'] },
+      { name: 'obsessed', reviews: ['5/5'] },
+      { name: "girl i've always been", reviews: ['4/5'] },
+      { name: 'scared of my guitar', reviews: ['4/5'] },
+      { name: 'stranger', reviews: ['4/5'] },
+      { name: 'so american', reviews: ['5/5'] }
+    ]
+  },
+  radicalOptimism: {
+    name: 'Radical Optimism',
+    artist: 'Dua Lipa',
+    image: 'src/img/radical_optimism_dua_lipa_cover.png',
+    tracks: [
+      { name: 'End Of An Era', reviews: ['4/5'],
+         lyrics: `One, two, three, ay
+What's it about a kiss that makes me feel like this?
+Makes me an optimist, I guess
+I always jump too quick, hopin' this one might stick
+Hopelessy romantic
+
+Then you said, "Hey"
+And I said, "Hey
+What's your name?"
+Come with me
+'Cause when I see your face (ah)
+
+The sweetest pleasure
+I feel like we're gonna be together
+This could be the end of an era
+Who knows, baby? This could be forever, forever
+
+No more "you're not my type", no more "at least I tried"
+Done with the lonely nights, I guess
+One chapter might be done, God knows I had some fun
+New one has just begun
+
+You said, "Hey"
+And I said, "Hey
+What's your name?"
+Come with me
+'Cause when I see your face (ah)
+
+The sweetest pleasure
+I feel like we're gonna be together
+This could be the end of an era
+Who knows, baby? This could be forever, forever
+
+In the clouds, there she goes, butterflies let them flow
+Another girl falls in love, another girl leaves the club
+Send a big kiss goodbye to all of the pretty eyes (end of an era)
+Another girl falls in love, another girl leaves the club
+
+I've lost all my senses
+La-la-la-la, la-la-la-la-la
+Is this my happy ending?
+La-la-la-la, la-la-la-la-la
+(Here she goes again)
+
+The sweetest pleasure
+I feel like we're gonna be together
+This could be the end of an era
+Who knows, baby? This could be forever and ever
+
+In the clouds, there she goes, butterflies let them flow (end of an era)
+Another girl falls in love, another girl leaves the club
+Send a big kiss goodbye to all of the pretty eyes (end of an era)
+Another girl falls in love, another girl leaves the club`,    
+translation: `Um, dois, três, ei
+
+O que tem em um beijo que faz você se sentir assim?
+Me faz ser otimista, eu acho
+Eu sempre me precipito, esperando que dessa vez dure
+Uma romântica incurável
+
+Então você disse: Ei
+E eu disse: Ei
+Qual é o seu nome?
+Venha comigo
+
+Porque quando vejo o seu rosto (ah)
+
+O prazer mais doce
+Eu sinto que vamos ficar juntos para sempre
+Isso pode ser o fim de uma era
+Quem sabe, querido? Isso pode ser para sempre, para sempre
+
+Chega, você não faz meu tipo
+Chega, pelo menos eu tentei
+Cansei das noites solitárias, eu acho
+Um capítulo pode ter se encerrado
+Deus sabe que me diverti
+Um novo acaba de começar
+
+Você disse: Ei
+E eu disse: Ei
+Qual é o seu nome?
+Venha comigo
+
+Porque quando vejo o seu rosto (ah)
+
+O prazer mais doce
+Eu sinto que vamos ficar juntos para sempre
+Isso pode ser o fim de uma era
+Quem sabe, querido? Isso pode ser para sempre, para sempre
+
+Nas nuvens, lá vai ela
+Borboletas, deixe elas voarem
+Outra garota se apaixona
+Outra garota sai da balada
+Mande um beijão
+Para todos os olhos charmosos
+Outra garota se apaixona (para sempre)
+Outra garota sai da balada
+
+Eu perdi completamente o meu juízo
+La-la-la-la, la-la-la-la-la
+Será que esse é o meu final feliz?
+La-la-la-la, la-la-la-la-la
+
+(Lá vai ela de novo)
+
+O prazer mais doce
+Eu sinto que vamos ficar juntos para sempre
+Isso pode ser o fim de uma era
+Quem sabe, querido? Isso pode ser para sempre, para sempre
+
+Nas nuvens, lá vai ela
+Borboletas, deixe elas voarem (fim de uma era)
+Outra garota se apaixona
+Outra garota sai da balada
+Mande um beijão
+Para todos os olhos charmosos (fim de uma era)
+Outra garota se apaixona
+Outra garota sai da balada`
+       },
+       { name: 'Houdini', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Training Season', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'These Walls', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Whatcha Doing', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'French Exit', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Illusion', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Falling Forever', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Anything For Love', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Maria', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Happy For You', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+    ]
+  },
+  brat: {
+    name: 'BRAT',
+    artist: 'Charli xcx',
+    image: 'src/img/brat_charli_xcx_cover.png',
+    versionGroup: 'brat',
+    versionLabel: 'Edição padrão',
+    tracks: [
+      { name: '360', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Club classics', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Sympathy is a knife', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'I might say something stupid', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Talk talk', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Von dutch', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Everything is romantic', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Rewind', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'So I', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Girl, so confusing', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Apple', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'B2b', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'Mean girls', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: 'I think about it all the time', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+       { name: '365', reviews: ['4/5'],
+         lyrics: ``,    
+          translation: ``
+       },
+    ]
+  },
+  bratDeluxe: {
+   name: "Brat and it's the same but there's three more songs so it's not",
+   artist: 'Charli xcx',
+   image: 'src/img/brat_deluxe_cover.png',
+   versionGroup: 'brat',
+   versionLabel: 'Edição Deluxe · 3 faixas extras',
+   tracks: [
+     { name: '360', reviews: ['4/5'] },
+     { name: 'Club classics', reviews: ['4/5'] },
+     { name: 'Sympathy is a knife', reviews: ['4/5'] },
+     { name: 'I might say something stupid', reviews: ['4/5'] },
+     { name: 'Talk talk', reviews: ['4/5'] },
+     { name: 'Von dutch', reviews: ['4/5'] },
+     { name: 'Everything is romantic', reviews: ['4/5'] },
+     { name: 'Rewind', reviews: ['4/5'] },
+     { name: 'So I', reviews: ['4/5'] },
+     { name: 'Girl, so confusing', reviews: ['4/5'] },
+     { name: 'Apple', reviews: ['4/5'] },
+     { name: 'B2b', reviews: ['4/5'] },
+     { name: 'Mean girls', reviews: ['4/5'] },
+     { name: 'I think about it all the time', reviews: ['4/5'] },
+     { name: '365', reviews: ['4/5'] },
+     { name: 'Hello, goodbye', reviews: ['4/5'] },
+     { name: 'Guess', reviews: ['5/5'] },
+     { name: 'Spring Breakers', reviews: ['4/5'] }
+   ]
+  },
+  bratRemix: {
+   name: "Brat and it's completely different but also still brat",
+   artist: 'Charli xcx',
+   image: 'src/img/brat_remix_cover.png',
+   versionGroup: 'brat',
+   versionLabel: 'Álbum de remixes',
+   tracks: [
+     { name: '360 (feat. Robyn & Yung Lean)', reviews: ['4/5'] },
+     { name: 'Club classics (feat. Bb trickz)', reviews: ['4/5'] },
+     { name: 'Sympathy is a knife (feat. Ariana Grande)', reviews: ['5/5'] },
+     { name: 'I might say something stupid (feat. The 1975)', reviews: ['4/5'] },
+     { name: 'Talk talk (feat. Troye Sivan)', reviews: ['4/5'] },
+     { name: 'Von dutch (feat. Addison Rae & A. G. Cook)', reviews: ['4/5'] },
+     { name: 'Everything is romantic (feat. Caroline Polachek)', reviews: ['4/5'] },
+     { name: 'Rewind (feat. Bladee)', reviews: ['4/5'] },
+     { name: 'So I (feat. A. G. Cook)', reviews: ['4/5'] },
+     { name: 'Girl, so confusing (feat. Lorde)', reviews: ['5/5'] },
+     { name: 'Apple (feat. The Japanese House)', reviews: ['4/5'] },
+     { name: 'B2b (feat. Tinashe)', reviews: ['4/5'] },
+     { name: 'Mean girls (feat. Julian Casablancas)', reviews: ['4/5'] },
+     { name: 'I think about it all the time (feat. Bon Iver)', reviews: ['4/5'] },
+     { name: '365 (feat. Shygirl)', reviews: ['4/5'] },
+     { name: 'Guess (feat. Billie Eilish)', reviews: ['5/5'] }
+   ]
+  },
+  musicFashionFilm: {
+    name: 'Music, Fashion, Film',
+    artist: 'Charli xcx',
+    image: 'src/img/music_fashion_film_charli_xcx_cover.png',
+    tracks: [
+      { name: 'Rock Music', reviews: [] },
+      { name: 'SS26', reviews: [] },
+      { name: 'Card Declined', reviews: [] },
+      { name: 'Camera', reviews: [] },
+      { name: '2007', reviews: [] },
+      { name: "I'm Afraid", reviews: [] },
+      { name: 'Yeah', reviews: [] },
+      { name: 'Wink Wink', reviews: [] },
+      { name: 'Persona', reviews: [] },
+      { name: 'Magic Metal Montana', reviews: [] },
+      { name: 'No One Lasts Forever (feat. David Cronenberg)', reviews: [] }
+    ]
+  },
+  detour: {
+    name: 'Detour',
+    artist: 'Kim Petras',
+    image: 'src/img/detour_kim_petras_cover.png',
+    tracks: [
+      { name: 'Detour', reviews: ['4/5'],
+         lyrics: `This is the beginning of the end
+Everything before is just pretend
+You're such a fuckin' hypocrite (yeah)
+Think I don't know you love this shit (yeah, uh-huh)
+Speakers, speakers, speakers, speakers up
+Drove him to the cliff so I could jump
+Don't you know the freefall's what I want?
+All my sick bitches to the front
+
+I'ma take you with me if you're bad enough
+Throw your life away tonight, let's take a detour
+'Cause this life of sin, it don't amount to nothin'
+Throw my lights out, hit it, fall off, it's not like before, before
+If you do it, do it hardcore
+Throw your life away tonight, let's take a detour
+'Cause this life of sin, it don't amount to nothin'
+Throw my lights out, hit it, fall off, it's not like before, before
+If you do it, do it hardcore
+
+Let's take a detour
+Let's take a detour (yeah)
+Yeah, all night, all night
+Yeah, all night, all, yeah
+Yeah, all night, all night
+Yeah, all night, all, yeah
+
+Get in or get lost
+If you kiss me tonight, I'ma fuck up your life (wow)
+Surprise, doll eyes
+Throw my fist through the roof just to feel somethin'
+Detour
+I'ma fuck up your life, life, life, life
+
+I'ma take you with me if you're bad enough
+Throw your life away tonight, let's take a detour
+'Cause this life of sin, it don't amount to nothin'
+Throw my lights out, hit it, fall off, it's not like before, before
+If you do it, do it hardcore
+Throw your life away tonight, let's take a detour
+'Cause this life of sin, it don't amount to nothin'
+Throw my lights out, hit it, fall off, it's not like before, before
+If you do it, do it hardcore
+
+Let's take a detour
+Let's take a detour (detour)`,    
+          translation: `Esta é o começo do fim
+Tudo o que veio antes é apenas fingimento
+Você é uma hipócrita do caralho
+Acha que eu não sei que você adora essa merda?
+Aumentem o som, aumentem o som, aumentem o som, aumentem o som
+Levei ele até o penhasco para que eu pudesse pular
+Você não sabe que a queda livre é o que eu quero?
+Todas as minhas vadias perturbadas para a frente
+
+Vou te levar comigo se você for louco o bastante
+Joga sua vida fora esta noite, vamos fazer um desvio
+Porque essa vida de pecado não leva a lugar nenhum
+Apaga minhas luzes, acelera, despenca, não é como antes, antes
+Se for fazer, faz pesado
+Joga sua vida fora esta noite, vamos fazer um desvio
+Porque essa vida de pecado não leva a lugar nenhum
+Apaga minhas luzes, acelera, despenca, não é como antes, antes
+Se for fazer, faz pesado
+
+Vamos fazer um desvio
+Vamos fazer um desvio (é)
+É, a noite toda, a noite toda
+É, a noite toda, a noite, é
+É, a noite toda, a noite toda
+É, a noite toda, a noite, é
+
+Entra ou cai fora
+Se você me beijar esta noite, vou foder com a sua vida (wow)
+Surpresa, olhos de boneca
+Dou um soco no teto só pra sentir alguma coisa
+Desvio
+Vou foder com a sua vida, vida, vida, vida
+
+Vou te levar comigo se você for louca o bastante
+Joga sua vida fora esta noite, vamos fazer um desvio
+Porque essa vida de pecado não leva a lugar nenhum
+Apaga minhas luzes, acelera, despenca, não é como antes, antes
+Se for fazer, faz pesado
+Joga sua vida fora esta noite, vamos fazer um desvio
+Porque essa vida de pecado não leva a lugar nenhum
+Apaga minhas luzes, acelera, despenca, não é como antes, antes
+Se for fazer, faz pesado
+
+Vamos fazer um desvio
+Vamos fazer um desvio (desvio)`
+       },
+       { name: 'DTLA', reviews: ['4/5'],
+         lyrics: `This is going to be very, very interesting
+
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA (D-D-D-D–)
+Way up, D-D-D-T-LA
+Way up, D-D-D-D (T-T-T-T–)
+
+D-T-F, D-T-LA
+101 when I'm on my way
+Running over bitches like GTA
+Just to see your face, it's gon' get late
+D-T-F, D-T-LA
+ETA for PDA
+P for penthouse, push to play
+D-D-D-D-T-LA
+
+Oh my God, all you bitches ran through (ew)
+So I spray more perfume
+Made it to his bedroom
+(We're the only ones up here)
+All night long, now my innocence gone
+He gon' lay that pipe down
+While he play that Drake song
+(D-d-don't stop) D-D-D-T-L– yeah
+
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA, yeah
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA
+Way up, D-D-D-T-LA
+Way up, D-T-T-L–
+
+Peacoat with the fur, 'cause my neck is all ice
+And my low-rise jeans, pull up to your high rise
+My shawty tall, supermodel, he could walk for Dior
+Elevator to get up to your floor, s-s-s-s-sign that NDA
+
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA
+Way up, D-D-D-T-LA
+Way up, D-T-T-L– yeah
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA
+Way up, D-D-D-T-LA
+Way up, D-T-T-LA
+
+Peacoat with the fur, 'cause my neck is all ice
+And my low-rise jeans, pull up to your high rise (bitch)
+My shawty tall, supermodel, he could walk for Dior
+Elevator to get up to your floor, D-D-D-D-Detour, LA
+Way up, D-D–
+W-w-way up
+Way up
+W-w-way up, LA
+
+Ooh-ooh-ooh-ooh-ooh, ooh-ooh-ooh-ooh-ooh (yeah, way up, D-D-T-LA)
+Screamin' out the penthouse, nobody can hear me
+There's only clouds, there's only clouds
+Screamin' from the high-rise, mm-mm
+And I don't even know your name (D-D-D-D-D-T-L–)
+Such a long way down
+Oh, it's such a long way down, yeah
+My tears don't touch the ground
+Such a long way down
+Such a long way down`,    
+          translation: `Isso vai ser muito, muito interessante
+
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA (D-D-D-D–)
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-D-D-D (T-T-T-T–)
+
+D-T-F, D-T-LA
+101 quando tô a caminho
+Passando por vadias como no GTA
+Só pra ver seu rosto, vai ficar tarde
+D-T-F, D-T-LA
+ETA pro PDA
+P de cobertura, aperta pra tocar
+D-D-D-D-T-LA
+
+Oh meu Deus, todas vocês vadias passaram por aqui (eca)
+Então eu borrifo mais perfume
+Cheguei no quarto dele
+(Somos os únicos aqui em cima)
+A noite toda, agora minha inocência foi pro espaço
+Ele vai fazer o serviço
+Enquanto toca aquela música do Drake
+(N-n-não para) D-D-D-T-L– é
+
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA, é
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-L
+
+Peacoat com pele, porque meu pescoço tá todo gelado
+E meu jeans de cintura baixa, subindo até seu andar alto
+Meu amor é alto, supermodelo, ele poderia desfilar pra Dior
+Elevador pra chegar no seu andar, s-s-s-s-assina aquele NDA
+
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-L– é
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA
+Lá em cima, D-D-D-T-LA
+Lá em cima, D-T-T-LA
+
+Peacoat com pele, porque meu pescoço tá todo gelado
+E meu jeans de cintura baixa, subindo até seu andar alto (vadia)
+Meu amor é alto, supermodelo, ele poderia desfilar pra Dior
+Elevador pra chegar no seu andar, D-D-D-D-desvio, LA
+Lá em cima, D-D
+L-l-lá em cima
+Lá em cima
+L-l-lá em cima, LA
+
+Ooh-ooh-ooh-ooh-ooh, ooh-ooh-ooh-ooh-ooh (é, lá em cima, D-D-T-LA)
+Gritando do penthouse, ninguém pode me ouvir
+Só há nuvens, só há nuvens
+Gritando do andar alto, mm-mm
+E eu nem sei seu nome (D-D-D-D-D-T-L–)
+É uma longa queda
+Oh, é uma longa queda, é
+Minhas lágrimas não tocam o chão
+É uma longa queda
+É uma longa queda`
+       },
+       { name: 'I Like Ur Look', reviews: ['4/5'],
+         lyrics: `Better, oh
+
+I wear my patent leather boots
+I know that I'll run into you
+I wear my blush 'cause I'm a doll
+And then I tease my hair all tall, baby
+
+Tonight, just pretend
+That she's dead and gone
+Tell me y'all are done
+It could be so fun
+
+'Cause I like your look, it's so extreme
+You walk the street so effortlessly
+She wears you well, but can't you see?
+That you definitely look better on me, yeah
+
+I want you to dress just for me
+Your Acqua Di Gio on my sheets (-ah)
+But you're already on a leash
+So that's unfortunate for me, baby
+
+Tonight, just pretend
+That she's dead and gone
+Tell me y'all are done
+It could be so fun
+
+'Cause I like your look, it's so extreme
+You walk the street so effortlessly
+She wears you well, but can't you see?
+That you definitely look better on me, yeah
+
+So extreme
+So effortlessly
+
+He looks better, b-better on, on me
+He looks better, b-better on, on me
+He looks better, b-better on, on me
+He looks better, b-better on, on me
+Yeah (b-better, b-better, b-better, b-better, b-better, b-better)
+(B-b-b-b-b-b–, better, you)
+
+Like your look, it's so extreme
+You walk the street so effortlessly (yeah)
+She wears you well but can't you see?
+That you definitely look better on me, yeah
+
+(Woo)
+So extreme (looks better, looks better, looks b-b-better)
+So effortlessly
+'Cause you definitely look better on me, yeah
+
+Yeah`,    
+          translation: `Melhor, oh
+
+Eu uso minhas botas de couro brilhante
+Sei que vou te encontrar
+Coloco meu blush porque sou uma boneca
+E então eu deixo meu cabelo bem alto, baby
+
+Hoje à noite, só finja
+Que ela está morta e foi embora
+Me diga que vocês terminaram
+Isso poderia ser tão divertido
+
+Porque eu gosto do seu estilo, é tão extremo
+Você anda na rua com tanta facilidade
+Ela te veste bem, mas não consegue ver?
+Que você definitivamente fica melhor em mim, é
+
+Quero que você se vista só pra mim
+Seu Acqua Di Gio nas minhas roupas (-ah)
+Mas você já está preso a alguém
+Então isso é uma pena pra mim, baby
+
+Hoje à noite, só finja
+Que ela está morta e foi embora
+Me diga que vocês terminaram
+Isso poderia ser tão divertido
+
+Porque eu gosto do seu estilo, é tão extremo
+Você anda na rua com tanta facilidade
+Ela te veste bem, mas não consegue ver?
+Que você definitivamente fica melhor em mim, é
+
+Tão extremo
+Tão facilmente
+
+Ele fica melhor, b-b-melhor em, em mim
+Ele fica melhor, b-b-melhor em, em mim
+Ele fica melhor, b-b-melhor em, em mim
+Ele fica melhor, b-b-melhor em, em mim
+É (b-b-melhor, b-b-melhor, b-b-melhor, b-b-melhor, b-b-melhor, b-b-melhor)
+(b-b-b-b-b-b–, melhor, você)
+
+Gosto do seu estilo, é tão extremo
+Você anda na rua com tanta facilidade (é)
+Ela te veste bem, mas não consegue ver?
+Que você definitivamente fica melhor em mim, é
+
+(Woo)
+Tão extremo (fica melhor, fica melhor, fica b-b-b-melhor)
+Tão facilmente
+Porque você definitivamente fica melhor em mim, é
+
+É`
+       },
+       { name: 'Check It', reviews: ['4/5'],
+         lyrics: `Check it, check it, check it, check it
+Check-check-check-check
+
+The-the-the-the gloss on my lips
+Check it, check it, check it, check it
+And the fit of my jeans
+Check it, check it, check it, check it
+And the make of my car
+Check it, check it, check it, check it
+And my je ne sais quois
+Check it, check it, check it, check it, come on
+
+Check it, check it, check it, check it, check it
+Check it, check it, check it, check it, check it (woo)
+Check it, check it, check it, check it, check it
+Check-check-check-check
+Check it, check it, check it, check it
+
+Check the blush on my cheeks
+Check it, check it, check it, check it
+And the boys on my phone
+Pack it, pack it, pack it, pack it
+And the shape of my ass
+Check it, check it, check it, check it
+And the face that I make
+When you wreck it, wreck it, wreck it, come on
+
+Check it, check it, check it, check it, check it
+Check it, check it, check it, check it, check it (woo)
+Check it, check it, check it, check it, check it
+(The) check-check-check-check
+Check it, check it, check it, check it
+
+The dew on my skin
+Check it, check it, check it, check it
+And the weight of the world
+Check it, check it, check it, check it
+And the wind in your hair
+Check it, check it, check it, check it
+Jesus died on the cross
+Bless Him, bless Him, bless Him, bless Him, come on
+
+Check it, check it, check it, check it, check it
+Check it, check it, check it, check it, check it (woo)
+Check it, check it, check it, check it, check it
+Check it, check it, check it, check it
+
+The gloss on my lips
+And the fit of my jeans
+And the make of my car
+And my je ne sais quoi (are you there yet?)
+And the weight of the world
+And the wind in your hair
+Jesus died on the cross
+Bless Him, bless Him, bless Him, bless Him, come on`,    
+          translation: `Confere, confere, confere, confere
+Confere-confere-confere-confere
+
+O-o-o-o brilho nos meus lábios
+Confere, confere, confere, confere
+E o caimento da minha calça
+Confere, confere, confere, confere
+E a marca do meu carro
+Confere, confere, confere, confere
+E meu je ne sais quoi
+Confere, confere, confere, confere, vai
+
+Confere, confere, confere, confere, confere
+Confere, confere, confere, confere, confere (woo)
+Confere, confere, confere, confere, confere
+Confere-confere-confere-confere
+Confere, confere, confere, confere
+
+Confere o blush nas minhas bochechas
+Confere, confere, confere, confere
+E os boys no meu celular
+Confere, confere, confere, confere
+E o formato da minha bunda
+Confere, confere, confere, confere
+E a cara que eu faço
+Quando você estraga, estraga, estraga, vai
+
+Confere, confere, confere, confere, confere
+Confere, confere, confere, confere, confere (woo)
+Confere, confere, confere, confere, confere
+(O) confere-confere-confere-confere
+Confere, confere, confere, confere
+
+O orvalho na minha pele
+Confere, confere, confere, confere
+E o peso do mundo
+Confere, confere, confere, confere
+E o vento no seu cabelo
+Confere, confere, confere, confere
+Jesus morreu na cruz
+Abençoa Ele, abençoa Ele, abençoa Ele, abençoa Ele, vai
+
+Confere, confere, confere, confere, confere
+Confere, confere, confere, confere, confere (woo)
+Confere, confere, confere, confere, confere
+Confere, confere, confere, confere
+
+O brilho nos meus lábios
+E o caimento da minha calça
+E a marca do meu carro
+E meu je ne sais quoi (tá chegando?)
+E o peso do mundo
+E o vento no seu cabelo
+Jesus morreu na cruz
+Abençoa Ele, abençoa Ele, abençoa Ele, abençoa Ele, vai`
+       },
+       { name: 'Polo', reviews: ['4/5'],
+         lyrics: `Yeah, yeah
+Cha-ching
+Yeah
+Polo
+
+I gotta pick the right one tonight, uh
+Not gonna make this shit too easy, uh-uh
+I got them alligators left and right, uh
+My Ralph Lauren, tight and teeny, let's go
+
+You wanna get me out my polo shirt (uh-uh)
+You wanna get me out my polo shirt (uh-uh)
+You wanna get me out my polo shirt (uh-uh)
+My polo and my mini skirt (uh-uh)
+Titties poppin' out my bra (like wow)
+You wanna throw that to the floor (right now)
+Slap that logo on my ass (uh-uh)
+Make that pony come in first (right now)
+
+You wanna pull it down
+You wanna pull it with your teeth
+Chow-chow
+Pop my collar at the Polo Lounge
+Your grandma rollin' in her grave right now
+I gotta pick the right one tonight (oh)
+Wanna play polo on the motorbike
+Sweat dripping' down my upper thigh (polo)
+You wanna hit it with that polo stick (right)
+
+You wanna get me out my polo shirt (uh-uh)
+You wanna get me out my polo shirt (uh-uh)
+You wanna get me out my polo shirt (uh-uh)
+My polo and my mini skirt (uh-uh)
+Titties poppin' out my bra (like wow)
+You wanna throw that to the floor (right now)
+Slap that logo on my ass (uh-uh)
+Make that pony come in first (right now)
+
+Oh, Polo
+You want it so bad
+Yeah
+Get me, get-get-get me out my polo
+Get me, get-get-get me out my polo
+You want it
+Get-get-get me out my polo
+You want it so bad
+Get-get-get me out my polo`,    
+          translation: `É, é
+Cha-ching, é
+Polo
+
+Eu tenho que escolher a certa essa noite, uh
+Não vou deixar isso fácil demais, uh-uh
+Eu tenho os jacarés pra todo lado, uh
+Meu sutiã com brilho, justo e pequeno
+Vamos lá
+
+Você quer me tirar da minha camisa polo
+Você quer me tirar da minha camisa polo (uh)
+Você quer me tirar da minha camisa polo
+Minha polo e minha saia curta
+Os peitos saindo do meu sutiã (tipo uau)
+Você quer jogar isso no chão (agora)
+Bate esse logo na minha bunda (uh, ooh)
+Faz esse cavalo vir rápido (agora)
+
+Você quer puxar pra baixo
+Você quer puxar com os dentes, chow-chow
+Levanta minha gola no lounge da polo
+Sua avó se revirando no túmulo agora (ah)
+Você tem que escolher a certa essa noite (woo)
+Quer jogar polo na moto
+Suor escorrendo na minha coxa (polo)
+Você quer dar com aquele bastão de polo, né? (Woo)
+
+Você quer me tirar da minha camisa polo
+Você quer me tirar da minha camisa polo (uh)
+Você quer me tirar da minha camisa polo
+Minha polo e minha saia curta
+Os peitos saindo do meu sutiã (tipo uau)
+Você quer jogar isso no chão (agora)
+Bate esse logo na minha bunda (uh, ooh)
+Faz esse cavalo vir rápido (agora)
+
+Woo, polo
+Você quer tanto
+É, me tira, me tira, me tira da minha polo
+Me tira, me tira, me tira da minha polo (polo)
+Você quer me tirar, me tirar, me tirar da minha polo
+Você quer tanto, me tira, me tira, me tira da minha polo`
+       },
+       { name: 'Brutalist', reviews: ['4/5'],
+         lyrics: `(Yeah, yeah)
+Yeah (yeah, yeah)
+Uh-uh, uh-uh-uh
+Yeah
+
+There was a building there, and it was brutalist
+And it was beautiful, it was my favorite
+But it's not there no more because they tore it down
+They really ruined it (yeah)
+My dad's an architect, he used to show me it
+When he would drive me to the psychiatry
+Again and again, didn't come back a man
+I guess I ruined it
+
+(Ah-ah-ah-ah, ah, ah)
+(Ah-ah, ah-ah, ah-ah)
+(Ah, ah, ah, ah-ah)
+
+Sometimes, I lay awake when everyone's asleep
+And I can see the arches over me
+There was a building there, and it was brutalist
+And it was beautiful, yeah, yeah, yeah
+It was standing on the right side of the street
+They cut my hair at the psychiatry
+But it was really there, it meant so much to me
+But now they ruined it
+
+(Ah-ah-ah-ah, ah, ah)
+Yeah, but now they ruined it
+Yeah, yeah, but now they ruined it
+(Ah-ah, ah-ah, ah-ah)
+Yeah, yeah, they really ruined it
+(Ah, ah, ah, ah-ah)
+Yeah, yeah, they really ruined it
+
+Yeah, they took a knife to it, they took a bomb to it
+They bulldozed it, they didn't give a shit
+It really breaks my heart, what they did to it
+They really ruined it (yeah)
+
+Yeah, yeah, they really ruined it
+(Ah-ah-ah-ah, ah, ah)
+Yeah, yeah, they took a knife to it
+(Ah-ah, ah-ah, ah-ah)
+Yeah, yeah, they took a bomb to it
+(Ah, ah, ah, ah-ah)
+Yeah, yeah, they bulldozed it
+Yeah, yeah, yeah, they took a knife to it
+(Ah, ah, ah, ah-ah)
+Ah-ah, they took a bomb to it
+Yeah-ah, they bulldozed it
+Yeah, yeah, they really ruined it (ah-ah, ah-ah)
+
+There was a building there, and it was brutalist
+And it was beautiful, my favorite
+I wanna take you there, I wanna take you there
+But they ruined it
+I wanna take you there, I wanna take you there
+I wanna take you there, but they tore it down
+It's not there no more, they really ruined it`,    
+          translation: `(É, é)
+É (é, é)
+Uh-uh, uh-uh-uh
+É
+
+Tinha um prédio lá, e ele era brutalista
+E era lindo, era o meu favorito
+Mas não tá mais lá porque derrubaram
+Eles realmente estragaram (é)
+Meu pai é arquiteto, ele costumava me mostrar
+Quando ele me levava pra psiquiatria
+De novo e de novo, não voltou um homem
+Acho que eu estraguei
+
+(Ah-ah-ah-ah, ah, ah)
+(Ah-ah, ah-ah, ah-ah)
+(Ah, ah, ah, ah-ah)
+
+Às vezes, eu fico acordado quando todo mundo dorme
+E consigo ver os arcos sobre mim
+Tinha um prédio lá, e ele era brutalista
+E era lindo, é, é, é
+Ele estava do lado certo da rua
+Cortaram meu cabelo na psiquiatria
+Mas ele realmente estava lá, significava muito pra mim
+Mas agora eles estragaram
+
+(Ah-ah-ah-ah, ah, ah)
+É, mas agora eles estragaram
+É, é, mas agora eles estragaram
+(Ah-ah, ah-ah, ah-ah)
+É, é, eles realmente estragaram
+(Ah, ah, ah, ah-ah)
+É, é, eles realmente estragaram
+
+É, eles pegaram uma faca e cortaram, pegaram uma bomba e explodiram
+Eles derrubaram, não estavam nem aí
+Isso realmente parte meu coração, o que fizeram com isso
+Eles realmente estragaram (é)
+
+É, é, eles realmente estragaram
+(Ah-ah-ah-ah, ah, ah)
+É, é, eles pegaram uma faca e cortaram
+(Ah-ah, ah-ah, ah-ah)
+É, é, eles pegaram uma bomba e explodiram
+(Ah, ah, ah, ah-ah)
+É, é, eles derrubaram
+É, é, é, eles pegaram uma faca e cortaram
+(Ah, ah, ah, ah-ah)
+Ah-ah, pegaram uma bomba e explodiram
+É-ah, eles derrubaram
+É, é, eles realmente estragaram (ah-ah, ah-ah)
+
+Tinha um prédio lá, e ele era brutalista
+E era lindo, meu favorito
+Quero te levar lá, quero te levar lá
+Mas eles estragaram
+Quero te levar lá, quero te levar lá
+Quero te levar lá, mas derrubaram
+Não tá mais lá, eles realmente estragaram`
+       },
+       { name: 'Need For Speed', reviews: ['4/5'],
+         lyrics: `Ayy
+
+Ge-ge-get them bottles poppin', we got another hit
+'Cause everywhere we walkin', the fans all over me
+I got you so excited, you want me like you should
+I woke up in the morning, I tore
+
+Don't you love the money? (Money) don't you love my style? (Style)
+Don't you love the way my phone keeps goin' off all night? (Off all night)
+Push me to the window, dro-drop it to the floor (ayy)
+You already know my name, but I don't know yours
+And you're so mad about it
+
+'Cause I got a lot of need for speed, so get that shit on top of me
+And I got another place to be, so let me freak it
+With you, now
+And I'm sorry if you fall for me 'cause my life moves so quickly
+'Cause I got a lot of need for speed
+
+I-I-I, I-I-I, I want it fast, fast, fast, fast, fast, fast
+I want it fast, fast, fast
+D-d-d-do that, do that, baby
+
+Tick-tick-tick-tick-tick-tick boom
+Starlet stumbles in the room
+Next look, tour non-stop, I'm a pop star
+Pour Pink Sugar
+On me, hurry up, I gotta leave
+My label yelling in my ear, yeah
+
+'Cause they love the money (money) and they want it now (now)
+And they love it when I got no boyfriend in my life (in my life)
+Push me in the pillow
+Dro-dro-drop it to the floor (ayy)
+You already know my name but I don't know yours
+And you're so mad about it
+
+'Cause I got a lot of need for speed, so get that shit on top of me
+And I got another place to be, so let me freak it
+With you, now
+And I'm sorry if you fall for me 'cause my life moves so quickly
+'Cause I got a lot of need for speed
+
+I-I-I, I-I-I, I want it fast, fast, fast, fast, fast, fast
+I want it fast
+Fast, fast, fast, fast, fast
+I want it fast, fast, fast, fast, fast, fast
+I want it fast, fast, fast
+D-d-d-do that, do that, baby
+
+(D-D-Detour)
+(D-d-d-do that, do that, baby)
+(D-d-d-do that, do that, baby)
+Time's almost up, don't wait too long or you'll lose me (do that, do that, do that, do that)
+You really don't know me, no one really knows me (do that, do that)
+Yeah, you should know, I want you to know me (d-do that, do that)
+You're moving too slowly if you're tryin' to hold me (do that, do that)
+I'ma disappear, you already know and you're so mad about it
+
+'Cause I got a lot of need for speed, so get that shit on top of me
+And I got another place to be, so let me freak it
+With you, now
+And I'm sorry if you fall for me 'cause my life moves so quickly
+'Cause I got a lot of need for speed, say you wanna leave with me (I-I-I, I-I-I, I-I-I, oh-oh)
+
+I want it fast, fast, fast, fast, fast, fast
+I want it fast, fast, fast, fast, fast, fast
+I want it fast, fast, fast, fast, fast, fast (yeah)
+I want it fast, fast, fast
+D-d-d-do that, do that, baby`,    
+          translation: `Ayy
+
+B-b-bota essas garrafas pra estourar, a gente tem outro hit
+Porque por onde eu ando, os fãs ficam em cima de mim
+Eu te deixei tão excitado, você me quer como deveria
+Eu acordei de manhã, eu arrasei
+
+Você não ama o dinheiro? (Dinheiro) você não ama meu estilo? (Estilo)
+Você não ama o jeito que meu celular não para de tocar a noite toda? (A noite toda)
+Me empurra contra a janela, jo-joga isso até o chão (ayy)
+Você já sabe o meu nome, mas eu não sei o seu
+E você fica tão puto com isso
+
+Porque eu tenho muita necessidade de velocidade, então joga essa porra em cima de mim
+E eu tenho outro lugar pra estar, então me deixa enlouquecer
+Com você, agora
+E me desculpe se você se apaixonar por mim, porque minha vida anda muito rápido
+Porque eu tenho muita necessidade de velocidade
+
+E-e-eu, e-e-eu, eu quero rápido, rápido, rápido, rápido, rápido, rápido
+Eu quero rápido, rápido, rápido
+F-f-f-faz isso, faz isso, meu bem
+
+Tique-tique-tique-tique-tique-tique boom
+A estrelinha tropeça pra dentro do quarto
+No próximo instante, turnê sem parar, eu sou uma estrela do pop
+Derrame Pink Sugar
+Em mim, se apresse, eu tenho que ir
+Minha gravadora gritando no meu ouvido, é
+
+Porque eles amam o dinheiro (dinheiro) e eles querem agora (agora)
+E eles amam quando eu não tenho namorado na minha vida (na minha vida)
+Me empurra no travesseiro
+Jo-jo-joga isso até o chão (ayy)
+Você já sabe o meu nome mas eu não sei o seu
+E você fica tão puto com isso
+
+Porque eu tenho muita necessidade de velocidade, então joga essa porra em cima de mim
+E eu tenho outro lugar pra estar, então me deixa enlouquecer
+Com você, agora
+E me desculpe se você se apaixonar por mim, porque minha vida anda muito rápido
+Porque eu tenho muita necessidade de velocidade
+
+E-e-eu, e-e-eu, eu quero rápido, rápido, rápido, rápido, rápido, rápido
+Eu quero rápido
+Rápido, rápido, rápido, rápido, rápido
+Eu quero rápido, rápido, rápido, rápido, rápido, rápido
+Eu quero rápido, rápido, rápido
+F-f-f-faz isso, faz isso, meu bem
+
+(D-D-Desvio)
+(F-f-f-faz isso, faz isso, meu bem)
+(F-f-f-faz isso, faz isso, meu bem)
+O tempo está quase acabando, não espere muito ou você vai me perder (faz isso, faz isso, faz isso, faz isso)
+Você realmente não me conhece, ninguém realmente me conhece (faz isso, faz isso)
+É, você deveria saber, eu quero que você me conheça (f-faz isso, faz isso)
+Você está se movendo muito devagar se está tentando me segurar (faz isso, faz isso)
+Eu vou desaparecer, você já sabe e fica tão puto com isso
+
+Porque eu tenho muita necessidade de velocidade, então joga essa porra em cima de mim
+E eu tenho outro lugar pra estar, então me deixa enlouquecer
+Com você, agora
+E me desculpe se você se apaixonar por mim, porque minha vida anda muito rápido
+Porque eu tenho muita necessidade de velocidade, diz que você quer ir embora comigo (e-e-eu, e-e-eu, e-e-eu, ah-ah)
+
+Eu quero rápido, rápido, rápido, rápido, rápido, rápido
+Eu quero rápido, rápido, rápido, rápido, rápido, rápido
+Eu quero rápido, rápido, rápido, rápido, rápido, rápido (é)
+Eu quero rápido, rápido, rápido
+F-f-f-faz isso, faz isso, meu bem`
+       },
+       { name: 'Jeep', reviews: ['4/5'],
+         lyrics: `Pick me up in a beat-up Jeep
+Yeah, the little two-seater that he got for cheap
+I know I called too late, I just couldn't sleep
+Yeah, my mind's been racing 'bout a couple things
+
+Drivin' down to the bar, order up some drinks
+And you look so pretty when you talk to me
+He's like a Jack and Coke, he's a little sweet
+Little rough around the edges when he needs to be
+
+Your mama thinks I'm bad for you
+Your friends all think you're bad for me
+And if I have another drink
+And you keep staring back at me
+Well, we been down this road before
+And we both know where it leads
+'Cause we got history
+And history repeats
+Fuck
+
+Check, check
+Check, check
+Check, check
+
+Pick you in a beat-up jeep
+Yeah, the one my dad's been driving since the 70s
+I was already up, I just couldn't sleep
+Yeah, my mind's been bouncing off amphetamines
+
+Drivin' down to the bar, order up some drinks
+And you look so pretty when you talk to me
+You're like a Long Island iced tea
+You're too sweet
+Fuck
+
+Your mama thinks I'm bad for you
+Your friends all think you're bad for me
+And if I have another drink
+And you keep staring back at me
+Well, we been down this road before
+And we both know where it leads
+'Cause we got history
+We got history
+We got history
+And history repeats
+Pew
+
+We can just drive around
+Listen to techno
+Listen to Eminem
+Listen to Slipknot
+Sex in the parking lot, gas station
+Maybe you can buy a new shirt there too
+Go totally incognito, yeah
+Go to the middle America shit
+Do some middle American shit or some shit
+We can just drive around
+Drink some Four Lokos
+Drink some Long Island iced tea
+Drink some Monster, the white one
+
+Kicking that can around
+Kicking that can around
+Kicking that can around
+Kicking that can around`,    
+          translation: `Vem me buscar no seu Jeep velho
+É, aquele de dois lugares que ele comprou baratinho
+Sei que liguei tarde demais, eu simplesmente não conseguia dormir
+É, meus pensamentos estão a mil por causa de algumas coisas
+
+Dirigindo até o bar, pedindo uns drinks
+E você fica tão lindo quando fala comigo
+Ele é como um Jack com Coca, ele é um pouco doce
+Um pouco bruto na medida certa quando precisa ser
+
+Sua mãe acha que eu não presto pra você
+Seus amigos todos acham que você não presta pra mim
+E se eu tomar mais um drink
+E você continuar me encarando assim
+Bem, a gente já passou por esse caminho antes
+E nós dois sabemos onde isso vai dar
+Porque nós temos uma história
+E a história se repete
+Porra
+
+Certo, certo
+Certo, certo
+Certo, certo
+
+Te busco num Jeep velho
+É, aquele que meu pai dirige desde os anos 70
+Eu já estava acordado, eu simplesmente não conseguia dormir
+É, minha mente está ricocheteando por causa das anfetaminas
+
+Dirigindo até o bar, pedindo uns drinks
+E você fica tão linda quando fala comigo
+Você é como um Long Island iced tea
+Você é doce demais
+Porra
+
+Sua mãe acha que eu não presto pra você
+Seus amigos todos acham que você não presta pra mim
+E se eu tomar mais um drink
+E você continuar me encarando assim
+Bem, a gente já passou por esse caminho antes
+E nós dois sabemos onde isso vai dar
+Porque nós temos uma história
+Nós temos uma história
+Nós temos uma história
+E a história se repete
+Pew
+
+A gente pode só ficar dirigindo por aí
+Ouvir techno
+Ouvir Eminem
+Ouvir Slipknot
+Sexo no estacionamento de um posto de gasolina
+Talvez você possa comprar uma camisa nova lá também
+Ficar totalmente anônimos, é
+Ir praquela porra de América profunda
+Fazer umas merdas de gente do interior ou uma merda assim
+A gente pode só ficar dirigindo por aí
+Beber uns Four Lokos
+Beber uns Long Island iced tea
+Beber uns Monster, o branco
+
+Chutando aquela lata por aí
+Chutando aquela lata por aí
+Chutando aquela lata por aí
+Chutando aquela lata por aí`
+       },
+       { name: '101', reviews: ['4/5'],
+         lyrics: `Hands up, bitches, it's a robbery
+Yeah, pump it louder, make the speakers bleed
+Go throw that money like it came for free
+Yeah, don't act like you wasn't watching me
+
+You hoes love my image, love, love my image
+Take notes, my image so, so delicious
+Dick ride my image, can't buy my image
+Like damn, I did it
+I'm the one of one of one of one of– (woo)
+
+One, one of one, one of one, one of one of one of
+One, one of one, one of one, one of one of one of (one)
+One of one, one of one, one of, one of, one of (one)
+One of one, one of one of one of one of one of–
+
+My image, my image
+My image
+(For, for sure)
+
+Your boyfriend buss a lot
+When I walk it in my outfit in the–
+Your boyfriend buss a lot
+When I– (frost Children, bitch)
+
+Your boyfriend buss a lot
+When I walk it in my outfit in the parking lot, yeah
+That's right, I took the spot
+And you're 'bout to get a ticket when the album drops
+Sure, talk a lot, get clocked a lot
+Is that why you walkin' funny with your panties in a knot?
+Get a job or something, move it, bumpkin
+When I shake my shit, you gon' watch it, bitch
+
+Hoes love my image, love, love my image
+Take notes, my image so, so delicious
+Dick ride my image, can't buy my image
+Like damn, I did it
+I'm the one of one of one of one of– (woo)
+
+One, one of one, one of one, one of one of one of
+One, one of one, one of one, one of one of one of (one)
+One of one, one of one, one of, one of, one of (one)
+One of one, one of one of one of one of one of–
+
+Want what I want
+And I get it, get it, get it (detour)
+And you want what I got
+You can't have it, have it, have it
+'Cause I want what I want
+And I get it, get it, get it
+And you want what I got
+You can't have it (woo), have it, have it (one of)
+
+One of one, one of one, one of one, one of one of one of
+One, one of one, one of one, one of one of one of (one)
+One of one, one of one, one of one of (woo, one)
+One of one, one of– (one of one of one of one of–)
+
+When I walk it in my outfit in the parking lot
+When I walk it in my outfit in the parking lot
+When I walk it in my outfit in the parking lot
+When I walk it in my outfit in– (bitch)
+Walk it in my outfit in the parking lot
+When I walk it in my outfit in the parking lot
+When I walk it in my outfit in the parking lot
+When I walk it in my outfit in the parking lot (d–)
+Lot, in the parking lot, yeah
+Parking lot, in the parking lot, in the parking lot
+When I walk it in my outfit in the parking lot
+
+Your boyfriend buss a lot
+Buss, buss a lot, bu-bu-buss a lot, bu–
+Your boyfriend buss a lot
+Buss, buss a lot, buss a lot
+Your, your
+Your boyfriend
+Your, your boyfriend
+Your, your boyfriend
+Your boyfriend buss a lot (bitch)`,    
+          translation: `Mãos para o alto, vadias, isso é um assalto
+É isso aí, aumenta o som, faz as caixas estourarem
+Vai, joga esse dinheiro como se tivesse vindo de graça
+E não finja que você não estava me observando
+
+Essas vadias adoram minha imagem, adoram, adoram minha imagem
+Prestem atenção, minha imagem é tão, tão gostosa
+Vivem pagando pau pra minha imagem, mas não conseguem comprar minha imagem
+Porra, eu consegui
+Eu sou única, única, única, única (uh)
+
+Única, única, única, única entre todas
+Única, única, única, única entre todas (única)
+Única, única, única, única, única (única)
+Única, única entre todas, entre todas, entre todas
+
+Minha imagem, minha imagem
+Minha imagem
+(Com certeza)
+
+Seu namorado goza pra caralho
+Quando eu apareço com meu look no estacionamento–
+Seu namorado goza pra caralho
+Quando eu– (frost Children, vadia)
+
+Seu namorado goza pra caralho
+Quando eu apareço com meu look no estacionamento, é
+Isso mesmo, eu tomei o seu lugar
+E você vai sentir o impacto quando o álbum sair
+Fala demais, leva patada demais
+É por isso que você anda tão amargurada e irritada?
+Vai arrumar um emprego ou alguma coisa, sua caipira
+Quando eu rebolo essa bunda, você não consegue parar de olhar, vadia
+
+Essas vadias adoram minha imagem, adoram, adoram minha imagem
+Prestem atenção, minha imagem é tão, tão gostosa
+Vivem pagando pau pra minha imagem, mas não conseguem comprar minha imagem
+Porra, eu consegui
+Eu sou única, única, única, única (uh)
+
+Única, única, única, única entre todas
+Única, única, única, única entre todas (única)
+Única, única, única, única, única (única)
+Única, única entre todas, entre todas, entre todas
+
+Eu quero o que eu quero
+E eu consigo, consigo, consigo (detour)
+E você quer o que eu tenho
+Mas não pode ter, não pode ter, não pode ter
+Porque eu quero o que eu quero
+E eu consigo, consigo, consigo
+E você quer o que eu tenho
+Mas não pode ter (uh), não pode ter, não pode ter
+
+Única, única, única, única entre todas
+Única, única, única, única entre todas (única)
+Única, única, única entre todas (uh, única)
+Única, única (única entre todas)
+
+Quando eu apareço com meu look no estacionamento
+Quando eu apareço com meu look no estacionamento
+Quando eu apareço com meu look no estacionamento
+Quando eu apareço com meu look no– (vadia)
+Apareço com meu look no estacionamento
+Quando eu apareço com meu look no estacionamento
+Quando eu apareço com meu look no estacionamento
+Quando eu apareço com meu look no estacionamento
+No estacionamento, é
+No estacionamento, no estacionamento, no estacionamento
+Quando eu apareço com meu look no estacionamento
+
+Seu namorado goza pra caralho
+Goza pra caralho, pra caralho, pra caralho
+Seu namorado goza pra caralho
+Goza pra caralho, goza pra caralho
+Seu, seu
+Seu namorado
+Seu, seu namorado
+Seu, seu namorado
+Seu namorado goza pra caralho (vadia)`
+       },
+       { name: 'Basketball', reviews: ['4/5'],
+         lyrics: `Darlin' I just hate to play these stupid games with you
+Going back and forth up on the court is what we do
+I just don't want you thinking I'm playing fucking games
+If there's another number I plan on taking names, yeah
+
+Halftime
+Keep each other waiting up
+Halftime
+Pass the ball I'm posted up
+Halftime
+Fell in love at Darby Park
+Halftime
+Baby know you got my heart
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball, ball
+
+Darling I don't want our love to go and fade away
+Going back and forth
+2s and 3s is all we play
+Play till we tie until we going overtime
+Playing for your heart if I win
+You'll always be mine, yeah
+
+Halftime
+Keep each other waiting up
+Halftime
+Pass the ball I'm posted up
+Halftime
+Fell in love at Darby Park
+Halftime
+Baby know you got my heart
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball, ball
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball
+
+Baby, this love is like a basketball game
+Baby, this love is like a basketball game
+Baby, this love is like a basketball game
+Baby, this love is like a basketball game
+
+Baby now you got my heart
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball, ball
+
+Baby, can we?
+
+Baby, can we?
+Baby, can we?
+Baby let's ball, ball, ball, ball, ball, ball, ball
+
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Baby, can we?
+Ball, ball, ball, ball
+
+Baby, this love is like a basketball game
+Baby, this love is like a basketball game
+Baby, this love is like a basketball game
+Baby, this love is like a basketball game`,    
+          translation: `Querida, eu simplesmente detesto ter que jogar esses joguinhos bobos com você
+O que fazemos é ir e vir na quadra
+Só não quero que você pense que estou brincando
+Se houver outro número, pretendo anotar os nomes, sim
+
+Intervalo
+Mantenham-se à espera um do outro acordados
+Intervalo
+Passe a bola, estou posicionado
+Intervalo
+Me apaixonei no Parque Darby
+Intervalo
+Meu bem, você sabe que tem meu coração
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola, bola
+
+Querida, eu não quero que o nosso amor se desvaneça
+Indo e vindo
+Jogamos apenas partidas de 2 e 3
+Vamos jogar até empatar, até irmos para a prorrogação
+Jogando pelo seu coração se eu ganhar
+Você sempre será minha, sim
+
+Intervalo
+Mantenham-se à espera um do outro acordados
+Intervalo
+Passe a bola, estou posicionado
+Intervalo
+Me apaixonei no Parque Darby
+Intervalo
+Meu bem, você sabe que tem meu coração
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola, bola
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola
+
+Meu bem, esse amor é como um jogo de basquete
+Meu bem, esse amor é como um jogo de basquete
+Meu bem, esse amor é como um jogo de basquete
+Meu bem, esse amor é como um jogo de basquete
+
+Meu bem, agora você tem meu coração
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola, bola
+
+Amor, podemos?
+
+Amor, podemos?
+Amor, podemos?
+Querida, vamos dançar, dançar, dançar, dançar, dançar, dançar, dançar
+
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Amor, podemos?
+Bola, bola, bola, bola
+
+Meu bem, esse amor é como um jogo de basquete
+Meu bem, esse amor é como um jogo de basquete
+Meu bem, esse amor é como um jogo de basquete
+Meu bem, esse amor é como um jogo de basquete`
+       },
+       { name: 'Bitch Ball Out', reviews: ['4/5'],
+         lyrics: `Let me show you how a bitch ball out
+I can get you off the casting couch
+From the penthouse to the underground
+Let me show you what it's all about
+
+I got it going on
+Let me show you how a bitch ball out
+I did it on my own
+I got dollars coming out my mouth
+
+Let me show you how a bitch ball out
+Bitch ball out
+Let me show you how a bitch ball out
+Bitch ball out
+Bitch ball out
+Let me show you how a bitch ball out
+
+Bitches know I got the range no doubt
+Had to match it so we both blackout
+What's my limit there's no amount
+And my pockets well endowed
+
+Bitch I got it going on
+Let me show you how a bitch ball out
+I did it on my own
+Pop my collars, swing my Birkin round
+
+Let me show you how a bitch ball out
+Bitch ball out
+Let me show you how a bitch ball out
+Bitch ball out
+Bitch ball out
+DETOUR
+Let me show you how a bitch ball out
+
+Did it on my own
+My daddy ain't home
+I did it on my own
+I got it going on
+
+DETOUR
+Bitch ball out
+Bitch ball out
+Let me show you how a bitch ball out
+Bitch ball out
+Bitch ball out
+Let me show you how a bitch ball out`,    
+          translation: `Deixa eu te mostrar como uma louca brilha
+Eu posso te tirar do sofá de audição
+Do apartamento de luxo pro underground
+Deixa eu te mostrar do que se trata
+
+Eu tô arrasando
+Deixa eu te mostrar como uma louca brilha
+Eu fiz isso sozinha
+Tô com grana saindo pela boca
+
+Deixa eu te mostrar como uma louca brilha
+Louca brilha
+Deixa eu te mostrar como uma louca brilha
+Louca brilha
+Louca brilha
+Deixa eu te mostrar como uma louca brilha
+
+As loucas sabem que eu tenho o talento, sem dúvida
+Tive que igualar pra gente ficar fora de si
+Qual é meu limite? Não tem valor
+E meus bolsos tão bem recheados
+
+Louca, eu tô arrasando
+Deixa eu te mostrar como uma louca brilha
+Eu fiz isso sozinha
+Levantei a gola, balançando minha Birkin
+
+Deixa eu te mostrar como uma louca brilha
+Louca brilha
+Deixa eu te mostrar como uma louca brilha
+Louca brilha
+Louca brilha
+DESVIO
+Deixa eu te mostrar como uma louca brilha
+
+Fiz isso sozinha
+Meu pai não tá em casa
+Eu fiz isso sozinha
+Eu tô arrasando
+
+DESVIO
+Louca brilha
+Louca brilha
+Deixa eu te mostrar como uma louca brilha
+Louca brilha
+Louca brilha
+Deixa eu te mostrar como uma louca brilha`
+       },
+       { name: 'Korea', reviews: ['4/5'],
+         lyrics: `Lie in the bed till the day is gone
+Over and over, and over, and over, and over again
+Where's my head? Sadness in the dawn
+Over and over, and over, and over, and over
+
+If I'm alone, is that better for you?
+Look at my phone till my heart breaks in two
+Over you, over me, oh
+Korea, Korea, Korea, Korea, Korea
+Baby, I can't let you go
+
+(Till I reach you, I)
+
+Night has fall, walk the street alone
+Over and over, and over, and over, and over again
+That was all, everything I know
+Over and over, and over, and over, and over
+
+If I'm alone, is that better for you?
+Look at my phone till my heart breaks in two
+Over you, over me, oh
+Korea, Korea, Korea, Korea, Korea
+Baby, I can't let you go
+I can't let you go
+
+Korea, Korea, Korea, Korea, Korea
+Korea, Korea, Korea, Korea, Korea
+K-K-K-Korea, Korea, Korea, Korea, Korea
+K-K-Korea, Korea, Korea, Korea, Korea
+Baby, I can't let you go`,    
+          translation: `Deitada na cama até o dia acabar
+De novo, e de novo, e de novo, e de novo, e de novo
+Onde está minha cabeça? Tristeza ao amanhecer
+De novo, e de novo, e de novo, e de novo, e de novo
+
+Se eu estiver sozinha, isso é melhor pra você?
+Olho pro meu celular até meu coração se desfazer
+Por você, por mim, oh
+Coreia, Coreia, Coreia, Coreia, Coreia
+Meu bem, não consigo te deixar
+
+(Até eu te alcançar, eu)
+
+A noite caiu, somos estranhos e solitários
+De novo, e de novo, e de novo, e de novo, e de novo
+Isso era tudo, tudo que eu sei
+De novo, e de novo, e de novo, e de novo, e de novo
+
+Se eu estiver sozinha, isso é melhor pra você?
+Olho pro meu celular até meu coração se desfazer
+Por você, por mim, oh
+Coreia, Coreia, Coreia, Coreia, Coreia
+Meu bem, não consigo te deixar
+Não consigo te deixar
+
+Coreia, Coreia, Coreia, Coreia, Coreia (não consigo)
+Coreia, Coreia, Coreia, Coreia, Coreia (te deixar)
+C-C-C-Coreia, Coreia, Coreia, Coreia, Coreia
+C-C-Coreia, Coreia, Coreia, Coreia, Coreia
+Meu bem, não consigo te deixar`
+       },
+       { name: 'Freak It', reviews: ['4/5'],
+         lyrics: `Freak it
+Freak it
+Freak it
+
+Freak it with stilettos on (freak it)
+Freak it in your favorite thong (freak it)
+Freak it with your headphones on (freak it)
+Follow you on my phone (freak it)
+Freak it 'cause you got no job (freak it)
+Freak it, I could hook you up (freak it, okay)
+Freaky little debutant
+I wanna see your face at my show
+
+Kiss print on your jeans
+Fishnets, pull 'em off of me
+You got it all and I want a piece
+Don't be a tease, freak it for me fo' sho'
+Touch that, bring it all back
+Lil' Eurotrash and it's all for me
+You got it all and I want a piece
+Don't be a tease, freak it for me fo' sho', sho', sho', sho', sho'
+
+Freak it
+Freak it
+Freak it
+Freak it, baby, got someone? (Freak it)
+Play it like a PlayStation
+You can freak it on your own (freak it)
+Until we rendezvous at my show (freak it)
+
+Freak the whole arrondissement, up n' down (freak it)
+You gotta freak it, don't be nonchalant, stay in my face (freak it)
+You're in the penthouse floor to the basement (freak it)
+You gotta freak it till you don't know what you freaking for, oh-woah (freak it)
+
+(Touch that)
+You gotta freak it till you don't know what you freaking for (ah)
+(Touch that)
+You gotta freak it till you don't know what you freaking for
+
+Kiss print on your jeans
+Fishnets, pull 'em off of me
+You got it all and I want a piece
+Don't be a tease, freak it for me fo' sho'
+Touch that, bring it all back
+Lil' Eurotrash and it's all for me
+You got it all and I want a piece
+Don't be a tease, freak it for me fo' sho'
+
+Sho', sho', sho', sho'
+Sho', sho', sho', sho'
+
+Freak it
+Freak it
+Freak it
+Penthouse floor to the basement
+Don't be a tease, freak it for me fo' sho' (freak it)
+Oh-oh (freak it)
+Oh-oh (freak it)
+Oh-oh (freak it)
+Freak it`,    
+          translation: `Aloka
+Aloka
+Aloka
+
+Aloka com os saltos altos (aloka)
+Aloka na sua lingerie favorita (aloka)
+Aloka com seus fones de ouvido (aloka)
+Sigo você no meu celular (aloka)
+Aloka porque você não tem emprego (aloka)
+Aloka, eu posso te dar uma força (aloka, beleza)
+Pequena debutante ousada
+Quero ver seu rosto no meu show
+
+Marca de beijo nas suas calças
+Meias arrastão, tira elas de mim
+Você tem tudo e eu quero um pedaço
+Não seja uma provocadora, faz aloka pra mim com certeza
+Toca isso, traz tudo de volta
+Um pouco de Eurotrash e é tudo pra mim
+Você tem tudo e eu quero um pedaço
+Não seja uma provocadora, faz aloka pra mim com certeza, certeza, certeza, certeza, certeza
+
+Aloka
+Aloka
+Aloka
+Aloka baby, tem alguém? (Aloka)
+Joga como se fosse PlayStation
+Você pode fazer aloka sozinha (aloka)
+Até nos encontrarmos no meu show (aloka)
+
+Aloka em todo o arrondissment, pra cima e pra baixo (aloka)
+Você tem que fazer aloka, não seja indiferente, fique na minha frente (faz acontecer)
+Você tá no andar da cobertura até o porão (aloka)
+Você tem que fazer aloka até não saber mais o que tá fazendo, oh-woah (aloka)
+
+(Toca isso)
+Você tem que fazer aloka até não saber mais o que tá fazendo (ah)
+(Toca isso)
+Você tem que fazer aloka até não saber mais o que tá fazendo
+
+Marca de beijo nas suas calças
+Meias arrastão, tira elas de mim
+Você tem tudo e eu quero um pedaço
+Não seja uma provocadora, faz aloka pra mim com certeza
+Toca isso, traz tudo de volta
+Um pouco de Eurotrash e é tudo pra mim
+Você tem tudo e eu quero um pedaço
+Não seja uma provocadora, faz aloka pra mim com certeza
+
+Certeza, certeza, certeza, certeza
+Certeza, certeza, certeza, certeza
+
+Aloka
+Aloka
+Aloka
+Do andar da cobertura até o porão
+Não seja uma provocadora, faz aloka pra mim com certeza (aloka)
+Oh-oh (faz aloka)
+Oh-oh (faz aloka)
+Oh-oh (faz aloka)
+Aloka`
+       },
+    ]
+  },
+  alterEgo: {
+    name: 'Alter Ego',
+    artist: 'LISA',
+    image: 'src/img/alter_ego_lisa_cover.png',
+    tracks: [
+      { name: 'Born Again (feat. RAYE & Doja Cat)', reviews: [] },
+      { name: 'Rockstar', reviews: [] },
+      { name: 'Elastigirl', reviews: [] },
+      { name: 'Thunder', reviews: [] },
+      { name: 'New Woman (feat. ROSALÍA)', reviews: [] },
+      { name: 'FXCK UP THE WORLD (feat. Future)', reviews: [] },
+      { name: 'Rapunzel (feat. Megan Thee Stallion)', reviews: [] },
+      { name: 'Moonlit Floor (Kiss Me)', reviews: [] },
+      { name: "When I'm With You (feat. Tyla)", reviews: [] },
+      { name: 'BADGRRRL', reviews: [] },
+      { name: 'Lifestyle', reviews: [] },
+      { name: 'Chill', reviews: [] },
+      { name: 'Dream', reviews: [] },
+      { name: 'FXCK UP THE WORLD (Vixi Solo Version)', reviews: [] },
+      { name: 'Rapunzel (Kiki Solo Version)', reviews: [] }
+    ]
+  },
+  emailsICantSend: {
+    name: "emails i can't send",
+    artist: 'Sabrina Carpenter',
+    image: 'src/img/emails_i_cant_send_cover.png',
+    versionGroup: 'emailsICantSend',
+    versionLabel: 'Edição padrão',
+    tracks: [
+      { name: "emails i can't send", reviews: [] },
+      { name: 'Vicious', reviews: [] },
+      { name: 'Read your Mind', reviews: [] },
+      { name: 'Tornado Warnings', reviews: [] },
+      { name: 'because i liked a boy', reviews: [] },
+      { name: 'Already Over', reviews: [] },
+      { name: 'how many things', reviews: [] },
+      { name: 'bet u wanna', reviews: [] },
+      { name: 'Nonsense', reviews: [] },
+      { name: 'Fast Times', reviews: [] },
+      { name: 'skinny dipping', reviews: [] },
+      { name: 'Bad for Business', reviews: [] },
+      { name: 'decode', reviews: [] }
+    ]
+  },
+  emailsICantSendFwd: {
+    name: "emails i can't send: fwd",
+    artist: 'Sabrina Carpenter',
+    image: 'src/img/emails_i_cant_send_fwd_cover.png',
+    versionGroup: 'emailsICantSend',
+    versionLabel: 'Deluxe · fwd',
+    tracks: [
+      { name: "emails i can't send", reviews: [] },
+      { name: 'Vicious', reviews: [] },
+      { name: 'Read your Mind', reviews: [] },
+      { name: 'Tornado Warnings', reviews: [] },
+      { name: 'because i liked a boy', reviews: [] },
+      { name: 'Already Over', reviews: [] },
+      { name: 'how many things', reviews: [] },
+      { name: 'bet u wanna', reviews: [] },
+      { name: 'Nonsense', reviews: [] },
+      { name: 'Fast Times', reviews: [] },
+      { name: 'skinny dipping', reviews: [] },
+      { name: 'Bad for Business', reviews: [] },
+      { name: 'decode', reviews: [] },
+      { name: 'opposite', reviews: [] },
+      { name: 'Feather', reviews: [] },
+      { name: 'Lonesome', reviews: [] },
+      { name: 'things i wish you said', reviews: [] }
+    ]
+  },
+  mansBestFriend: {
+    name: "Man's Best Friend",
+    artist: 'Sabrina Carpenter',
+    image: 'src/img/mans_best_friend_sabrina_carpenter_cover.png',
+    tracks: [
+      { name: 'Manchild', reviews: [] },
+      { name: 'Tears', reviews: [] },
+      { name: 'My Man on Willpower', reviews: [] },
+      { name: 'Sugar Talking', reviews: [] },
+      { name: 'We Almost Broke Up Again Last Night', reviews: [] },
+      { name: "Nobody's Son", reviews: [] },
+      { name: 'Never Getting Laid', reviews: [] },
+      { name: 'When Did You Get Hot?', reviews: [] },
+      { name: 'Go Go Juice', reviews: [] },
+      { name: "Don't Worry I'll Make You Worry", reviews: [] },
+      { name: 'House Tour', reviews: [] },
+      { name: 'Goodbye', reviews: [] }
+    ]
+  },
+  thisIsFor: {
+    name: 'THIS IS FOR',
+    artist: 'TWICE',
+    image: 'src/img/this_is_for_twice_cover.png',
+    tracks: [
+      { name: 'FOUR', reviews: [] },
+      { name: 'THIS IS FOR', reviews: [] },
+      { name: 'OPTIONS', reviews: [] },
+      { name: 'MARS', reviews: [] },
+      { name: 'RIGHT HAND GIRL', reviews: [] },
+      { name: 'PEACH GELATO', reviews: [] },
+      { name: 'HI HELLO', reviews: [] },
+      { name: 'BATTITUDE (NAEYON, JEONGYEON, MOMO, MINA)', reviews: [] },
+      { name: 'DAT AHH DAT OOH (SANA, JIHYO, DAHYUN, CHAEYOUNG, TZUYU)', reviews: [] },
+      { name: 'LET LOVE GO (JEONGYEON, MOMO, SANA, TZUYU)', reviews: [] },
+      { name: 'G.O.A.T (MINA, DAHYUN, CHAEYOUNG)', reviews: [] },
+      { name: 'TALK (NAEYON, JIHYO)', reviews: [] },
+      { name: 'SEESAW', reviews: [] },
+      { name: 'HEARTBREAK AVENUE', reviews: [] }
+    ]
+  },
+  whyKiiiKiii: {
+    name: 'WhyKiiiKiii',
+    artist: 'KiiiKiii',
+    image: 'src/img/whykikiikiii_ep_cover.png',
+    tracks: [
+      { name: 'Ever2Late!', reviews: [] },
+      { name: 'Hey Hi', reviews: [] },
+      { name: 'Pop Off Pop Off', reviews: [] },
+      { name: 'SWEET SOUR', reviews: [] },
+      { name: 'Candy Pink Magic Hole Flip Phone', reviews: [] },
+      { name: 'Blue Hour', reviews: [] }
+    ]
+  },
+  hades: {
+    name: 'HADES',
+    artist: 'Melanie Martinez',
+    image: 'src/img/hades_melanie_martinez_cover.png',
+    tracks: [
+      { name: 'GARBAGE', reviews: [] },
+      { name: 'IS THIS A CULT?', reviews: [] },
+      { name: 'POSSESSION', reviews: [] },
+      { name: 'WHITE BOY WITH A GUN', reviews: [] },
+      { name: 'DISNEY PRINCESS', reviews: [] },
+      { name: 'GRUDGES', reviews: [] },
+      { name: 'MONOPOLY MAN', reviews: [] },
+      { name: 'AVOIDANT', reviews: [] },
+      { name: 'MONOLITH', reviews: [] },
+      { name: 'WEIGHT WATCHERS', reviews: [] },
+      { name: 'THE PLAGUE', reviews: [] },
+      { name: 'BATSHIT INTELLIGENCE', reviews: [] },
+      { name: 'GUTTER', reviews: [] },
+      { name: 'UNCANNY VALLEY', reviews: [] },
+      { name: 'THE VATICAN', reviews: [] },
+      { name: "HELL'S FRONT PORCH", reviews: [] },
+      { name: 'CHATROOM', reviews: [] },
+      { name: 'THE LAST TWO PEOPLE ON EARTH', reviews: [] }
+    ]
+  },
+  fallenAngel: {
+    name: 'FALLEN ANGEL',
+    artist: 'JENNIE',
+    image: 'src/img/fallen_angel_jennie_cover.png',
+    tracks: [
+      { name: 'FALLEN ANGEL', reviews: [] },
+      { name: 'HEAVEN', reviews: [] },
+      { name: 'Less Than a Lover', reviews: [] },
+      { name: 'Sweet Tooth', reviews: [] },
+      { name: 'lockitdown', reviews: [] },
+      { name: 'Face', reviews: [] }
     ]
   },
   ruby: {
@@ -1839,6 +4062,56 @@ translation: ``
       { name: 'positions', reviews: ['5/5'] },
       { name: 'obvious', reviews: ['4/5'] },
       { name: 'pov', reviews: ['5/5'] }
+    ]
+  },
+  eternalSunshine: {
+    name: 'eternal sunshine',
+    artist: 'Ariana Grande',
+    image: 'src/img/eternal_sunshine_cover.png',
+    versionGroup: 'eternalSunshine',
+    versionLabel: 'Edição padrão',
+    tracks: [
+      { name: 'intro (end of the world)', reviews: [] },
+      { name: 'bye', reviews: [] },
+      { name: "don't wanna break up again", reviews: [] },
+      { name: 'Saturn Returns Interlude', reviews: [] },
+      { name: 'eternal Sunshine', reviews: [] },
+      { name: 'supernatural', reviews: [] },
+      { name: 'true story', reviews: [] },
+      { name: 'the boy is mine', reviews: [] },
+      { name: 'yes, and?', reviews: [] },
+      { name: "we can't be friends (wait for your love)", reviews: [] },
+      { name: 'i wish i hated you', reviews: [] },
+      { name: 'imperfect for you', reviews: [] },
+      { name: 'ordinary things (feat. Nonna)', reviews: [] }
+    ]
+  },
+  eternalSunshineBrighterDaysAhead: {
+    name: 'eternal sunshine: brighter days ahead',
+    artist: 'Ariana Grande',
+    image: 'src/img/eternal_sunshine_brighter_days_ahead_cover.png',
+    versionGroup: 'eternalSunshine',
+    versionLabel: 'Deluxe · Brighter Days Ahead',
+    tracks: [
+      { name: 'intro (end of the world)', reviews: [] },
+      { name: 'bye', reviews: [] },
+      { name: "don't wanna break up again", reviews: [] },
+      { name: 'Saturn Returns Interlude', reviews: [] },
+      { name: 'eternal Sunshine', reviews: [] },
+      { name: 'supernatural', reviews: [] },
+      { name: 'true story', reviews: [] },
+      { name: 'the boy is mine', reviews: [] },
+      { name: 'yes, and?', reviews: [] },
+      { name: "we can't be friends (wait for your love)", reviews: [] },
+      { name: 'i wish i hated you', reviews: [] },
+      { name: 'imperfect for you', reviews: [] },
+      { name: 'ordinary things (feat. Nonna)', reviews: [] },
+      { name: 'intro (end of the world) (extended)', reviews: [] },
+      { name: 'twilight zone', reviews: [] },
+      { name: 'warm', reviews: [] },
+      { name: 'dandelion', reviews: [] },
+      { name: 'past life', reviews: [] },
+      { name: 'Hampstead', reviews: [] }
     ]
   },
   prima: {
@@ -5230,14 +7503,144 @@ EU VOU ACABAR COM ISSO DE MANHÃ, QUANDO VOCÊ NÃO PARECER MAIS IMPORTANTE
 EU VIM AQUI PRA FESTEJAR E VOCÊ SABE O QUE COMEÇOU
 EU VOU ACABAR COM ISSO DE MANHÃ, QUANDO VOCÊ NÃO PARECER MAIS IMPORTANTE
 
-Ah, uh-oh
-Uh-oh
-Hum, oh-oh
-Uh, uh-uh`
+AH, UH-OH
+UH-OH
+HUM, OH-OH
+UH, UH-UH`
        },
       { name: 'BEAT UP CHANEL$', reviews: ['5/5'],
-        lyrics: ``,    
-translation: ``
+        lyrics: `MONEY, DRUGS, CHAINS ON MY CHEST, THAT VINTAGE CELINE
+DIAMOND GRILLS, CHAMPAGNE BOTTLES, SWAGGER I BLEED
+I WANT SEX, MONEY, BITCHES, AND THE STICKIEST WEED
+I WANT A CIGARETTE
+
+DON'T WANNA TALK WITH EASE, I'M OVER ALL IT
+DON'T TRY FUCKIN' WITH ME, BOY, I DON'T WANT IT
+YOU SHOULD GO AND GET WITH HER, SHE'S BETTER FOR YOU
+BABY, I'M NOT THAT GIRL, DON'T WANT NO LOVIN' FROM YOU
+
+DON'T TRY FUCKIN' WITH ME-E, YEAH, NO, I DON'T WANT IT
+YOU SHOULD GO AND GET WITH HER, OH, UH, SHE'S BETTER FOR YOU
+NEVER GONNA BE YOUR GIRL, BOY, I DON'T WANT YOU
+I DON'T WANT LOVIN', ALL THAT I WANT IS
+
+SEX, MONEY, DRUGS, CHAINS ON MY CHEST, VINTAGE CELINE
+DIAMOND GRILLS, CHAMPAGNE BOTTLES, I GET FOR FREE
+I WANT SEX, MONEY, BITCHES, AND THE STICKIEST WEED
+FUCK HIM, GO INTO HIS CLOSET, STEAL SOME OF HIS SUPREME
+
+I WANT BEAT-UP CHANELS, I WANT NEW PERSONNEL
+I WANNA DYE MY HAIR EVERY PRETTY SHADE OF PASTEL
+I WANT NASTY AFTER PARTIES, BANGED UP AT THE MOTEL
+I WANT BEAT-UP CHANELS, I WANT SOMETHIN' FOR REAL
+
+I DON'T GIVE A DAMN, DON'T YOU UNDERSTAND?
+I'VE BEEN DOWN, SO DON'T COME AROUND
+I SEE IT, KNOW YOU WANT IT, YEAH
+YEAH, I'M NOT GOIN' FOR IT, IT'S IN THE BEST
+
+HE REALLY WANT A CHANCE, SORRY, MAN, NOT A FAN
+HE LOOKIN' WHEN I DANCE, KEEP YOUR HEAD UP OUT YOUR PANTS
+I NEVER REALLY WANT IT
+YOU KNOW THAT ALL I WANT IS, ALL I WANT IS
+
+MONEY, DRUGS, CHAINS ON MY CHEST, THAT VINTAGE CELINE
+DIAMOND GRILLS, CHAMPAGNE BOTTLES, SWAGGER I BLEED
+I WANT SEX, MONEY, BITCHES, AND THE STICKIEST WEED
+I WANT A CIGARETTE
+
+MONEY, DRUGS, CHAINS ON MY CHEST, THAT VINTAGE CELINE
+DIAMOND GRILLS, CHAMPAGNE BOTTLES, SWAGGER I BLEED
+I WANT SEX, MONEY, BITCHES, AND THE STICKIEST WEED
+I WANT A CIGARETTE
+
+SEX, MONEY, DRUGS, CHAINS ON MY CHEST, VINTAGE CELINE
+DIAMOND GRILLS, CHAMPAGNE BOTTLES, I GET FOR FREE
+I WANT SEX, MONEY, BITCHES, AND THE STICKIEST WEED
+FUCK HIM, GO INTO HIS CLOSET, STEAL SOME OF HIS SUPREME
+
+I WANT BEAT-UP CHANELS, I WANT NEW PERSONNEL
+I WANNA DYE MY HAIR EVERY PRETTY SHADE OF PASTEL
+I WANT NASTY AFTER PARTIES, BANGED UP AT THE MOTEL
+I WANT BEAT-UP CHANELS, I WANT SOMETHIN' FOR REAL
+
+BEAT-UP CHANELS, I WANT SOMETHIN' FOR REAL
+BEAT-UP CHANELS, I WANT SOMETHIN' FOR REAL
+BEAT-UP CHANELS, I WANT SOMETHIN' FOR REAL`,    
+translation: `DINHEIRO, DROGAS, CORDÕES NO PEITO, AQUELA CELINE VINTAGE
+GRILLS DE DIAMANTE, GARRAFAS DE CHAMPANHE, EU TRANSPIRO ESTILO
+EU QUERO SEXO, DINHEIRO, VADIAS E A MELHOR MACONHA DO MUNDO
+EU QUERO UM CIGARRO
+
+NÃO QUERO PAPO FURADO
+TÔ CANSADA DISSO TUDO
+NÃO TENTA DAR EM CIMA DE MIM
+GAROTO, EU NÃO QUERO
+VOCÊ DEVIA FICAR COM ELA
+ELA É MELHOR PRA VOCÊ
+GATO, EU NÃO SOU ESSA GAROTA
+NÃO QUERO O SEU AMOR
+
+NÃO TENTA DAR EM CIMA DE MIM
+É, NÃO, EU NÃO QUERO
+VOCÊ DEVIA FICAR COM ELA
+OH, UH, ELA É MELHOR PRA VOCÊ
+NUNCA VOU SER A SUA MINA
+GAROTO, EU NÃO TE QUERO
+EU NÃO QUERO AMOR
+TUDO QUE EU QUERO É
+
+DINHEIRO, DROGAS, CORDÕES NO PEITO, AQUELA CELINE VINTAGE
+GRILLS DE DIAMANTE, GARRAFAS DE CHAMPANHE, CONSIGO ISSO DE GRAÇA
+EU QUERO SEXO, DINHEIRO, VADIAS E A MELHOR MACONHA DO MUNDO
+ELE QUE SE FODA, ENTRO NO GUARDA-ROUPA DELE, ROUBO AS ROUPAS DA SUPREME
+
+EU QUERO CHANELS SURRADAS, EU QUERO UMA NOVA EQUIPE
+EU QUERO PINTAR MEU CABELO DE TODOS OS LINDOS TONS PASTÉIS
+EU QUERO AFTER SUJOS, COMPLETAMENTE CHAPADA NUM MOTEL
+EU QUERO CHANELS SURRADAS, QUERO ALGO QUE SEJA DE VERDADE
+
+(NÃO, EU NÃO, EU NÃO, EU NÃO, EU)
+
+EU NÃO DOU A MÍNIMA
+SERÁ QUE VOCÊ NÃO ENTENDE?
+EU TÔ MAL
+ENTÃO NÃO APAREÇA POR AQUI
+EU PERCEBO, SEI QUE VOCÊ QUER ISSO, É
+É, EU NÃO VOU TOPAR
+É O MELHOR A SE FAZER
+
+ELE REALMENTE QUER UMA CHANCE
+DESCULPA, CARA, NÃO TÔ A FIM
+ELE FICA OLHANDO QUANDO EU DANÇO
+PARA DE PENSAR COM A CABEÇA DE BAIXO
+EU NUNCA QUERO ISSO PRA VALER
+VOCÊ SABE QUE TUDO QUE EU QUERO É
+TUDO QUE EU QUERO É
+
+DINHEIRO, DROGAS, CORDÕES NO PEITO, AQUELA CELINE VINTAGE
+GRILLS DE DIAMANTE, GARRAFAS DE CHAMPANHE, EU TRANSPIRO ESTILO
+EU QUERO SEXO, DINHEIRO, VADIAS E A MELHOR MACONHA DO MUNDO
+EU QUERO UM CIGARRO
+
+DINHEIRO, DROGAS, CORDÕES NO PEITO, AQUELA CELINE VINTAGE
+GRILLS DE DIAMANTE, GARRAFAS DE CHAMPANHE, EU TRANSPIRO ESTILO
+EU QUERO SEXO, DINHEIRO, VADIAS E A MELHOR MACONHA DO MUNDO
+EU QUERO UM CIGARRO
+
+DINHEIRO, DROGAS, CORDÕES NO PEITO, AQUELA CELINE VINTAGE
+GRILLS DE DIAMANTE, GARRAFAS DE CHAMPANHE, CONSIGO ISSO DE GRAÇA
+EU QUERO SEXO, DINHEIRO, VADIAS E A MELHOR MACONHA DO MUNDO
+ELE QUE SE FODA, ENTRO NO GUARDA-ROUPA DELE, ROUBO AS ROUPAS DA SUPREME
+
+EU QUERO CHANELS SURRADAS, EU QUERO UMA NOVA EQUIPE
+EU QUERO PINTAR MEU CABELO DE TODOS OS LINDOS TONS PASTÉIS
+EU QUERO AFTER SUJOS, COMPLETAMENTE CHAPADA NUM MOTEL
+EU QUERO CHANELS SURRADAS, QUERO ALGO QUE SEJA DE VERDADE
+
+CHANELS SURRADAS, QUERO ALGO QUE SEJA DE VERDADE
+CHANELS SURRADAS, QUERO ALGO QUE SEJA DE VERDADE
+CHANELS SURRADAS, QUERO ALGO QUE SEJA DE VERDADE`
        },
       { name: 'CANNIBALISM!', reviews: ['4/5'],
         lyrics: ``,    
@@ -6926,6 +9329,59 @@ Object.values(albums).forEach((album) => {
   }));
 });
 
+const artistProfiles = {
+  'melanie-martinez': {
+    photo: 'src/img/artists/melanie-martinez-profile.png'
+  },
+  kiiikiii: {
+    photo: 'src/img/artists/kiiikiii-profile.png'
+  },
+  twice: {
+    photo: 'src/img/artists/twice-profile.png'
+  },
+  'sabrina-carpenter': {
+    photo: 'src/img/artists/sabrina-carpenter-profile.png'
+  },
+  'dua-lipa': {
+    photo: 'src/img/artists/dua-lipa-new-profile.png'
+  },
+  'charli-xcx': {
+    photo: 'src/img/artists/charli-xcx-new-profile.png'
+  },
+  'kim-petras': {
+    photo: 'src/img/artists/kim-petras-profile.png'
+  },
+  'tate-mcrae': {
+    photo: 'src/img/artists/tate-mcrae-profile.png'
+  },
+  aespa: {
+    photo: 'src/img/artists/aespa-profile.png'
+  },
+  lisa: {
+    photo: 'src/img/artists/lisa-profile.png'
+  },
+  jennie: {
+    photo: 'src/img/artists/jennie-profile.png'
+  },
+  slayyyter: {
+    photo: 'src/img/artists/slayyyter-profile.png'
+  },
+  'ariana-grande': {
+    photo: 'src/img/artists/ariana-grande-profile.png'
+  },
+  'olivia-rodrigo': {
+    photo: 'src/img/artists/olivia-rodrigo-profile.png'
+  }
+};
+
+function getArtistId(name) {
+  return name.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const themeToggle = document.getElementById('themeToggle');
   const savedTheme = localStorage.getItem('musicfy-theme');
@@ -7088,7 +9544,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Preenche título, artista e imagem da capa do álbum.
     if (albumName) albumName.textContent = album.name;
-    if (albumArtist) albumArtist.textContent = album.artist;
+    if (albumArtist) {
+      albumArtist.textContent = album.artist;
+      albumArtist.href = `artista.html?id=${encodeURIComponent(getArtistId(album.artist))}`;
+    }
+    const albumVersions = document.getElementById('albumVersions');
+    const albumVersionSelect = document.getElementById('albumVersionSelect');
+    if (album.versionGroup && albumVersions && albumVersionSelect) {
+      const versions = Object.entries(albums)
+        .filter(([, version]) => version.versionGroup === album.versionGroup);
+      if (versions.length > 1) {
+        albumVersions.hidden = false;
+        albumVersionSelect.innerHTML = versions.map(([id, version]) =>
+          `<option value="${encodeURIComponent(id)}" ${id === albumId ? 'selected' : ''}>${version.versionLabel}</option>`
+        ).join('');
+        albumVersionSelect.addEventListener('change', function () {
+          window.location.href = `album.html?id=${albumVersionSelect.value}`;
+        });
+      }
+    }
     if (albumCover) {
       albumCover.src = album.image;
       albumCover.alt = album.name;
@@ -7096,18 +9570,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Monta a lista resumida de músicas e suas avaliações.
     if (trackList) {
-      trackList.innerHTML = album.tracks.map((track, index) => 
-        `<div class="track-item track-row">
-          <button class="track-play-button" type="button" data-track-index="${index}" aria-label="Ouvir ${track.name}">
-            <span aria-hidden="true">▶</span>
-          </button>
-          <div class="track-details">
-          <strong>${index + 1}. ${track.name}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
-          <span class="text-muted">${track.reviews.join(' • ')}</span>
-          </div>
-          <a class="track-link" href="lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
-        </div>`
-      ).join('');
+      const musicPlayer = document.querySelector('.music-player');
+      if (musicPlayer && album.tracks.length === 0) musicPlayer.hidden = true;
+      trackList.innerHTML = album.tracks.length
+        ? album.tracks.map((track, index) => `
+          <div class="track-item track-row">
+            <button class="track-play-button" type="button" data-track-index="${index}" aria-label="Ouvir ${track.name}">
+              <span aria-hidden="true">▶</span>
+            </button>
+            <div class="track-details">
+              <strong>${index + 1}. ${track.name}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
+              <span class="text-muted">${track.reviews.join(' • ')}</span>
+            </div>
+            <a class="track-link" href="lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
+          </div>`)
+          .join('')
+        : '<p class="track-item text-muted">As faixas deste álbum ainda não foram cadastradas.</p>';
 
       const audioPlayer = document.getElementById('audioPlayer');
       const audioFilesInput = document.getElementById('audioFilesInput');
@@ -7257,5 +9735,118 @@ document.addEventListener('DOMContentLoaded', function () {
         alert('Avaliação salva com sucesso!');
       });
     }
+  }
+
+  const artistAlbumsContainer = document.getElementById('artistAlbums');
+  if (artistAlbumsContainer) {
+    const artistId = new URLSearchParams(window.location.search).get('id');
+    const artistAlbums = Object.entries(albums)
+      .filter(([, album]) => getArtistId(album.artist) === artistId);
+    const artistDiscography = document.getElementById('artistDiscography');
+    const artistNotFound = document.getElementById('artistNotFound');
+
+    if (!artistId || artistAlbums.length === 0) {
+      artistDiscography.hidden = true;
+      artistNotFound.hidden = false;
+    } else {
+      const artistName = artistAlbums[0][1].artist;
+      const profile = artistProfiles[artistId];
+      const artistPhoto = profile?.photo || artistAlbums[0][1].image;
+      const artistNameElement = document.getElementById('artistName');
+      const artistBanner = document.getElementById('artistBanner');
+      const artistPhotoCredit = document.getElementById('artistPhotoCredit');
+
+      artistNameElement.textContent = artistName;
+      artistBanner.src = artistPhoto;
+      artistBanner.alt = '';
+      document.getElementById('artistAlbumCount').textContent = String(artistAlbums.length);
+      document.getElementById('artistPlayBtn').addEventListener('click', function () {
+        window.location.href = `album.html?id=${encodeURIComponent(artistAlbums[0][0])}`;
+      });
+
+      const followButton = document.getElementById('artistFollowBtn');
+      const followedArtists = JSON.parse(localStorage.getItem('musicfy-followed-artists') || '[]');
+      let isFollowing = followedArtists.includes(artistId);
+
+      function updateFollowButton() {
+        followButton.textContent = isFollowing ? 'Seguindo' : 'Seguir';
+        followButton.setAttribute('aria-pressed', String(isFollowing));
+      }
+
+      updateFollowButton();
+      followButton.addEventListener('click', function () {
+        isFollowing = !isFollowing;
+        const updatedArtists = new Set(followedArtists);
+        if (isFollowing) updatedArtists.add(artistId);
+        else updatedArtists.delete(artistId);
+        localStorage.setItem('musicfy-followed-artists', JSON.stringify([...updatedArtists]));
+        updateFollowButton();
+      });
+
+      if (profile?.credit && profile.creditUrl) {
+        artistPhotoCredit.href = profile.creditUrl;
+        artistPhotoCredit.textContent = profile.credit;
+        artistPhotoCredit.hidden = false;
+      } else {
+        artistPhotoCredit.hidden = true;
+      }
+
+      const renderAlbumRow = ([id, album], index) => `
+        <article class="artist-release-row">
+          <span class="artist-release-row__index">${String(index + 1).padStart(2, '0')}</span>
+          <img src="${album.image}" alt="" loading="lazy">
+          <div class="artist-release-row__details">
+            <h3>${album.name}</h3>
+            <p>${album.tracks.length ? `Álbum · ${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Álbum · Faixas em breve'}</p>
+          </div>
+          <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${album.name}">
+            Explorar <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+      `;
+
+      document.getElementById('artistPopularAlbums').innerHTML = artistAlbums
+        .slice(0, 3)
+        .map(renderAlbumRow)
+        .join('');
+      artistAlbumsContainer.innerHTML = artistAlbums.map(renderAlbumRow).join('');
+    }
+  }
+
+  const artistDirectory = document.getElementById('artistDirectory');
+  if (artistDirectory) {
+    const artists = new Map();
+    Object.entries(albums).forEach(([id, album]) => {
+      const artist = artists.get(album.artist);
+      if (artist) artist.albumCount += 1;
+      else artists.set(album.artist, { albumId: id, album, albumCount: 1 });
+    });
+
+    [...artists.entries()]
+      .sort(([nameA], [nameB]) => nameA.localeCompare(nameB))
+      .forEach(([name, { albumId, album, albumCount }]) => {
+        const profile = artistProfiles[getArtistId(name)];
+        const link = document.createElement('a');
+        link.className = 'artist-directory-card';
+        link.href = `artista.html?id=${encodeURIComponent(getArtistId(name))}`;
+        link.setAttribute('aria-label', `Ver perfil de ${name}`);
+
+        const image = document.createElement('img');
+        image.src = profile?.photo || album.image;
+        image.alt = '';
+        image.loading = 'lazy';
+
+        const info = document.createElement('div');
+        info.className = 'artist-directory-card__info';
+
+        const artistName = document.createElement('h2');
+        artistName.textContent = name;
+        const albumLabel = document.createElement('p');
+        albumLabel.textContent = `${albumCount} ${albumCount === 1 ? 'álbum' : 'álbuns'} no catálogo`;
+
+        info.append(artistName, albumLabel);
+        link.append(image, info);
+        artistDirectory.append(link);
+      });
   }
 });
