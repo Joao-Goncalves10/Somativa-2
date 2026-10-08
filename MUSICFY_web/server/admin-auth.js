@@ -9,7 +9,9 @@ const sessionCookieName = 'musicfy_admin';
 const sessionDurationSeconds = 12 * 60 * 60;
 
 function isAdminLoginRequired() {
-  return process.env.NODE_ENV === 'production' || Boolean(process.env.ADMIN_PASSWORD);
+  return process.env.NODE_ENV === 'production'
+    || Boolean(process.env.ADMIN_PASSWORD)
+    || Boolean(process.env.DATABASE_URL);
 }
 
 function passwordsMatch(password) {

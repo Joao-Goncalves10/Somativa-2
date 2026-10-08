@@ -67,6 +67,22 @@ causando demora na primeira visita. Planos, limites e disponibilidade mudam;
 consulte os provedores para os detalhes atuais. Neon e Render precisam permitir
 conexões entre si.
 
+## Neon Object Storage
+
+O `neon.ts` declara os buckets privados `artistas`, `covers` e `banners` para a
+branch `production`. Os nomes existem no Neon após executar `neon deploy`. Esses
+buckets são privados: a aplicação deve usar o servidor com credenciais para
+enviar e servir objetos. Eles não ficam automaticamente disponíveis por uma URL
+pública. O catálogo continua usando as imagens incluídas em `public/assets`
+e as capas enviadas como dados no PostgreSQL até que o servidor seja migrado
+para upload/download pela API S3 do Neon.
+
+`neon link` guarda a URL de conexão e as credenciais de armazenamento em
+`.env.local`. Esse arquivo é ignorado pelo Git, carregado pelo comando `npm
+start` local e nunca deve ser enviado ao repositório. Ao usar o banco Neon fora
+de produção, configure também `ADMIN_PASSWORD` localmente antes de publicar:
+escrever em um banco remoto sempre exige uma sessão de administrador.
+
 ## Migrar os álbuns do SQLite local
 
 Se você já salvou álbuns em `data/musicfy.db`, pode copiá-los ao PostgreSQL antes
@@ -89,8 +105,9 @@ navegador e perfil usados antes, abra `http://localhost:5500` e
 `http://localhost:5500/criar-album.html`. O app envia esses álbuns ao banco
 PostgreSQL e remove a cópia local somente após confirmar a sincronização. Faça
 isso antes de trocar de endereço local ou perder o acesso ao perfil antigo do
-navegador. Para essa migração, não defina `ADMIN_PASSWORD` no `.env` local; ela
-continuará obrigatória no Render.
+navegador. Defina `ADMIN_PASSWORD` com pelo menos 16 caracteres em `.env.local`
+e entre como administrador na página de criação; essa senha local pode ser
+diferente da senha configurada no Render.
 
 ## Verificação
 
