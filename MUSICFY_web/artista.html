@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>musicboxd - Artista</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="src/styles/styles.css" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark artist-page-nav">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">musicboxd</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+          <li class="nav-item"><a class="nav-link" href="explorar.html">Explorar</a></li>
+          <li class="nav-item"><a class="nav-link active" href="artistas.html">Artistas</a></li>
+          <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+          <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+          <span class="theme-toggle__label">Modo escuro</span>
+        </button>
+      </section>
+    </div>
+  </nav>
+
+  <main class="artist-page">
+    <p id="artistNotFound" class="alert alert-info" role="status" hidden>
+      Não encontramos esse artista no catálogo. <a href="explorar.html">Voltar para explorar</a>
+    </p>
+
+    <div id="artistDiscography">
+      <section class="artist-hero" aria-labelledby="artistName">
+        <img id="artistBanner" class="artist-hero__banner" src="" alt="" />
+        <div class="artist-hero__content">
+          <div class="artist-hero__identity">
+            <span class="artist-hero__eyebrow">Artista verificado</span>
+            <h1 id="artistName">Carregando...</h1>
+          </div>
+        </div>
+      </section>
+
+      <div class="artist-page__content">
+        <section class="artist-controls" aria-label="Ações do artista">
+          <div class="artist-controls__buttons">
+            <button id="artistPlayBtn" class="artist-play-button" type="button" aria-label="Explorar primeiro álbum">
+              <span aria-hidden="true">▶</span>
+            </button>
+            <button id="artistFollowBtn" class="artist-follow-button" type="button" aria-pressed="false">Seguir</button>
+            <span class="artist-listener-count"><strong id="artistAlbumCount">0</strong> álbuns no catálogo</span>
+          </div>
+          <a id="artistPhotoCredit" class="artist-photo-credit" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
+        </section>
+
+        <nav class="artist-tabs" aria-label="Seções do perfil do artista">
+          <a class="artist-tabs__link artist-tabs__link--active" href="#popular">Destaques</a>
+          <a class="artist-tabs__link" href="#discography">Discografia</a>
+        </nav>
+
+        <section id="popular" class="artist-discography" aria-labelledby="popularTitle">
+          <h2 id="popularTitle">Lançamentos em destaque</h2>
+          <div id="artistPopularAlbums" class="artist-popular-list"></div>
+        </section>
+
+        <section id="discography" class="artist-discography artist-discography--all" aria-labelledby="discographyTitle">
+          <div class="artist-section-heading">
+            <div>
+              <span class="artist-section-kicker">Explore os lançamentos</span>
+              <h2 id="discographyTitle">Discografia</h2>
+            </div>
+          </div>
+          <div id="artistAlbums" class="artist-album-list"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="artist-page__footer py-3 text-center">
+    MUSICFY - todos os direitos reservados
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="src/scripts/script.js"></script>
+</body>
+</html>
