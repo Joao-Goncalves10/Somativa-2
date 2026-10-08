@@ -518,6 +518,25 @@ Outra garota sai da balada`
       { name: 'No One Lasts Forever (feat. David Cronenberg)', reviews: [] }
     ]
   },
+  wutheringHeights: {
+    name: 'Wuthering Heights',
+    artist: 'Charli xcx',
+    image: 'src/img/wuthering_heights_charli_xcx_cover.png',
+    tracks: [
+      { name: 'House featuring John Cale', reviews: [] },
+      { name: 'Wall Of Sound', reviews: [] },
+      { name: 'Dying for You', reviews: [] },
+      { name: 'Always Everywhere', reviews: [] },
+      { name: 'Chains of Love', reviews: [] },
+      { name: 'Out of Myself', reviews: [] },
+      { name: 'Open up', reviews: [] },
+      { name: 'Seeing Things', reviews: [] },
+      { name: 'Altars', reviews: [] },
+      { name: 'Eyes of the World featuring Sky Ferreira', reviews: [] },
+      { name: 'My Reminder', reviews: [] },
+      { name: 'Funny Mouth', reviews: [] }
+    ]
+  },
   detour: {
     name: 'Detour',
     artist: 'Kim Petras',
@@ -4062,6 +4081,166 @@ translation: ``
       { name: 'positions', reviews: ['5/5'] },
       { name: 'obvious', reviews: ['4/5'] },
       { name: 'pov', reviews: ['5/5'] }
+    ]
+  },
+  coisasNaturais: {
+    name: 'Coisas Naturais',
+    artist: 'Marina Sena',
+    image: 'src/img/coisas_naturais_marina_sena_cover.png',
+    tracks: [
+      { name: 'Coisas Naturais', reviews: [] },
+      { name: 'Numa Ilha', reviews: [] },
+      { name: 'Desmistificar', reviews: [] },
+      { name: 'Anjo', reviews: [] },
+      { name: 'TOKITÔ (feat. Gaia & Nenny)', reviews: [] },
+      { name: 'Sem Lei', reviews: [] },
+      { name: 'SENSEI', reviews: [] },
+      { name: 'Lua Cheia', reviews: [] },
+      { name: 'Combo Da Sorte', reviews: [] },
+      { name: 'Mágico', reviews: [] },
+      { name: 'Doçura (feat. Çantamarta)', reviews: [] },
+      { name: 'CARNAVAL', reviews: [] },
+      { name: 'Ouro de Tolo', reviews: [] }
+    ]
+  },
+  rosie: {
+    name: 'rosie',
+    artist: 'ROSÉ',
+    image: 'src/img/rosie_rose_cover.png',
+    versionGroup: 'rosie',
+    versionLabel: 'Edição padrão',
+    tracks: [
+      { name: 'number one girl', reviews: [] },
+      { name: '3am', reviews: [] },
+      { name: 'two years', reviews: [] },
+      { name: 'toxic till the end', reviews: [] },
+      { name: 'drinks or coffee', reviews: [] },
+      { name: 'APT. (feat. Bruno Mars)', reviews: [] },
+      { name: 'gameboy', reviews: [] },
+      { name: 'stay a little longer', reviews: [] },
+      { name: 'not the same', reviews: [] },
+      { name: 'call it the end', reviews: [] },
+      { name: 'too bad for us', reviews: [] },
+      { name: 'dance all night', reviews: [] }
+    ]
+  },
+  pressPlay: {
+    name: 'PRESS PLAY',
+    artist: 'LISA',
+    type: 'EP',
+    image: 'src/img/press_play_lisa_cover.png',
+    releaseDate: '2026-10-23T00:00:00-03:00',
+    tracks: [
+      { name: 'SaWaDiKa', reviews: [] },
+      { name: 'Track 02', reviews: [] },
+      { name: 'Track 03', reviews: [] },
+      { name: 'Track 04', reviews: [] },
+      { name: 'Track 05', reviews: [] },
+      { name: 'Track 06', reviews: [] }
+    ]
+  },
+  worstManInAmerica: {
+    name: 'wor$t man in america',
+    artist: 'Slayyyter',
+    image: 'src/img/worst_man_in_america_slayyyter_cover_v2.png',
+    releaseDate: '2026-12-04T23:00:00-03:00',
+    tracks: [
+      { name: 'brand new chanel$', reviews: [], preReleaseAvailable: true },
+      { name: 'crank 2', reviews: [], preReleaseAvailable: true },
+      { name: '$$$', reviews: [] },
+      { name: 'nekromantik!', reviews: [] },
+      { name: "i think he's got a girl", reviews: [] },
+      { name: 'hey boyyy', reviews: [] },
+      { name: 'parking lot', reviews: [] },
+      { name: 'perfect woman', reviews: [] },
+      { name: '*hymn*', reviews: [] }
+    ]
+  },
+  rosieDeluxe: {
+    name: 'rosie (Deluxe)',
+    artist: 'ROSÉ',
+    image: 'src/img/rosie_rose_cover.png',
+    versionGroup: 'rosie',
+    versionLabel: 'Deluxe',
+    tracks: [
+      { name: 'number one girl', reviews: [] },
+      { name: '3am', reviews: [] },
+      { name: 'two years', reviews: [] },
+      { name: 'toxic till the end', reviews: [] },
+      { name: 'drinks or coffee', reviews: [] },
+      { name: 'APT. (feat. Bruno Mars)', reviews: [] },
+      { name: 'gameboy', reviews: [] },
+      { name: 'stay a little longer', reviews: [] },
+      { name: 'not the same', reviews: [] },
+      { name: 'call it the end', reviews: [] },
+      { name: 'too bad for us', reviews: [] },
+      { name: 'dance all night', reviews: [] },
+      { name: 'vampirehollie', reviews: [] }
+    ]
+  },
+  equilibrium: {
+    name: 'EQUILIBRIUM',
+    artist: 'Anitta',
+    image: 'src/img/equilibrium_anitta_cover.png',
+    versionGroup: 'equilibrium',
+    versionLabel: 'Edição padrão',
+    tracks: [
+      { name: 'Desgraça', reviews: [] },
+      { name: 'Mandinga (feat. Marina Sena)', reviews: [] },
+      { name: 'Caminhador (feat. Liniker)', reviews: [] },
+      { name: 'Bemba (feat. Luedji Luna)', reviews: [] },
+      { name: 'Ternura (feat. Melly)', reviews: [] },
+      { name: 'Deus Existe (feat. Ponto De Equilíbrio)', reviews: [] },
+      { name: 'Caso de Amor (feat. Os Garotin)', reviews: [] },
+      { name: 'Varias Quejas', reviews: [] },
+      { name: 'So Much Love', reviews: [] },
+      { name: 'Pinterest (Spanish)', reviews: [] },
+      { name: 'É de Nanã (feat. Rincon Sapiência & KING Saints)', reviews: [] },
+      { name: 'Vai Dar Caô (feat. Ebony & Papatinho)', reviews: [] },
+      { name: 'Choka Choka (feat. Shakira)', reviews: [] },
+      { name: 'Meia Noite (feat. Los Brasileiros)', reviews: [] },
+      { name: 'Ouro (feat. Emanazul)', reviews: [] }
+    ]
+  },
+  equilibriumII: {
+    name: 'EQUILIBRIUM II',
+    artist: 'Anitta',
+    image: 'src/img/equilibrium_ii_anitta_cover.png',
+    versionGroup: 'equilibrium',
+    versionLabel: 'Deluxe · EQUILIBRIUM II',
+    tracks: [
+      { name: 'Você Já Sabe (feat. Los Brasileros)', reviews: [] },
+      { name: 'Sal Grosso (feat. KBrum)', reviews: [] },
+      { name: 'Não Me Cutuca (feat. Alceu Valença)', reviews: [] },
+      { name: 'Eu Não Sou Santa (feat. Mestrinho)', reviews: [] },
+      { name: "Feitiço (feat. Mart'nália)", reviews: [] },
+      { name: 'Ponta Do Pé', reviews: [] },
+      { name: 'Abre Caminho (feat. Alexandre Carlo)', reviews: [] },
+      { name: 'Tudo Isso', reviews: [] },
+      { name: 'Sem Pressa (feat. MC Tha)', reviews: [] },
+      { name: 'Deus Mãe (feat. KING Saints)', reviews: [] },
+      { name: 'Ogum Me Rodeia (Maria Bethânia & Letícia Fialho)', reviews: [] },
+      { name: 'Contemplação (feat. Grupo Olfa)', reviews: [] },
+      { name: 'Pra Você Gostar De Mim', reviews: [] },
+      { name: 'Divino Sexual', reviews: [] },
+      { name: 'Azul (Versão Espanhol)', reviews: [] },
+      { name: 'Respira', reviews: [] },
+      { name: "Okê (feat. Brô MC's & Katu Mirim)", reviews: [] },
+      { name: 'Desgraça', reviews: [] },
+      { name: 'Mandinga (feat. Marina Sena)', reviews: [] },
+      { name: 'Caminhador (feat. Liniker)', reviews: [] },
+      { name: 'Bemba (feat. Luedji Luna)', reviews: [] },
+      { name: 'Ternura (feat. Melly)', reviews: [] },
+      { name: 'Deus Existe (feat. Ponto De Equilíbrio)', reviews: [] },
+      { name: 'Caso de Amor (feat. Os Garotin)', reviews: [] },
+      { name: 'Varias Quejas', reviews: [] },
+      { name: 'So Much Love', reviews: [] },
+      { name: 'Pinterest (Spanish)', reviews: [] },
+      { name: 'É de Nanã (feat. Rincon Sapiência & KING Saints)', reviews: [] },
+      { name: 'Vai Dar Caô (feat. Ebony & Papatinho)', reviews: [] },
+      { name: 'Choka Choka (feat. Shakira)', reviews: [] },
+      { name: 'Meia Noite (feat. Los Brasileiros)', reviews: [] },
+      { name: 'Ouro (feat. Emanazul)', reviews: [] }
     ]
   },
   eternalSunshine: {
@@ -9330,6 +9509,15 @@ Object.values(albums).forEach((album) => {
 });
 
 const artistProfiles = {
+  anitta: {
+    photo: 'src/img/artists/anitta-profile.png'
+  },
+  rose: {
+    photo: 'src/img/artists/rose-profile.png'
+  },
+  'marina-sena': {
+    photo: 'src/img/artists/marina-sena-profile.png'
+  },
   'melanie-martinez': {
     photo: 'src/img/artists/melanie-martinez-profile.png'
   },
@@ -9397,6 +9585,36 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   updateTheme(savedTheme === 'dark');
+
+  const presavedAlbums = JSON.parse(localStorage.getItem('musicfy-presaved-albums') || '[]');
+  const notifiedPresaves = JSON.parse(localStorage.getItem('musicfy-presave-notified') || '[]');
+  const releasedPresave = Object.entries(albums).find(([id, album]) =>
+    album.releaseDate &&
+    new Date(album.releaseDate).getTime() <= Date.now() &&
+    presavedAlbums.includes(id) &&
+    !notifiedPresaves.includes(id)
+  );
+
+  if (releasedPresave) {
+    const [releasedAlbumId, releasedAlbum] = releasedPresave;
+    const notice = document.createElement('aside');
+    notice.className = 'presave-notice';
+    notice.setAttribute('role', 'status');
+    const message = document.createElement('p');
+    message.append(`Seu Pre-Save de ${releasedAlbum.name}, de ${releasedAlbum.artist}, já está disponível! `);
+    const albumLink = document.createElement('a');
+    albumLink.href = `album.html?id=${encodeURIComponent(releasedAlbumId)}`;
+    albumLink.textContent = 'Abrir EP';
+    message.append(albumLink);
+    const dismissButton = document.createElement('button');
+    dismissButton.type = 'button';
+    dismissButton.setAttribute('aria-label', 'Fechar aviso de lançamento');
+    dismissButton.textContent = '×';
+    dismissButton.addEventListener('click', () => notice.remove());
+    notice.append(message, dismissButton);
+    document.querySelector('nav')?.after(notice);
+    localStorage.setItem('musicfy-presave-notified', JSON.stringify([...notifiedPresaves, releasedAlbumId]));
+  }
 
   if (themeToggle) {
     themeToggle.addEventListener('click', function () {
@@ -9534,6 +9752,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (albumId && albums[albumId]) {
     // Busca os dados do álbum somente quando o ID recebido é válido.
     const album = albums[albumId];
+    const releaseTimestamp = album.releaseDate ? new Date(album.releaseDate).getTime() : null;
+    const isPreRelease = releaseTimestamp !== null && releaseTimestamp > Date.now();
 
     // Localiza os elementos HTML que receberão as informações do álbum.
     const albumName = document.getElementById('albumName');
@@ -9544,6 +9764,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Preenche título, artista e imagem da capa do álbum.
     if (albumName) albumName.textContent = album.name;
+    const albumTypeLabel = document.getElementById('albumType');
+    if (albumTypeLabel) albumTypeLabel.textContent = album.type || 'Álbum';
     if (albumArtist) {
       albumArtist.textContent = album.artist;
       albumArtist.href = `artista.html?id=${encodeURIComponent(getArtistId(album.artist))}`;
@@ -9568,12 +9790,107 @@ document.addEventListener('DOMContentLoaded', function () {
       albumCover.alt = album.name;
     }
 
+    const preReleasePanel = document.getElementById('preReleasePanel');
+    if (releaseTimestamp !== null && preReleasePanel) {
+      preReleasePanel.hidden = false;
+      const preSaveButton = document.getElementById('preSaveButton');
+      const preSaveDescription = document.getElementById('preSaveDescription');
+      const releaseDateLabel = preReleasePanel.querySelector('.section-kicker');
+      const preReleaseTitle = document.getElementById('preReleaseTitle');
+      const formattedReleaseDate = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).format(releaseTimestamp);
+      const preSavedIds = JSON.parse(localStorage.getItem('musicfy-presaved-albums') || '[]');
+      const countdownParts = {
+        days: document.getElementById('countdownDays'),
+        hours: document.getElementById('countdownHours'),
+        minutes: document.getElementById('countdownMinutes'),
+        seconds: document.getElementById('countdownSeconds')
+      };
+      const countdownTimer = preReleasePanel.querySelector('.release-countdown');
+      const musicPlayer = document.querySelector('.music-player');
+      const reviewForm = document.getElementById('reviewForm');
+      const rateAlbumButton = document.getElementById('avaliarAlbumBtn');
+
+      if (isPreRelease) {
+        releaseDateLabel.textContent = `Lançamento em ${formattedReleaseDate} (horário de Brasília)`;
+        preReleaseTitle.textContent = `Faça o Pre-Save de ${album.name}`;
+        preSaveDescription.textContent = `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} neste navegador para receber um aviso dentro do site quando for lançado.`;
+        if (musicPlayer) musicPlayer.hidden = true;
+        const hasAvailableTracks = album.tracks.some((track) => track.preReleaseAvailable);
+        if (musicPlayer && hasAvailableTracks) musicPlayer.hidden = false;
+        if (reviewForm) reviewForm.hidden = true;
+        if (rateAlbumButton) rateAlbumButton.hidden = true;
+      } else {
+        preReleasePanel.classList.add('pre-release-panel--released');
+        releaseDateLabel.textContent = 'Já disponível';
+        preReleaseTitle.textContent = `${album.name} foi lançado!`;
+        preSaveDescription.textContent = `${album.type === 'EP' ? 'O EP' : 'O álbum'} de ${album.artist} já está disponível no catálogo.`;
+        countdownTimer.hidden = true;
+        preSaveButton.hidden = true;
+      }
+
+      if (preSaveButton && isPreRelease) {
+        const updatePreSaveButton = () => {
+          const isSaved = preSavedIds.includes(albumId);
+          preSaveButton.textContent = isSaved ? 'Remover Pre-Save' : 'Fazer Pre-Save';
+          preSaveButton.setAttribute('aria-pressed', String(isSaved));
+          preSaveDescription.textContent = isSaved
+            ? `Este lançamento está salvo neste navegador. Avisaremos dentro do site quando ${album.name} for lançado.`
+            : `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} neste navegador para receber um aviso dentro do site quando for lançado.`;
+        };
+
+        updatePreSaveButton();
+        preSaveButton.addEventListener('click', () => {
+          const savedIndex = preSavedIds.indexOf(albumId);
+          if (savedIndex === -1) {
+            preSavedIds.push(albumId);
+          } else {
+            preSavedIds.splice(savedIndex, 1);
+          }
+          localStorage.setItem('musicfy-presaved-albums', JSON.stringify(preSavedIds));
+          updatePreSaveButton();
+        });
+      }
+
+      if (isPreRelease) {
+        const updateCountdown = () => {
+          const remaining = releaseTimestamp - Date.now();
+          if (remaining <= 0) {
+            window.location.reload();
+            return;
+          }
+
+          const totalSeconds = Math.floor(remaining / 1000);
+          countdownParts.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, '0');
+          countdownParts.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, '0');
+          countdownParts.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+          countdownParts.seconds.textContent = String(totalSeconds % 60).padStart(2, '0');
+        };
+
+        updateCountdown();
+        window.setInterval(updateCountdown, 1000);
+      }
+    }
+
     // Monta a lista resumida de músicas e suas avaliações.
     if (trackList) {
       const musicPlayer = document.querySelector('.music-player');
       if (musicPlayer && album.tracks.length === 0) musicPlayer.hidden = true;
       trackList.innerHTML = album.tracks.length
-        ? album.tracks.map((track, index) => `
+        ? album.tracks.map((track, index) => isPreRelease && !track.preReleaseAvailable
+          ? `<div class="track-item track-row track-row--upcoming">
+              <span class="track-upcoming-number">${index + 1}.</span>
+              <div class="track-details"><strong>${track.name}</strong></div>
+              <span class="track-upcoming-label">Em breve</span>
+            </div>`
+          : `
           <div class="track-item track-row">
             <button class="track-play-button" type="button" data-track-index="${index}" aria-label="Ouvir ${track.name}">
               <span aria-hidden="true">▶</span>
@@ -9797,7 +10114,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <img src="${album.image}" alt="" loading="lazy">
           <div class="artist-release-row__details">
             <h3>${album.name}</h3>
-            <p>${album.tracks.length ? `Álbum · ${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Álbum · Faixas em breve'}</p>
+            <p>${album.type || 'Álbum'} · ${album.tracks.length ? `${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Faixas em breve'}</p>
           </div>
           <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${album.name}">
             Explorar <span aria-hidden="true">↗</span>
