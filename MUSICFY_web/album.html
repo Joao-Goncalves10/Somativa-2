@@ -42,7 +42,7 @@
         </div>
 
         <div class="col-md-8">
-          <p class="text-primary fw-bold mb-2">Álbum</p>
+          <p id="albumType" class="text-primary fw-bold mb-2">Álbum</p>
           <h1 id="albumName" class="display-6 fw-bold mb-2">Carregando...</h1>
           <p class="fs-5 text-muted mb-4">
             <a id="albumArtist" class="album-artist-link" href="#">Artista</a>
@@ -57,6 +57,21 @@
             AVALIAR
           </button>
         </div>
+      </div>
+    </section>
+
+    <section id="preReleasePanel" class="pre-release-panel mt-4" aria-labelledby="preReleaseTitle" hidden>
+      <div class="pre-release-panel__copy">
+        <p class="section-kicker mb-2">Lançamento em breve</p>
+        <h2 id="preReleaseTitle">Faça o Pre-Save</h2>
+        <p id="preSaveDescription">Salve este lançamento para receber um aviso dentro do site quando estiver disponível.</p>
+        <button id="preSaveButton" class="btn btn-primary btn-lg" type="button">Fazer Pre-Save</button>
+      </div>
+      <div class="release-countdown" role="timer" aria-label="Contagem regressiva para o lançamento">
+        <div class="release-countdown__unit"><strong id="countdownDays">00</strong><span>Dias</span></div>
+        <div class="release-countdown__unit"><strong id="countdownHours">00</strong><span>Horas</span></div>
+        <div class="release-countdown__unit"><strong id="countdownMinutes">00</strong><span>Minutos</span></div>
+        <div class="release-countdown__unit"><strong id="countdownSeconds">00</strong><span>Segundos</span></div>
       </div>
     </section>
 
