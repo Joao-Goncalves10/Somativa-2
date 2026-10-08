@@ -2283,6 +2283,7 @@ Aloka`
   fallenAngel: {
     name: 'FALLEN ANGEL',
     artist: 'JENNIE',
+    type: 'EP',
     image: 'src/img/fallen_angel_jennie_cover.png',
     tracks: [
       { name: 'FALLEN ANGEL', reviews: [] },
@@ -4154,6 +4155,25 @@ translation: ``
       { name: 'parking lot', reviews: [] },
       { name: 'perfect woman', reviews: [] },
       { name: '*hymn*', reviews: [] }
+    ]
+  },
+  revivePlus: {
+    name: 'REVIVE+',
+    artist: 'IVE',
+    image: 'src/img/revive_plus_ive_cover.png',
+    tracks: [
+      { name: 'BLACKHOLE', reviews: [] },
+      { name: 'BANG BANG', reviews: [] },
+      { name: 'Hush', reviews: [] },
+      { name: 'Stuck In Your Head', reviews: [] },
+      { name: 'Fireworks', reviews: [] },
+      { name: 'HOT COFFEE', reviews: [] },
+      { name: '8 (JANGWONYOUNG Solo)', reviews: [] },
+      { name: 'Odd (GAEUL Solo)', reviews: [] },
+      { name: 'Super ICY (LEESEO Solo)', reviews: [] },
+      { name: 'Unreal (LIZ Solo)', reviews: [] },
+      { name: 'In Your Heart (REI Solo)', reviews: [] },
+      { name: 'Force (ANYUJIN Solo)', reviews: [] }
     ]
   },
   rosieDeluxe: {
@@ -9526,6 +9546,9 @@ const artistProfiles = {
   },
   twice: {
     photo: 'src/img/artists/twice-profile.png'
+  },
+  ive: {
+    photo: 'src/img/artists/ive-profile.png'
   },
   'sabrina-carpenter': {
     photo: 'src/img/artists/sabrina-carpenter-profile.png'
