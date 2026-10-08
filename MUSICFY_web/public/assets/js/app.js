@@ -3,7 +3,7 @@ const albums = {
   sour: {
     name: 'SOUR',
     artist: 'Olivia Rodrigo',
-    image: 'src/img/SOUR_OliviaRodrigo_cover.jpg',
+    image: 'assets/images/SOUR_OliviaRodrigo_cover.jpg',
     tracks: [
       { name: 'brutal', reviews: ['5/5'],
          lyrics: `i want it to be, like, messy
@@ -146,7 +146,7 @@ translation: ``
   youSeemPrettySad: {
     name: 'you seem pretty sad for a girl so in luv',
     artist: 'Olivia Rodrigo',
-    image: 'src/img/you-seem-pretty-sad-olivia-rodrigo.png',
+    image: 'assets/images/you-seem-pretty-sad-olivia-rodrigo.png',
     tracks: [
       { name: 'drop dead', reviews: [] },
       { name: 'stupid song', reviews: [] },
@@ -166,7 +166,7 @@ translation: ``
   guts: {
     name: 'GUTS',
     artist: 'Olivia Rodrigo',
-    image: 'src/img/guts_olivia_rodrigo_cover.png',
+    image: 'assets/images/guts_olivia_rodrigo_cover.png',
     versionGroup: 'guts',
     versionLabel: 'Edição padrão',
     tracks: [
@@ -187,7 +187,7 @@ translation: ``
   gutsSpilled: {
     name: 'GUTS (spilled)',
     artist: 'Olivia Rodrigo',
-    image: 'src/img/guts_olivia_rodrigo_cover.png',
+    image: 'assets/images/guts_olivia_rodrigo_cover.png',
     versionGroup: 'guts',
     versionLabel: 'Deluxe · GUTS (spilled)',
     tracks: [
@@ -213,7 +213,7 @@ translation: ``
   radicalOptimism: {
     name: 'Radical Optimism',
     artist: 'Dua Lipa',
-    image: 'src/img/radical_optimism_dua_lipa_cover.png',
+    image: 'assets/images/radical_optimism_dua_lipa_cover.png',
     tracks: [
       { name: 'End Of An Era', reviews: ['4/5'],
          lyrics: `One, two, three, ay
@@ -382,7 +382,7 @@ Outra garota sai da balada`
   brat: {
     name: 'BRAT',
     artist: 'Charli xcx',
-    image: 'src/img/brat_charli_xcx_cover.png',
+    image: 'assets/images/brat_charli_xcx_cover.png',
     versionGroup: 'brat',
     versionLabel: 'Edição padrão',
     tracks: [
@@ -451,7 +451,7 @@ Outra garota sai da balada`
   bratDeluxe: {
    name: "Brat and it's the same but there's three more songs so it's not",
    artist: 'Charli xcx',
-   image: 'src/img/brat_deluxe_cover.png',
+   image: 'assets/images/brat_deluxe_cover.png',
    versionGroup: 'brat',
    versionLabel: 'Edição Deluxe · 3 faixas extras',
    tracks: [
@@ -478,7 +478,7 @@ Outra garota sai da balada`
   bratRemix: {
    name: "Brat and it's completely different but also still brat",
    artist: 'Charli xcx',
-   image: 'src/img/brat_remix_cover.png',
+   image: 'assets/images/brat_remix_cover.png',
    versionGroup: 'brat',
    versionLabel: 'Álbum de remixes',
    tracks: [
@@ -503,7 +503,7 @@ Outra garota sai da balada`
   musicFashionFilm: {
     name: 'Music, Fashion, Film',
     artist: 'Charli xcx',
-    image: 'src/img/music_fashion_film_charli_xcx_cover.png',
+    image: 'assets/images/music_fashion_film_charli_xcx_cover.png',
     tracks: [
       { name: 'Rock Music', reviews: [] },
       { name: 'SS26', reviews: [] },
@@ -521,7 +521,7 @@ Outra garota sai da balada`
   wutheringHeights: {
     name: 'Wuthering Heights',
     artist: 'Charli xcx',
-    image: 'src/img/wuthering_heights_charli_xcx_cover.png',
+    image: 'assets/images/wuthering_heights_charli_xcx_cover.png',
     tracks: [
       { name: 'House featuring John Cale', reviews: [] },
       { name: 'Wall Of Sound', reviews: [] },
@@ -540,7 +540,7 @@ Outra garota sai da balada`
   detour: {
     name: 'Detour',
     artist: 'Kim Petras',
-    image: 'src/img/detour_kim_petras_cover.png',
+    image: 'assets/images/detour_kim_petras_cover.png',
     tracks: [
       { name: 'Detour', reviews: ['4/5'],
          lyrics: `This is the beginning of the end
@@ -2135,7 +2135,7 @@ Aloka`
   alterEgo: {
     name: 'Alter Ego',
     artist: 'LISA',
-    image: 'src/img/alter_ego_lisa_cover.png',
+    image: 'assets/images/alter_ego_lisa_cover.png',
     tracks: [
       { name: 'Born Again (feat. RAYE & Doja Cat)', reviews: [] },
       { name: 'Rockstar', reviews: [] },
@@ -2157,7 +2157,7 @@ Aloka`
   emailsICantSend: {
     name: "emails i can't send",
     artist: 'Sabrina Carpenter',
-    image: 'src/img/emails_i_cant_send_cover.png',
+    image: 'assets/images/emails_i_cant_send_cover.png',
     versionGroup: 'emailsICantSend',
     versionLabel: 'Edição padrão',
     tracks: [
@@ -2179,7 +2179,7 @@ Aloka`
   emailsICantSendFwd: {
     name: "emails i can't send: fwd",
     artist: 'Sabrina Carpenter',
-    image: 'src/img/emails_i_cant_send_fwd_cover.png',
+    image: 'assets/images/emails_i_cant_send_fwd_cover.png',
     versionGroup: 'emailsICantSend',
     versionLabel: 'Deluxe · fwd',
     tracks: [
@@ -2205,7 +2205,7 @@ Aloka`
   mansBestFriend: {
     name: "Man's Best Friend",
     artist: 'Sabrina Carpenter',
-    image: 'src/img/mans_best_friend_sabrina_carpenter_cover.png',
+    image: 'assets/images/mans_best_friend_sabrina_carpenter_cover.png',
     tracks: [
       { name: 'Manchild', reviews: [] },
       { name: 'Tears', reviews: [] },
@@ -2224,7 +2224,7 @@ Aloka`
   thisIsFor: {
     name: 'THIS IS FOR',
     artist: 'TWICE',
-    image: 'src/img/this_is_for_twice_cover.png',
+    image: 'assets/images/this_is_for_twice_cover.png',
     tracks: [
       { name: 'FOUR', reviews: [] },
       { name: 'THIS IS FOR', reviews: [] },
@@ -2245,7 +2245,7 @@ Aloka`
   whyKiiiKiii: {
     name: 'WhyKiiiKiii',
     artist: 'KiiiKiii',
-    image: 'src/img/whykikiikiii_ep_cover.png',
+    image: 'assets/images/whykikiikiii_ep_cover.png',
     tracks: [
       { name: 'Ever2Late!', reviews: [] },
       { name: 'Hey Hi', reviews: [] },
@@ -2258,7 +2258,7 @@ Aloka`
   hades: {
     name: 'HADES',
     artist: 'Melanie Martinez',
-    image: 'src/img/hades_melanie_martinez_cover.png',
+    image: 'assets/images/hades_melanie_martinez_cover.png',
     tracks: [
       { name: 'GARBAGE', reviews: [] },
       { name: 'IS THIS A CULT?', reviews: [] },
@@ -2283,7 +2283,7 @@ Aloka`
   fallenAngel: {
     name: 'FALLEN ANGEL',
     artist: 'JENNIE',
-    image: 'src/img/fallen_angel_jennie_cover.png',
+    image: 'assets/images/fallen_angel_jennie_cover.png',
     tracks: [
       { name: 'FALLEN ANGEL', reviews: [] },
       { name: 'HEAVEN', reviews: [] },
@@ -2296,7 +2296,7 @@ Aloka`
   ruby: {
     name: 'Ruby',
     artist: 'JENNIE',
-    image: 'src/img/ruby_jennie_cover.jpg',
+    image: 'assets/images/ruby_jennie_cover.jpg',
     tracks: [
       { name: 'Intro: JANE (feat. FKJ)', reviews: ['4/5'],
          lyrics: `Run like this, run, I
@@ -4010,7 +4010,7 @@ Gêmea, gêmea, gêmea`
   petal: {
     name: 'petal',
     artist: 'Ariana Grande',
-    image: 'src/img/petal_cover.jpg',
+    image: 'assets/images/petal_cover.jpg',
     tracks: [
       { name: 'kiss me', reviews: ['4/5'],
          lyrics: ``,    
@@ -4065,7 +4065,7 @@ translation: ``
   positions: {
     name: 'positions',
     artist: 'Ariana Grande',
-    image: 'src/img/positions_cover.jpg',
+    image: 'assets/images/positions_cover.jpg',
     tracks: [
       { name: 'shut up', reviews: ['4/5'] },
       { name: '34+35', reviews: ['5/5'] },
@@ -4086,7 +4086,7 @@ translation: ``
   coisasNaturais: {
     name: 'Coisas Naturais',
     artist: 'Marina Sena',
-    image: 'src/img/coisas_naturais_marina_sena_cover.png',
+    image: 'assets/images/coisas_naturais_marina_sena_cover.png',
     tracks: [
       { name: 'Coisas Naturais', reviews: [] },
       { name: 'Numa Ilha', reviews: [] },
@@ -4106,7 +4106,7 @@ translation: ``
   rosie: {
     name: 'rosie',
     artist: 'ROSÉ',
-    image: 'src/img/rosie_rose_cover.png',
+    image: 'assets/images/rosie_rose_cover.png',
     versionGroup: 'rosie',
     versionLabel: 'Edição padrão',
     tracks: [
@@ -4128,7 +4128,7 @@ translation: ``
     name: 'PRESS PLAY',
     artist: 'LISA',
     type: 'EP',
-    image: 'src/img/press_play_lisa_cover.png',
+    image: 'assets/images/press_play_lisa_cover.png',
     releaseDate: '2026-10-23T00:00:00-03:00',
     tracks: [
       { name: 'SaWaDiKa', reviews: [] },
@@ -4142,7 +4142,7 @@ translation: ``
   worstManInAmerica: {
     name: 'wor$t man in america',
     artist: 'Slayyyter',
-    image: 'src/img/worst_man_in_america_slayyyter_cover_v2.png',
+    image: 'assets/images/worst_man_in_america_slayyyter_cover_v2.png',
     releaseDate: '2026-12-04T23:00:00-03:00',
     tracks: [
       { name: 'brand new chanel$', reviews: [], preReleaseAvailable: true },
@@ -4159,7 +4159,7 @@ translation: ``
   rosieDeluxe: {
     name: 'rosie (Deluxe)',
     artist: 'ROSÉ',
-    image: 'src/img/rosie_rose_cover.png',
+    image: 'assets/images/rosie_rose_cover.png',
     versionGroup: 'rosie',
     versionLabel: 'Deluxe',
     tracks: [
@@ -4181,7 +4181,7 @@ translation: ``
   equilibrium: {
     name: 'EQUILIBRIUM',
     artist: 'Anitta',
-    image: 'src/img/equilibrium_anitta_cover.png',
+    image: 'assets/images/equilibrium_anitta_cover.png',
     versionGroup: 'equilibrium',
     versionLabel: 'Edição padrão',
     tracks: [
@@ -4205,7 +4205,7 @@ translation: ``
   equilibriumII: {
     name: 'EQUILIBRIUM II',
     artist: 'Anitta',
-    image: 'src/img/equilibrium_ii_anitta_cover.png',
+    image: 'assets/images/equilibrium_ii_anitta_cover.png',
     versionGroup: 'equilibrium',
     versionLabel: 'Deluxe · EQUILIBRIUM II',
     tracks: [
@@ -4246,7 +4246,7 @@ translation: ``
   eternalSunshine: {
     name: 'eternal sunshine',
     artist: 'Ariana Grande',
-    image: 'src/img/eternal_sunshine_cover.png',
+    image: 'assets/images/eternal_sunshine_cover.png',
     versionGroup: 'eternalSunshine',
     versionLabel: 'Edição padrão',
     tracks: [
@@ -4268,7 +4268,7 @@ translation: ``
   eternalSunshineBrighterDaysAhead: {
     name: 'eternal sunshine: brighter days ahead',
     artist: 'Ariana Grande',
-    image: 'src/img/eternal_sunshine_brighter_days_ahead_cover.png',
+    image: 'assets/images/eternal_sunshine_brighter_days_ahead_cover.png',
     versionGroup: 'eternalSunshine',
     versionLabel: 'Deluxe · Brighter Days Ahead',
     tracks: [
@@ -4296,7 +4296,7 @@ translation: ``
   prima: {
     name: 'PRIMA',
     artist: 'ADÉLA',
-    image: 'src/img/prima_cover.png.jpg',
+    image: 'assets/images/prima_cover.png.jpg',
     tracks: [
       {
         name: 'KGB',
@@ -5584,7 +5584,7 @@ As minas mais fodas não estão em LA`
   'so-close-to-what': {
     name: 'So Close to What',
     artist: 'Tate McRae',
-    image: 'src/img/soclosetowhat_cover.png.jpg',
+    image: 'assets/images/soclosetowhat_cover.png.jpg',
     tracks: [
       { name: 'Miss Possessive', reviews: ['4/5'],
         lyrics: `No, seriously, get your hands off my man
@@ -7601,7 +7601,7 @@ Três passos à frente de tudo`
   'worst-girl-in-america': {
     name: 'WOR$T GIRL IN AMERICA',
     artist: 'Slayyyter',
-    image: 'src/img/worstgirlinamerica_cover.png',
+    image: 'assets/images/worstgirlinamerica_cover.png',
     tracks: [
       { name: "DANCE...", reviews: ['4/5'],
         lyrics: `I'M UNHAPPIER NOW
@@ -7874,7 +7874,7 @@ translation: ``
   lemonade: {
     name: 'LEMONADE - The 2nd Album',
     artist: 'aespa',
-    image: 'src/img/lemonade_aespa_cover.jpg',
+    image: 'assets/images/lemonade_aespa_cover.jpg',
     tracks: [
       { name: 'WDA (Whole Different Animal) (feat. G-DRAGON)', reviews: ['4/5'],
         lyrics: `I gotta deal with me now
@@ -9563,55 +9563,55 @@ Object.values(albums).forEach((album) => {
 
 const artistProfiles = {
   anitta: {
-    photo: 'src/img/artists/anitta-profile.png'
+    photo: 'assets/images/artists/anitta-profile.png'
   },
   rose: {
-    photo: 'src/img/artists/rose-profile.png'
+    photo: 'assets/images/artists/rose-profile.png'
   },
   'marina-sena': {
-    photo: 'src/img/artists/marina-sena-profile.png'
+    photo: 'assets/images/artists/marina-sena-profile.png'
   },
   'melanie-martinez': {
-    photo: 'src/img/artists/melanie-martinez-profile.png'
+    photo: 'assets/images/artists/melanie-martinez-profile.png'
   },
   kiiikiii: {
-    photo: 'src/img/artists/kiiikiii-profile.png'
+    photo: 'assets/images/artists/kiiikiii-profile.png'
   },
   twice: {
-    photo: 'src/img/artists/twice-profile.png'
+    photo: 'assets/images/artists/twice-profile.png'
   },
   'sabrina-carpenter': {
-    photo: 'src/img/artists/sabrina-carpenter-profile.png'
+    photo: 'assets/images/artists/sabrina-carpenter-profile.png'
   },
   'dua-lipa': {
-    photo: 'src/img/artists/dua-lipa-new-profile.png'
+    photo: 'assets/images/artists/dua-lipa-new-profile.png'
   },
   'charli-xcx': {
-    photo: 'src/img/artists/charli-xcx-new-profile.png'
+    photo: 'assets/images/artists/charli-xcx-new-profile.png'
   },
   'kim-petras': {
-    photo: 'src/img/artists/kim-petras-profile.png'
+    photo: 'assets/images/artists/kim-petras-profile.png'
   },
   'tate-mcrae': {
-    photo: 'src/img/artists/tate-mcrae-profile.png'
+    photo: 'assets/images/artists/tate-mcrae-profile.png'
   },
   aespa: {
-    photo: 'src/img/artists/aespa-profile.png'
+    photo: 'assets/images/artists/aespa-profile.png'
   },
   lisa: {
-    photo: 'src/img/artists/lisa-profile.png'
+    photo: 'assets/images/artists/lisa-profile.png'
   },
   jennie: {
-    photo: 'src/img/artists/jennie-profile.png'
+    photo: 'assets/images/artists/jennie-profile.png'
   },
   slayyyter: {
-    photo: 'src/img/artists/slayyyter-profile.png'
+    photo: 'assets/images/artists/slayyyter-profile.png'
   },
   'ariana-grande': {
-    photo: 'src/img/artists/ariana-grande-profile.png'
+    photo: 'assets/images/artists/ariana-grande-profile.png'
   },
   'olivia-rodrigo': {
-    photo: 'src/img/artists/olivia-rodrigo-profile.png'
+    photo: 'assets/images/artists/olivia-rodrigo-profile.png'
   }
 };
 
@@ -9623,7 +9623,66 @@ function getArtistId(name) {
     .replace(/^-|-$/g, '');
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+  try {
+    const sessionResponse = await fetch('/api/admin/session');
+    if (!sessionResponse.ok) {
+      const result = await sessionResponse.json();
+      throw new Error(result.error || 'Não foi possível verificar a sessão de administrador.');
+    }
+    const session = await sessionResponse.json();
+    if (typeof session.required !== 'boolean' || typeof session.authenticated !== 'boolean') {
+      throw new TypeError('A resposta da sessão de administrador não é válida.');
+    }
+
+    if (!session.required || session.authenticated) {
+      for (const album of createdAlbums) {
+        const response = await fetch('/api/albums', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: album.id,
+            name: album.name,
+            artist: album.artist,
+            image: album.image,
+            genres: album.genres,
+            tracks: album.tracks.map((track) => track.name)
+          })
+        });
+        if (!response.ok) {
+          const result = await response.json();
+          throw new Error(result.error || 'Não foi possível migrar os álbuns salvos neste navegador.');
+        }
+      }
+    }
+
+    const response = await fetch('/api/albums');
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.error || 'Não foi possível carregar os álbuns do banco de dados.');
+    }
+    const savedAlbums = await response.json();
+    if (!Array.isArray(savedAlbums)) throw new TypeError('A lista do banco de dados não é válida.');
+
+    Object.keys(albums)
+      .filter((id) => id.startsWith('created-'))
+      .forEach((id) => delete albums[id]);
+    createdAlbums.splice(0, createdAlbums.length, ...savedAlbums);
+    createdAlbums.forEach((album) => {
+      albums[album.id] = album;
+    });
+    if (!session.required || session.authenticated) {
+      localStorage.removeItem(createdAlbumsStorageKey);
+    }
+  } catch (error) {
+    console.error('Não foi possível sincronizar os álbuns com o servidor.', error);
+    const notice = document.createElement('p');
+    notice.className = 'alert alert-warning m-3';
+    notice.setAttribute('role', 'alert');
+    notice.textContent = 'Não foi possível conectar ao banco de dados. Verifique se o servidor MUSICFY está iniciado e tente recarregar a página.';
+    document.querySelector('main')?.prepend(notice);
+  }
+
   const themeToggle = document.getElementById('themeToggle');
   const savedTheme = localStorage.getItem('musicfy-theme');
 
@@ -9679,6 +9738,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const createAlbumForm = document.getElementById('createAlbumForm');
   if (createAlbumForm) {
+    const adminAccess = document.getElementById('adminAccess');
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminSignedIn = document.getElementById('adminSignedIn');
+    const adminAccessMessage = document.getElementById('adminAccessMessage');
+    const adminPassword = document.getElementById('adminPassword');
+    const adminLoginButton = document.getElementById('adminLoginButton');
+    const adminLogoutButton = document.getElementById('adminLogoutButton');
     const trackListEditor = document.getElementById('newTrackList');
     const addTrackButton = document.getElementById('addTrackButton');
     const coverInput = document.getElementById('newAlbumCover');
@@ -9686,6 +9752,68 @@ document.addEventListener('DOMContentLoaded', function () {
     const message = document.getElementById('createAlbumMessage');
     const saveButton = document.getElementById('saveAlbumButton');
     const maximumCoverSize = 1024 * 1024;
+
+    async function refreshAdminAccess() {
+      const response = await fetch('/api/admin/session');
+      const result = await response.json();
+      if (!response.ok || typeof result.required !== 'boolean' || typeof result.authenticated !== 'boolean') {
+        throw new Error(result.error || 'Não foi possível verificar o acesso de administrador.');
+      }
+
+      adminAccess.hidden = !result.required;
+      adminLoginForm.hidden = result.authenticated;
+      adminSignedIn.hidden = !result.authenticated;
+      createAlbumForm.hidden = result.required && !result.authenticated;
+      return result;
+    }
+
+    try {
+      await refreshAdminAccess();
+    } catch (error) {
+      console.error('Não foi possível verificar o acesso de administrador.', error);
+      adminAccess.hidden = false;
+      adminLoginForm.hidden = false;
+      adminSignedIn.hidden = true;
+      createAlbumForm.hidden = true;
+      adminAccessMessage.textContent = 'Não foi possível verificar o acesso. Confira a conexão com o servidor e recarregue a página.';
+    }
+
+    adminLoginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      adminAccessMessage.textContent = '';
+      adminLoginButton.disabled = true;
+      try {
+        const response = await fetch('/api/admin/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: adminPassword.value })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Não foi possível iniciar a sessão.');
+        window.location.reload();
+      } catch (error) {
+        console.error('Não foi possível iniciar a sessão de administrador.', error);
+        adminAccessMessage.textContent = error.message || 'Não foi possível iniciar a sessão.';
+      } finally {
+        adminLoginButton.disabled = false;
+      }
+    });
+
+    adminLogoutButton.addEventListener('click', async () => {
+      adminAccessMessage.textContent = '';
+      adminLogoutButton.disabled = true;
+      try {
+        const response = await fetch('/api/admin/session', { method: 'DELETE' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Não foi possível encerrar a sessão.');
+        await refreshAdminAccess();
+      } catch (error) {
+        console.error('Não foi possível encerrar a sessão de administrador.', error);
+        adminAccessMessage.textContent = error.message || 'Não foi possível encerrar a sessão.';
+      } finally {
+        adminLogoutButton.disabled = false;
+      }
+    });
 
     function updateTrackRemoveButtons() {
       const removeButtons = trackListEditor.querySelectorAll('.remove-track-button');
@@ -9811,35 +9939,34 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
-        const baseSlug = `${albumName}-${artistName}`
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '') || 'album';
-        let id = `created-${baseSlug}`;
-        let suffix = 2;
-        while (albums[id]) {
-          id = `created-${baseSlug}-${suffix}`;
-          suffix += 1;
-        }
-
         const newAlbum = {
-          id,
           name: albumName,
           artist: artistName,
           image: await readCoverAsDataUrl(cover),
           genres,
           tracks: tracks.map((name) => ({ name, reviews: [], lyrics: '', translation: '' }))
         };
-        const updatedAlbums = [...createdAlbums, newAlbum];
-        localStorage.setItem(createdAlbumsStorageKey, JSON.stringify(updatedAlbums));
-        createdAlbums.push(newAlbum);
-        albums[id] = newAlbum;
+
+        const response = await fetch('/api/albums', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: newAlbum.name,
+            artist: newAlbum.artist,
+            image: newAlbum.image,
+            genres: newAlbum.genres,
+            tracks: newAlbum.tracks.map((track) => track.name)
+          })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'O servidor não conseguiu salvar o álbum.');
+
+        createdAlbums.push(result);
+        albums[result.id] = result;
         window.location.href = 'index.html#albuns';
       } catch (error) {
         console.error('Não foi possível salvar o álbum criado.', error);
-        message.textContent = 'Não foi possível salvar. O armazenamento do navegador pode estar cheio; tente uma capa menor.';
+        message.textContent = error.message || 'Não foi possível salvar o álbum no banco de dados. Verifique a conexão com o servidor.';
       } finally {
         saveButton.disabled = false;
         saveButton.textContent = 'Criar álbum';
@@ -10478,13 +10605,8 @@ document.addEventListener('DOMContentLoaded', function () {
           <span class="artist-release-row__index">${String(index + 1).padStart(2, '0')}</span>
           <img src="${escapeHtml(album.image)}" alt="" loading="lazy">
           <div class="artist-release-row__details">
-<<<<<<< HEAD
             <h3>${escapeHtml(album.name)}</h3>
             <p>${album.tracks.length ? `Álbum · ${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Álbum · Faixas em breve'}</p>
-=======
-            <h3>${album.name}</h3>
-            <p>${album.type || 'Álbum'} · ${album.tracks.length ? `${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Faixas em breve'}</p>
->>>>>>> 567509e1618a4d9ba7c1d17266ee4383428045d7
           </div>
           <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${escapeHtml(album.name)}">
             Explorar <span aria-hidden="true">↗</span>

@@ -2423,13 +2423,14 @@ body.dark-mode footer {
   }
 }
 
-<<<<<<< HEAD
 @media (prefers-reduced-motion: reduce) {
   .hero-carousel__track,
   .hero-carousel__arrow,
   .hero-carousel__rotation {
     transition: none;
-=======
+  }
+}
+
 .pre-release-panel {
   display: flex;
   align-items: center;
@@ -2598,6 +2599,5 @@ body.dark-mode .presave-notice a {
 
   .presave-notice {
     margin: 0.75rem 1rem 0;
->>>>>>> 567509e1618a4d9ba7c1d17266ee4383428045d7
   }
 }

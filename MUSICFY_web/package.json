@@ -1,0 +1,17 @@
+{
+  "name": "musicfy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Catálogo musical com PostgreSQL gerenciado para publicação na internet.",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "scripts": {
+    "start": "node scripts/start.js",
+    "check": "node --check server/index.js && node --check server/database.js && node --check server/admin-auth.js && node --check scripts/start.js && node --check scripts/load-env.js && node --check scripts/import-sqlite.js && node --check public/assets/js/app.js",
+    "import:sqlite": "node scripts/import-sqlite.js"
+  }
+}
