@@ -9320,6 +9320,59 @@ Até morrermos, até morrermos`
   }
 };
 
+const createdAlbumsStorageKey = 'musicfy-created-albums';
+const createdAlbums = (() => {
+  try {
+    const storedAlbums = JSON.parse(localStorage.getItem(createdAlbumsStorageKey) || '[]');
+    if (!Array.isArray(storedAlbums)) throw new TypeError('A lista salva de álbuns não é válida.');
+
+    return storedAlbums
+      .filter((album) => album
+        && typeof album.id === 'string'
+        && /^created-[a-z0-9-]+$/.test(album.id)
+        && typeof album.name === 'string'
+        && album.name.trim()
+        && typeof album.artist === 'string'
+        && album.artist.trim()
+        && typeof album.image === 'string'
+        && /^data:image\/(?:png|jpeg|webp);base64,/.test(album.image)
+        && Array.isArray(album.genres)
+        && Array.isArray(album.tracks))
+      .map((album) => ({
+        id: album.id,
+        name: album.name.trim().slice(0, 100),
+        artist: album.artist.trim().slice(0, 80),
+        image: album.image,
+        genres: album.genres.filter((genre) => typeof genre === 'string').slice(0, 10),
+        tracks: album.tracks
+          .filter((track) => (typeof track === 'string' && track.trim())
+            || (track && typeof track.name === 'string' && track.name.trim()))
+          .slice(0, 100)
+          .map((track) => {
+            const name = typeof track === 'string' ? track : track.name;
+            return { name: name.trim().slice(0, 100), reviews: [], lyrics: '', translation: '' };
+          })
+      }));
+  } catch (error) {
+    console.error('Não foi possível carregar os álbuns criados neste navegador.', error);
+    return [];
+  }
+})();
+
+createdAlbums.forEach((album) => {
+  albums[album.id] = album;
+});
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
+
 // Garante que todas as músicas tenham a mesma estrutura para letra e tradução.
 Object.values(albums).forEach((album) => {
   album.tracks = album.tracks.map((track) => ({
@@ -9404,6 +9457,318 @@ document.addEventListener('DOMContentLoaded', function () {
       updateTheme(isDark);
       localStorage.setItem('musicfy-theme', isDark ? 'dark' : 'light');
     });
+  }
+
+  const createAlbumForm = document.getElementById('createAlbumForm');
+  if (createAlbumForm) {
+    const trackListEditor = document.getElementById('newTrackList');
+    const addTrackButton = document.getElementById('addTrackButton');
+    const coverInput = document.getElementById('newAlbumCover');
+    const coverPreview = document.getElementById('coverPreview');
+    const message = document.getElementById('createAlbumMessage');
+    const saveButton = document.getElementById('saveAlbumButton');
+    const maximumCoverSize = 1024 * 1024;
+
+    function updateTrackRemoveButtons() {
+      const removeButtons = trackListEditor.querySelectorAll('.remove-track-button');
+      removeButtons.forEach((button) => {
+        button.disabled = removeButtons.length === 1;
+      });
+    }
+
+    function addTrackField() {
+      const row = document.createElement('div');
+      row.className = 'new-track-row';
+
+      const number = document.createElement('span');
+      number.className = 'new-track-row__number';
+      number.setAttribute('aria-hidden', 'true');
+      number.textContent = String(trackListEditor.children.length + 1).padStart(2, '0');
+
+      const label = document.createElement('label');
+      label.className = 'visually-hidden';
+      label.textContent = `Nome da faixa ${trackListEditor.children.length + 1}`;
+
+      const input = document.createElement('input');
+      input.className = 'form-control';
+      input.type = 'text';
+      input.name = 'trackName';
+      input.maxLength = 100;
+      input.required = true;
+      input.placeholder = 'Nome da faixa';
+      label.htmlFor = `newTrack${trackListEditor.children.length + 1}`;
+      input.id = label.htmlFor;
+
+      const removeButton = document.createElement('button');
+      removeButton.className = 'remove-track-button';
+      removeButton.type = 'button';
+      removeButton.setAttribute('aria-label', `Remover faixa ${trackListEditor.children.length + 1}`);
+      removeButton.textContent = '×';
+      removeButton.addEventListener('click', () => {
+        row.remove();
+        Array.from(trackListEditor.children).forEach((trackRow, index) => {
+          const trackNumber = trackRow.querySelector('.new-track-row__number');
+          const trackLabel = trackRow.querySelector('label');
+          const trackInput = trackRow.querySelector('input');
+          const trackRemoveButton = trackRow.querySelector('.remove-track-button');
+          const position = index + 1;
+          trackNumber.textContent = String(position).padStart(2, '0');
+          trackLabel.textContent = `Nome da faixa ${position}`;
+          trackLabel.htmlFor = `newTrack${position}`;
+          trackInput.id = `newTrack${position}`;
+          trackRemoveButton.setAttribute('aria-label', `Remover faixa ${position}`);
+        });
+        updateTrackRemoveButtons();
+      });
+
+      row.append(number, label, input, removeButton);
+      trackListEditor.append(row);
+      updateTrackRemoveButtons();
+    }
+
+    function readCoverAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => resolve(reader.result));
+        reader.addEventListener('error', () => reject(new Error('Não foi possível ler o arquivo da capa.')));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    addTrackButton.addEventListener('click', addTrackField);
+    addTrackField();
+
+    coverInput.addEventListener('change', async () => {
+      const file = coverInput.files[0];
+      message.textContent = '';
+      if (!file) {
+        coverPreview.replaceChildren(Object.assign(document.createElement('span'), { textContent: 'Prévia da capa' }));
+        return;
+      }
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > maximumCoverSize) {
+        coverInput.value = '';
+        message.textContent = 'Escolha uma imagem PNG, JPG ou WEBP de até 1 MB.';
+        return;
+      }
+
+      try {
+        const imageUrl = await readCoverAsDataUrl(file);
+        const previewImage = document.createElement('img');
+        previewImage.src = imageUrl;
+        previewImage.alt = 'Prévia da capa selecionada';
+        coverPreview.replaceChildren(previewImage);
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    });
+
+    createAlbumForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      message.textContent = '';
+      if (!createAlbumForm.reportValidity()) return;
+
+      const genres = Array.from(createAlbumForm.querySelectorAll('input[name="albumGenre"]:checked'))
+        .map((input) => input.value);
+      if (genres.length === 0) {
+        message.textContent = 'Selecione pelo menos um estilo para o álbum.';
+        return;
+      }
+
+      const cover = coverInput.files[0];
+      if (!cover || !['image/png', 'image/jpeg', 'image/webp'].includes(cover.type) || cover.size > maximumCoverSize) {
+        message.textContent = 'Escolha uma imagem PNG, JPG ou WEBP de até 1 MB para a capa.';
+        return;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = 'Salvando…';
+      try {
+        const albumName = document.getElementById('newAlbumName').value.trim();
+        const artistName = document.getElementById('newAlbumArtist').value.trim();
+        const tracks = Array.from(trackListEditor.querySelectorAll('input[name="trackName"]'))
+          .map((input) => input.value.trim())
+          .filter(Boolean);
+        if (!albumName || !artistName || tracks.length === 0) {
+          message.textContent = 'Preencha o nome, o artista e pelo menos uma faixa.';
+          return;
+        }
+
+        const baseSlug = `${albumName}-${artistName}`
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '') || 'album';
+        let id = `created-${baseSlug}`;
+        let suffix = 2;
+        while (albums[id]) {
+          id = `created-${baseSlug}-${suffix}`;
+          suffix += 1;
+        }
+
+        const newAlbum = {
+          id,
+          name: albumName,
+          artist: artistName,
+          image: await readCoverAsDataUrl(cover),
+          genres,
+          tracks: tracks.map((name) => ({ name, reviews: [], lyrics: '', translation: '' }))
+        };
+        const updatedAlbums = [...createdAlbums, newAlbum];
+        localStorage.setItem(createdAlbumsStorageKey, JSON.stringify(updatedAlbums));
+        createdAlbums.push(newAlbum);
+        albums[id] = newAlbum;
+        window.location.href = 'index.html#albuns';
+      } catch (error) {
+        console.error('Não foi possível salvar o álbum criado.', error);
+        message.textContent = 'Não foi possível salvar. O armazenamento do navegador pode estar cheio; tente uma capa menor.';
+      } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Criar álbum';
+      }
+    });
+  }
+
+  const albumGrid = document.getElementById('albumGrid');
+  if (albumGrid && createdAlbums.length > 0) {
+    createdAlbums.forEach((album) => {
+      const column = document.createElement('div');
+      column.className = 'col-12 col-sm-6 col-lg-4 col-xl-3';
+
+      const card = document.createElement('article');
+      card.className = 'card album-showcase-card h-100';
+
+      const image = document.createElement('img');
+      image.className = 'card-img-top';
+      image.src = album.image;
+      image.alt = `Capa do álbum ${album.name}`;
+      image.loading = 'lazy';
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      const cardTop = document.createElement('div');
+      cardTop.className = 'album-card-top';
+      const title = document.createElement('h5');
+      title.textContent = album.name;
+      const badge = document.createElement('span');
+      badge.className = 'rating-pill';
+      badge.textContent = 'Novo';
+      cardTop.append(title, badge);
+
+      const artist = document.createElement('p');
+      artist.className = 'card-text text-muted';
+      artist.textContent = album.artist;
+      const tags = document.createElement('div');
+      tags.className = 'album-tags album-tags--compact';
+      album.genres.slice(0, 2).forEach((genre) => {
+        const tag = document.createElement('span');
+        tag.textContent = genre;
+        tags.append(tag);
+      });
+      if (album.genres.length > 2) {
+        const remainingGenres = document.createElement('span');
+        remainingGenres.className = 'album-tags__more';
+        remainingGenres.textContent = `+${album.genres.length - 2}`;
+        remainingGenres.title = `${album.genres.length - 2} outros estilos`;
+        tags.append(remainingGenres);
+      }
+      body.append(cardTop, artist, tags);
+
+      const button = document.createElement('button');
+      button.className = 'botao-avaliar';
+      button.dataset.albumId = album.id;
+      button.textContent = 'Explorar';
+
+      card.append(image, body, button);
+      column.append(card);
+      albumGrid.append(column);
+    });
+  }
+
+  const heroCarousel = document.querySelector('.hero-carousel');
+  if (heroCarousel) {
+    const track = heroCarousel.querySelector('.hero-carousel__track');
+    const slides = Array.from(heroCarousel.querySelectorAll('.hero-slide'));
+    const indicators = Array.from(heroCarousel.querySelectorAll('.hero-carousel__indicators button'));
+    const rotationButton = heroCarousel.querySelector('.hero-carousel__rotation');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let currentSlide = 0;
+    let rotationTimer;
+    let manuallyPaused = reducedMotion;
+    let isHovered = false;
+    let isFocused = false;
+
+    function showSlide(index) {
+      currentSlide = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === currentSlide;
+        slide.setAttribute('aria-hidden', String(!isActive));
+        slide.inert = !isActive;
+        const link = slide.querySelector('.hero-slide__link');
+        if (link) link.tabIndex = isActive ? 0 : -1;
+      });
+
+      indicators.forEach((indicator, indicatorIndex) => {
+        const isActive = indicatorIndex === currentSlide;
+        indicator.classList.toggle('is-active', isActive);
+        if (isActive) indicator.setAttribute('aria-current', 'true');
+        else indicator.removeAttribute('aria-current');
+      });
+    }
+
+    function syncRotation() {
+      window.clearInterval(rotationTimer);
+      rotationTimer = undefined;
+      if (!manuallyPaused && !isHovered && !isFocused && !document.hidden && slides.length > 1) {
+        rotationTimer = window.setInterval(() => showSlide(currentSlide + 1), 5000);
+      }
+      rotationButton.textContent = manuallyPaused ? 'Continuar' : 'Pausar';
+      rotationButton.setAttribute('aria-label', manuallyPaused ? 'Continuar carrossel' : 'Pausar carrossel');
+      rotationButton.setAttribute('aria-pressed', String(manuallyPaused));
+    }
+
+    heroCarousel.querySelectorAll('[data-carousel-direction]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const direction = button.dataset.carouselDirection === 'next' ? 1 : -1;
+        showSlide(currentSlide + direction);
+      });
+    });
+
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => showSlide(index));
+    });
+
+    rotationButton.addEventListener('click', () => {
+      manuallyPaused = !manuallyPaused;
+      syncRotation();
+    });
+
+    heroCarousel.addEventListener('mouseenter', () => {
+      isHovered = true;
+      syncRotation();
+    });
+    heroCarousel.addEventListener('mouseleave', () => {
+      isHovered = false;
+      syncRotation();
+    });
+    heroCarousel.addEventListener('focusin', () => {
+      isFocused = true;
+      syncRotation();
+    });
+    heroCarousel.addEventListener('focusout', (event) => {
+      if (!heroCarousel.contains(event.relatedTarget)) {
+        isFocused = false;
+        syncRotation();
+      }
+    });
+    document.addEventListener('visibilitychange', () => {
+      syncRotation();
+    });
+
+    showSlide(0);
+    syncRotation();
   }
 
   const lyricsAlbumId = new URLSearchParams(window.location.search).get('album');
@@ -9575,11 +9940,11 @@ document.addEventListener('DOMContentLoaded', function () {
       trackList.innerHTML = album.tracks.length
         ? album.tracks.map((track, index) => `
           <div class="track-item track-row">
-            <button class="track-play-button" type="button" data-track-index="${index}" aria-label="Ouvir ${track.name}">
+            <button class="track-play-button" type="button" data-track-index="${index}" aria-label="Ouvir ${escapeHtml(track.name)}">
               <span aria-hidden="true">▶</span>
             </button>
             <div class="track-details">
-              <strong>${index + 1}. ${track.name}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
+              <strong>${index + 1}. ${escapeHtml(track.name)}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
               <span class="text-muted">${track.reviews.join(' • ')}</span>
             </div>
             <a class="track-link" href="lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
@@ -9627,7 +9992,7 @@ document.addEventListener('DOMContentLoaded', function () {
           audioPlayer.pause();
           audioPlayer.removeAttribute('src');
           audioPlayer.load();
-          youtubePlayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeTracks[index]}?autoplay=${shouldPlay ? 1 : 0}&rel=0&origin=${encodeURIComponent(window.location.origin)}" title="${track.name}" referrerpolicy="origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+          youtubePlayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeTracks[index]}?autoplay=${shouldPlay ? 1 : 0}&rel=0&origin=${encodeURIComponent(window.location.origin)}" title="${escapeHtml(track.name)}" referrerpolicy="origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
           youtubePlayer.hidden = false;
           youtubeFallbackLink.href = `https://www.youtube.com/watch?v=${youtubeTracks[index]}`;
           youtubeFallbackLink.hidden = false;
@@ -9691,7 +10056,7 @@ document.addEventListener('DOMContentLoaded', function () {
       trackReviews.innerHTML = album.tracks.map(track => 
         `<div class="card mb-3 shadow-sm">
           <div class="card-body">
-            <h5 class="card-title mb-2 fw-bold">${track.name}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</h5>
+            <h5 class="card-title mb-2 fw-bold">${escapeHtml(track.name)}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</h5>
             <p class="mb-0 text-muted">${track.reviews.join(' • ')}</p>
           </div>
         </div>`
@@ -9794,12 +10159,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const renderAlbumRow = ([id, album], index) => `
         <article class="artist-release-row">
           <span class="artist-release-row__index">${String(index + 1).padStart(2, '0')}</span>
-          <img src="${album.image}" alt="" loading="lazy">
+          <img src="${escapeHtml(album.image)}" alt="" loading="lazy">
           <div class="artist-release-row__details">
-            <h3>${album.name}</h3>
+            <h3>${escapeHtml(album.name)}</h3>
             <p>${album.tracks.length ? `Álbum · ${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Álbum · Faixas em breve'}</p>
           </div>
-          <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${album.name}">
+          <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${escapeHtml(album.name)}">
             Explorar <span aria-hidden="true">↗</span>
           </a>
         </article>

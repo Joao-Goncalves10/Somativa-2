@@ -12,7 +12,7 @@
     <!-- Navegação -->
     <nav style="background: linear-gradient(to top right, #7c9bf0, #59f3cd);" class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">musicboxd</a>
+      <a class="navbar-brand fw-bold" href="index.html">musicfy</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -22,11 +22,12 @@
           <li class="nav-item"><a class="nav-link" href="explorar.html">Explorar</a></li>
           <li class="nav-item"><a class="nav-link" href="artistas.html">Artistas</a></li>
           <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
+          <li class="nav-item"><a class="nav-link" href="criar-album.html">Criar álbum</a></li>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+                <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+                <span class="theme-toggle__label">Modo escuro</span>
+          </button>
         </ul>
-                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
-                    <span class="theme-toggle__icon" aria-hidden="true">◐</span>
-                    <span class="theme-toggle__label">Modo escuro</span>
-                </button>
       </div>
     </div>
   </nav>
@@ -62,24 +63,63 @@
             </div>
 
             <div class="hero-visual">
-                            <article class="featured-album">
-                                <img src="src/img/prima_cover.png.jpg" alt="Capa do álbum PRIMA">
-                                <div class="featured-album__body">
-                                    <span class="featured-label">Em destaque</span>
-                                    <h2>PRIMA</h2>
-                                    <p>ADÉLA</p>
-                                </div>
+                <div class="hero-carousel" role="region" aria-roledescription="carrossel" aria-label="Novos álbuns">
+                    <div class="hero-carousel__viewport">
+                        <div class="hero-carousel__track">
+                            <article class="featured-album hero-slide" aria-roledescription="slide" aria-label="1 de 3">
+                                <a href="album.html?id=prima" class="hero-slide__link">
+                                    <img src="src/img/prima_cover.png.jpg" alt="Capa do álbum PRIMA, de ADÉLA">
+                                    <div class="featured-album__body">
+                                        <span class="featured-label">Lançamento recente</span>
+                                        <h2>PRIMA</h2>
+                                        <p>ADÉLA</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="featured-album hero-slide" aria-roledescription="slide" aria-label="2 de 3" aria-hidden="true" inert>
+                                <a href="album.html?id=youSeemPrettySad" class="hero-slide__link" tabindex="-1">
+                                    <img src="src/img/you-seem-pretty-sad-olivia-rodrigo.png" alt="Capa do álbum you seem pretty sad for a girl so in luv">
+                                    <div class="featured-album__body">
+                                        <span class="featured-label">Lançamento recente</span>
+                                        <h2>you seem pretty sad for a girl so in luv</h2>
+                                        <p>Olivia Rodrigo</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="featured-album hero-slide" aria-roledescription="slide" aria-label="3 de 3" aria-hidden="true" inert>
+                                <a href="album.html?id=mansBestFriend" class="hero-slide__link" tabindex="-1">
+                                    <img src="src/img/mans_best_friend_sabrina_carpenter_cover.png" alt="Capa do álbum Man's Best Friend">
+                                    <div class="featured-album__body">
+                                        <span class="featured-label">Lançamento recente</span>
+                                        <h2>Man's Best Friend</h2>
+                                        <p>Sabrina Carpenter</p>
+                                    </div>
+                                </a>
                             </article>
                         </div>
+                    </div>
+                    <div class="hero-carousel__controls" aria-label="Controles do carrossel">
+                        <button class="hero-carousel__rotation" type="button" aria-label="Pausar carrossel" aria-pressed="false">Pausar</button>
+                        <button class="hero-carousel__arrow" type="button" data-carousel-direction="previous" aria-label="Álbum anterior">←</button>
+                        <div class="hero-carousel__indicators" aria-label="Escolher álbum">
+                            <button type="button" class="is-active" aria-label="Mostrar álbum 1" aria-current="true"></button>
+                            <button type="button" aria-label="Mostrar álbum 2"></button>
+                            <button type="button" aria-label="Mostrar álbum 3"></button>
+                        </div>
+                        <button class="hero-carousel__arrow" type="button" data-carousel-direction="next" aria-label="Próximo álbum">→</button>
+                    </div>
+                </div>
+            </div>
         </section>
-                    <section id="albuns">
+        <section id="albuns">
             <div class="section-heading mb-4">
                 <div>
                     <span class="section-pill">Seleção MUSICFY</span>
                     <h2>Álbuns em destaque</h2>
                 </div>
+                <a href="criar-album.html" class="btn btn-outline-primary rounded-pill">＋ Criar álbum</a>
             </div>
-            <div class="row g-4">
+            <div id="albumGrid" class="row g-4">
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/SOUR_OliviaRodrigo_cover.jpg" class="card-img-top" alt="Capa do álbum SOUR">
@@ -88,7 +128,7 @@
                             <p class="card-text text-muted">Olivia Rodrigo</p>
                             <div class="album-tags"><span>Pop</span><span>Indie</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="sour">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="sour">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -99,7 +139,7 @@
                             <p class="card-text text-muted">Olivia Rodrigo</p>
                             <div class="album-tags"><span>Pop</span><span>Alternative</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="youSeemPrettySad">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="youSeemPrettySad">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -110,7 +150,7 @@
                             <p class="card-text text-muted">Olivia Rodrigo</p>
                             <div class="album-tags"><span>Pop</span><span>Alternative</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="guts">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="guts">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -121,7 +161,7 @@
                             <p class="card-text text-muted">Ariana Grande</p>
                             <div class="album-tags"><span>Pop</span><span>R&amp;B</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="petal">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="petal">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -132,7 +172,7 @@
                             <p class="card-text text-muted">Tate McRae</p>
                             <div class="album-tags"><span>Pop</span><span>Dance</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="so-close-to-what">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="so-close-to-what">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -143,7 +183,7 @@
                             <p class="card-text text-muted">JENNIE</p>
                             <div class="album-tags"><span>Pop</span><span>K-pop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="ruby">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="ruby">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -154,7 +194,7 @@
                             <p class="card-text text-muted">JENNIE</p>
                             <div class="album-tags"><span>EP</span><span>K-pop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="fallenAngel">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="fallenAngel">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -165,7 +205,7 @@
                             <p class="card-text text-muted">LISA</p>
                             <div class="album-tags"><span>Pop</span><span>K-pop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="alterEgo">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="alterEgo">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -176,7 +216,7 @@
                             <p class="card-text text-muted">Sabrina Carpenter</p>
                             <div class="album-tags"><span>Pop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="mansBestFriend">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="mansBestFriend">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -187,7 +227,7 @@
                             <p class="card-text text-muted">TWICE</p>
                             <div class="album-tags"><span>K-pop</span><span>Pop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="thisIsFor">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="thisIsFor">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -198,7 +238,7 @@
                             <p class="card-text text-muted">KiiiKiii</p>
                             <div class="album-tags"><span>EP</span><span>K-pop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="whyKiiiKiii">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="whyKiiiKiii">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -209,7 +249,7 @@
                             <p class="card-text text-muted">Sabrina Carpenter</p>
                             <div class="album-tags"><span>Pop</span><span>2 versões</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="emailsICantSend">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="emailsICantSend">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -220,7 +260,7 @@
                             <p class="card-text text-muted">Melanie Martinez</p>
                             <div class="album-tags"><span>Pop</span><span>Alternative</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="hades">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="hades">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -231,7 +271,7 @@
                             <p class="card-text text-muted">Ariana Grande</p>
                             <div class="album-tags"><span>Pop</span><span>2 versões</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="eternalSunshine">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="eternalSunshine">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -242,7 +282,7 @@
                             <p class="card-text text-muted">Ariana Grande</p>
                             <div class="album-tags"><span>Pop</span><span>R&amp;B</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="positions">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="positions">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -253,7 +293,7 @@
                             <p class="card-text text-muted">Slayyyter</p>
                             <div class="album-tags"><span>Pop</span><span>Hyperpop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="worst-girl-in-america">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="worst-girl-in-america">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -264,7 +304,7 @@
                             <p class="card-text text-muted">aespa</p>
                             <div class="album-tags"><span>K-pop</span><span>Dance</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="lemonade">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="lemonade">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -275,7 +315,7 @@
                             <p class="card-text text-muted">Dua Lipa</p>
                             <div class="album-tags"><span>Pop</span><span>Synthpop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="radicalOptimism">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="radicalOptimism">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -286,7 +326,7 @@
                             <p class="card-text text-muted">Charli xcx</p>
                             <div class="album-tags"><span>Pop</span><span>Dance</span><span>3 versões</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="brat">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="brat">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -297,7 +337,7 @@
                             <p class="card-text text-muted">Charli xcx</p>
                             <div class="album-tags"><span>Charli xcx</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="musicFashionFilm">Explorar</button>
+                        <button class="botao-avaliar" data-album-id="musicFashionFilm">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
@@ -308,7 +348,7 @@
                             <p class="card-text text-muted">Kim Petras</p>
                             <div class="album-tags"><span>Pop</span><span>Electropop</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="detour">Avalie</button>
+                        <button class="botao-avaliar" data-album-id="detour">Ver Álbum</button>
                     </article>
                 </div>
             </div>
