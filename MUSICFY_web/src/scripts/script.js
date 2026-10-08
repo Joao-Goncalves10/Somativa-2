@@ -2245,6 +2245,7 @@ Aloka`
   whyKiiiKiii: {
     name: 'WhyKiiiKiii',
     artist: 'KiiiKiii',
+    type: 'EP',
     image: 'src/img/whykikiikiii_ep_cover.png',
     tracks: [
       { name: 'Ever2Late!', reviews: [] },
@@ -9536,12 +9537,18 @@ const createdAlbums = (() => {
         && typeof album.image === 'string'
         && /^data:image\/(?:png|jpeg|webp);base64,/.test(album.image)
         && Array.isArray(album.genres)
-        && Array.isArray(album.tracks))
+        && Array.isArray(album.tracks)
+        && (album.releaseDate === undefined
+          || (typeof album.releaseDate === 'string' && Number.isFinite(Date.parse(album.releaseDate)))))
       .map((album) => ({
         id: album.id,
         name: album.name.trim().slice(0, 100),
         artist: album.artist.trim().slice(0, 80),
+        type: ['ÁLBUM', 'SINGLE', 'EP'].includes(album.type) ? album.type : 'ÁLBUM',
         image: album.image,
+        releaseDate: album.releaseDate || null,
+        versionGroup: typeof album.versionGroup === 'string' ? album.versionGroup : undefined,
+        versionLabel: typeof album.versionLabel === 'string' ? album.versionLabel : undefined,
         genres: album.genres.filter((genre) => typeof genre === 'string').slice(0, 10),
         tracks: album.tracks
           .filter((track) => (typeof track === 'string' && track.trim())
@@ -9549,7 +9556,12 @@ const createdAlbums = (() => {
           .slice(0, 100)
           .map((track) => {
             const name = typeof track === 'string' ? track : track.name;
-            return { name: name.trim().slice(0, 100), reviews: [], lyrics: '', translation: '' };
+            return {
+              name: name.trim().slice(0, 100),
+              reviews: Array.isArray(track.reviews) ? track.reviews : [],
+              lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
+              translation: typeof track.translation === 'string' ? track.translation : ''
+            };
           })
       }));
   } catch (error) {
@@ -9562,6 +9574,132 @@ createdAlbums.forEach((album) => {
   albums[album.id] = album;
 });
 
+const albumOverridesStorageKey = 'musicfy-album-overrides';
+const albumOverrides = (() => {
+  try {
+    const storedOverrides = JSON.parse(localStorage.getItem(albumOverridesStorageKey) || '{}');
+    if (!storedOverrides || typeof storedOverrides !== 'object' || Array.isArray(storedOverrides)) {
+      throw new TypeError('A lista de edições salvas não é válida.');
+    }
+
+    return storedOverrides;
+  } catch (error) {
+    console.error('Não foi possível carregar as edições de álbuns salvas neste navegador.', error);
+    return {};
+  }
+})();
+
+Object.entries(albumOverrides).forEach(([id, overrides]) => {
+  if (albums[id] && overrides && typeof overrides === 'object') {
+    Object.assign(albums[id], overrides);
+  }
+});
+
+const catalogReleaseDates = {
+  sour: '2021-05-21',
+  positions: '2020-10-30',
+  guts: '2023-09-08',
+  gutsSpilled: '2024-03-22',
+  emailsICantSend: '2022-07-15',
+  emailsICantSendFwd: '2023-03-17',
+  eternalSunshine: '2024-03-08',
+  eternalSunshineBrighterDaysAhead: '2025-03-28',
+  radicalOptimism: '2024-05-03',
+  brat: '2024-06-07',
+  bratDeluxe: '2024-06-10',
+  bratRemix: '2024-10-11',
+  rosie: '2024-12-06',
+  rosieDeluxe: '2025-02-14',
+  'so-close-to-what': '2025-02-21',
+  alterEgo: '2025-02-28',
+  ruby: '2025-03-07',
+  whyKiiiKiii: '2025-03-24',
+  thisIsFor: '2025-07-11',
+  mansBestFriend: '2025-08-29'
+};
+
+Object.entries(catalogReleaseDates).forEach(([id, releaseDate]) => {
+  if (albums[id] && !albums[id].releaseDate) {
+    albums[id].releaseDate = `${releaseDate}T00:00:00`;
+  }
+});
+
+const trackLyricsStorageKey = 'musicfy-track-lyrics';
+const trackLyricsRecords = (() => {
+  try {
+    const storedRecords = localStorage.getItem(trackLyricsStorageKey);
+    const records = storedRecords ? JSON.parse(storedRecords) : null;
+    if (records && (typeof records !== 'object' || Array.isArray(records))) {
+      throw new TypeError('O catálogo de letras salvo não é válido.');
+    }
+
+    const lyricsByAlbum = records || Object.fromEntries(Object.entries(albums).map(([id, album]) => [
+      id,
+      album.tracks.map((track) => ({
+        lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
+        translation: typeof track.translation === 'string' ? track.translation : ''
+      }))
+    ]));
+    if (!records) localStorage.setItem(trackLyricsStorageKey, JSON.stringify(lyricsByAlbum));
+    return lyricsByAlbum;
+  } catch (error) {
+    console.error('Não foi possível migrar ou carregar as letras salvas neste navegador.', error);
+    return {};
+  }
+})();
+
+Object.entries(trackLyricsRecords).forEach(([albumId, tracks]) => {
+  if (!albums[albumId] || !Array.isArray(tracks)) return;
+  tracks.forEach((trackLyrics, index) => {
+    if (!trackLyrics || typeof trackLyrics !== 'object') return;
+    const track = albums[albumId].tracks[index];
+    if (!track) return;
+    if (typeof trackLyrics.lyrics === 'string') track.lyrics = trackLyrics.lyrics;
+    if (typeof trackLyrics.translation === 'string') track.translation = trackLyrics.translation;
+  });
+});
+
+function persistAlbumRecord(album) {
+  const updatedTrackLyrics = {
+    ...trackLyricsRecords,
+    [album.id]: album.tracks.map((track) => ({
+      lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
+      translation: typeof track.translation === 'string' ? track.translation : ''
+    }))
+  };
+  localStorage.setItem(trackLyricsStorageKey, JSON.stringify(updatedTrackLyrics));
+  Object.assign(trackLyricsRecords, updatedTrackLyrics);
+
+  if (/^created-[a-z0-9-]+$/.test(album.id)) {
+    const index = createdAlbums.findIndex((createdAlbum) => createdAlbum.id === album.id);
+    const updatedCreatedAlbums = [...createdAlbums];
+    if (index === -1) updatedCreatedAlbums.push(album);
+    else updatedCreatedAlbums[index] = album;
+    localStorage.setItem(createdAlbumsStorageKey, JSON.stringify(updatedCreatedAlbums));
+    if (index === -1) createdAlbums.push(album);
+    else createdAlbums[index] = album;
+  } else {
+    const updatedOverrides = {
+      ...albumOverrides,
+      [album.id]: {
+        name: album.name,
+        artist: album.artist,
+        type: album.type,
+        releaseDate: album.releaseDate,
+        image: album.image,
+        genres: album.genres,
+        tracks: album.tracks,
+        versionGroup: album.versionGroup,
+        versionLabel: album.versionLabel
+      }
+    };
+    localStorage.setItem(albumOverridesStorageKey, JSON.stringify(updatedOverrides));
+    Object.assign(albumOverrides, updatedOverrides);
+  }
+
+  albums[album.id] = album;
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (character) => ({
     '&': '&amp;',
@@ -9570,6 +9708,12 @@ function escapeHtml(value) {
     '"': '&quot;',
     "'": '&#39;'
   })[character]);
+}
+
+function getReleaseTypeNoun(type) {
+  if (type === 'EP') return 'o EP';
+  if (type === 'SINGLE') return 'o single';
+  return 'o álbum';
 }
 
 // Garante que todas as músicas tenham a mesma estrutura para letra e tradução.
@@ -9638,12 +9782,67 @@ const artistProfiles = {
   }
 };
 
+const artistProfilesStorageKey = 'musicfy-artist-profiles';
+const savedArtistProfiles = (() => {
+  try {
+    const storedProfiles = JSON.parse(localStorage.getItem(artistProfilesStorageKey) || '{}');
+    if (!storedProfiles || typeof storedProfiles !== 'object' || Array.isArray(storedProfiles)) {
+      throw new TypeError('A lista de artistas salvos não é válida.');
+    }
+    return Object.fromEntries(Object.entries(storedProfiles).filter(([id, profile]) =>
+      /^[a-z0-9-]+$/.test(id)
+      && profile
+      && typeof profile === 'object'
+      && typeof profile.name === 'string'
+      && profile.name.trim()
+      && typeof profile.photo === 'string'
+      && profile.photo
+      && typeof profile.banner === 'string'
+      && profile.banner
+    ));
+  } catch (error) {
+    console.error('Não foi possível carregar os artistas salvos neste navegador.', error);
+    return {};
+  }
+})();
+
+Object.entries(savedArtistProfiles).forEach(([id, profile]) => {
+  if (!/^[a-z0-9-]+$/.test(id) || !profile || typeof profile !== 'object'
+    || typeof profile.name !== 'string' || !profile.name.trim()
+    || typeof profile.photo !== 'string' || typeof profile.banner !== 'string') return;
+  artistProfiles[id] = {
+    ...artistProfiles[id],
+    name: profile.name.trim().slice(0, 80),
+    photo: profile.photo,
+    banner: profile.banner
+  };
+});
+
 function getArtistId(name) {
   return name.normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+}
+
+function sortAlbumsByReleaseDate(albumEntries) {
+  return albumEntries
+    .map((entry, index) => ({
+      entry,
+      index,
+      releaseTimestamp: Date.parse(entry[1].releaseDate)
+    }))
+    .sort((first, second) => {
+      const firstHasDate = Number.isFinite(first.releaseTimestamp);
+      const secondHasDate = Number.isFinite(second.releaseTimestamp);
+      if (firstHasDate !== secondHasDate) return firstHasDate ? -1 : 1;
+      if (firstHasDate && first.releaseTimestamp !== second.releaseTimestamp) {
+        return second.releaseTimestamp - first.releaseTimestamp;
+      }
+      return first.index - second.index;
+    })
+    .map(({ entry }) => entry);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -9664,32 +9863,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const presavedAlbums = JSON.parse(localStorage.getItem('musicfy-presaved-albums') || '[]');
   const notifiedPresaves = JSON.parse(localStorage.getItem('musicfy-presave-notified') || '[]');
-  const releasedPresave = Object.entries(albums).find(([id, album]) =>
+  const releasedPresaves = Object.entries(albums).filter(([id, album]) =>
     album.releaseDate &&
     new Date(album.releaseDate).getTime() <= Date.now() &&
     presavedAlbums.includes(id) &&
     !notifiedPresaves.includes(id)
   );
 
-  if (releasedPresave) {
-    const [releasedAlbumId, releasedAlbum] = releasedPresave;
+  if (releasedPresaves.length > 0) {
     const notice = document.createElement('aside');
     notice.className = 'presave-notice';
     notice.setAttribute('role', 'status');
-    const message = document.createElement('p');
-    message.append(`Seu Pre-Save de ${releasedAlbum.name}, de ${releasedAlbum.artist}, já está disponível! `);
-    const albumLink = document.createElement('a');
-    albumLink.href = `album.html?id=${encodeURIComponent(releasedAlbumId)}`;
-    albumLink.textContent = 'Abrir EP';
-    message.append(albumLink);
+    const releasedList = document.createElement('ul');
+    releasedList.className = 'presave-notice__list';
+    releasedPresaves.forEach(([releasedAlbumId, releasedAlbum]) => {
+      const item = document.createElement('li');
+      const message = document.createElement('span');
+      message.textContent = `Seu Pre-Save de ${releasedAlbum.name}, de ${releasedAlbum.artist}, já está disponível. `;
+      const albumLink = document.createElement('a');
+      albumLink.href = `album.html?id=${encodeURIComponent(releasedAlbumId)}`;
+      albumLink.textContent = `Abrir ${releasedAlbum.type || 'lançamento'}`;
+      item.append(message, albumLink);
+      releasedList.append(item);
+    });
     const dismissButton = document.createElement('button');
     dismissButton.type = 'button';
     dismissButton.setAttribute('aria-label', 'Fechar aviso de lançamento');
     dismissButton.textContent = '×';
     dismissButton.addEventListener('click', () => notice.remove());
-    notice.append(message, dismissButton);
+    notice.append(releasedList, dismissButton);
     document.querySelector('nav')?.after(notice);
-    localStorage.setItem('musicfy-presave-notified', JSON.stringify([...notifiedPresaves, releasedAlbumId]));
+    localStorage.setItem('musicfy-presave-notified', JSON.stringify([
+      ...notifiedPresaves,
+      ...releasedPresaves.map(([id]) => id)
+    ]));
   }
 
   if (themeToggle) {
@@ -9708,7 +9915,143 @@ document.addEventListener('DOMContentLoaded', function () {
     const coverPreview = document.getElementById('coverPreview');
     const message = document.getElementById('createAlbumMessage');
     const saveButton = document.getElementById('saveAlbumButton');
+    const releaseDateInput = document.getElementById('newAlbumReleaseDate');
+    const releaseStatusPreview = document.getElementById('releaseStatusPreview');
+    const availableArtists = document.getElementById('availableArtists');
+    const formMode = document.getElementById('albumFormMode');
+    const existingAlbumField = document.getElementById('existingAlbumField');
+    const existingAlbumSelect = document.getElementById('existingAlbumSelect');
+    const deluxeOptions = document.getElementById('deluxeOptions');
+    const isDeluxeEdition = document.getElementById('isDeluxeEdition');
+    const deluxeBaseAlbumField = document.getElementById('deluxeBaseAlbumField');
+    const deluxeBaseAlbumSelect = document.getElementById('deluxeBaseAlbumSelect');
     const maximumCoverSize = 1024 * 1024;
+    const requestedEditAlbumId = new URLSearchParams(window.location.search).get('edit');
+    let editingOriginalGenres = [];
+
+    function populateAlbumSelect(select, selectedId) {
+      const albumsByName = Object.entries(albums).sort(([, first], [, second]) =>
+        `${first.artist} ${first.name}`.localeCompare(`${second.artist} ${second.name}`, 'pt-BR')
+      );
+      select.replaceChildren();
+      const prompt = document.createElement('option');
+      prompt.value = '';
+      prompt.textContent = 'Selecione um álbum';
+      prompt.disabled = true;
+      prompt.selected = !selectedId;
+      select.append(prompt);
+      albumsByName.forEach(([id, album]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = `${album.artist} — ${album.name}${album.type ? ` (${album.type})` : ''}`;
+        option.selected = id === selectedId;
+        select.append(option);
+      });
+    }
+
+    function toBrasiliaDateTimeInputValue(value) {
+      const date = value ? new Date(value) : new Date();
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Sao_Paulo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+      }).formatToParts(date).reduce((result, part) => {
+        result[part.type] = part.value;
+        return result;
+      }, {});
+      return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+    }
+
+    function showCoverPreview(imageUrl, altText = 'Prévia da capa selecionada') {
+      const previewImage = document.createElement('img');
+      previewImage.src = imageUrl;
+      previewImage.alt = altText;
+      coverPreview.replaceChildren(previewImage);
+    }
+
+    function setTrackFields(tracks) {
+      trackListEditor.replaceChildren();
+      tracks.forEach((track) => {
+        addTrackField();
+        const row = trackListEditor.lastElementChild;
+        row.querySelector('input[name="trackName"]').value =
+          typeof track === 'string' ? track : track.name;
+        row.querySelector('textarea[name="trackLyrics"]').value =
+          typeof track === 'string' ? '' : track.lyrics || '';
+        row.querySelector('textarea[name="trackTranslation"]').value =
+          typeof track === 'string' ? '' : track.translation || '';
+        const hasLyrics = typeof track !== 'string' && Boolean(track.lyrics || track.translation);
+        row.querySelector('.new-track-lyrics summary').textContent =
+          hasLyrics ? 'Editar letra e tradução' : 'Adicionar letra';
+      });
+      if (tracks.length === 0) addTrackField();
+      updateTrackRemoveButtons();
+    }
+
+    function populateFormForAlbum(album) {
+      editingOriginalGenres = album.genres || [];
+      coverInput.value = '';
+      document.getElementById('newAlbumName').value = album.name;
+      document.getElementById('newAlbumArtist').value = album.artist;
+      document.getElementById('newAlbumType').value = ['ÁLBUM', 'SINGLE', 'EP'].includes(album.type)
+        ? album.type
+        : 'ÁLBUM';
+      releaseDateInput.value = toBrasiliaDateTimeInputValue(album.releaseDate);
+      createAlbumForm.querySelectorAll('input[name="albumGenre"]').forEach((input) => {
+        input.checked = (album.genres || []).includes(input.value);
+      });
+      setTrackFields(album.tracks);
+      showCoverPreview(album.image, `Capa atual de ${album.name}`);
+      updateReleaseStatusPreview();
+    }
+
+    populateAlbumSelect(existingAlbumSelect, requestedEditAlbumId);
+    populateAlbumSelect(deluxeBaseAlbumSelect);
+    if (availableArtists) {
+      const artistNames = new Set([
+        ...Object.values(albums).map((album) => album.artist),
+        ...Object.values(savedArtistProfiles).map((profile) => profile.name)
+      ]);
+      [...artistNames].sort((nameA, nameB) => nameA.localeCompare(nameB, 'pt-BR')).forEach((name) => {
+        const option = document.createElement('option');
+        option.value = name;
+        availableArtists.append(option);
+      });
+    }
+
+    function updateReleaseStatusPreview() {
+      if (!releaseDateInput.value) {
+        releaseStatusPreview.textContent = 'Selecione a data e a hora para ver a situação do lançamento.';
+        releaseStatusPreview.classList.remove('release-status-preview--presave');
+        return;
+      }
+
+      const releaseTimestamp = new Date(`${releaseDateInput.value}:00-03:00`).getTime();
+      if (!Number.isFinite(releaseTimestamp)) {
+        releaseStatusPreview.textContent = 'Informe uma data e hora válidas.';
+        releaseStatusPreview.classList.remove('release-status-preview--presave');
+        return;
+      }
+
+      const releaseDate = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        dateStyle: 'short',
+        timeStyle: 'short',
+        hour12: false
+      }).format(releaseTimestamp);
+      const isPresave = releaseTimestamp > Date.now();
+      releaseStatusPreview.textContent = isPresave
+        ? `Pré-save: o lançamento ficará disponível em ${releaseDate}.`
+        : `Lançamento disponível: a data escolhida (${releaseDate}) já passou ou é agora.`;
+      releaseStatusPreview.classList.toggle('release-status-preview--presave', isPresave);
+    }
+
+    releaseDateInput.addEventListener('input', updateReleaseStatusPreview);
+    releaseDateInput.addEventListener('change', updateReleaseStatusPreview);
 
     function updateTrackRemoveButtons() {
       const removeButtons = trackListEditor.querySelectorAll('.remove-track-button');
@@ -9718,6 +10061,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function addTrackField() {
+      const trackId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const row = document.createElement('div');
       row.className = 'new-track-row';
 
@@ -9762,7 +10106,42 @@ document.addEventListener('DOMContentLoaded', function () {
         updateTrackRemoveButtons();
       });
 
-      row.append(number, label, input, removeButton);
+      const lyricsDetails = document.createElement('details');
+      lyricsDetails.className = 'new-track-lyrics';
+      const lyricsSummary = document.createElement('summary');
+      lyricsSummary.textContent = 'Adicionar ou editar letra';
+      const lyricsLabel = document.createElement('label');
+      lyricsLabel.className = 'form-label';
+      lyricsLabel.htmlFor = `newTrackLyrics${trackId}`;
+      lyricsLabel.textContent = 'Letra';
+      const lyricsInput = document.createElement('textarea');
+      lyricsInput.className = 'form-control';
+      lyricsInput.id = lyricsLabel.htmlFor;
+      lyricsInput.name = 'trackLyrics';
+      lyricsInput.maxLength = 30000;
+      lyricsInput.rows = 8;
+      lyricsInput.placeholder = 'Cole ou escreva a letra aqui';
+      const translationLabel = document.createElement('label');
+      translationLabel.className = 'form-label mt-3';
+      translationLabel.htmlFor = `newTrackTranslation${trackId}`;
+      translationLabel.textContent = 'Tradução (opcional)';
+      const translationInput = document.createElement('textarea');
+      translationInput.className = 'form-control';
+      translationInput.id = translationLabel.htmlFor;
+      translationInput.name = 'trackTranslation';
+      translationInput.maxLength = 30000;
+      translationInput.rows = 6;
+      translationInput.placeholder = 'Tradução autorizada, se houver';
+      const updateLyricsSummary = () => {
+        lyricsSummary.textContent = lyricsInput.value || translationInput.value
+          ? 'Editar letra e tradução'
+          : 'Adicionar letra';
+      };
+      lyricsInput.addEventListener('input', updateLyricsSummary);
+      translationInput.addEventListener('input', updateLyricsSummary);
+      lyricsDetails.append(lyricsSummary, lyricsLabel, lyricsInput, translationLabel, translationInput);
+
+      row.append(number, label, input, removeButton, lyricsDetails);
       trackListEditor.append(row);
       updateTrackRemoveButtons();
     }
@@ -9779,11 +10158,50 @@ document.addEventListener('DOMContentLoaded', function () {
     addTrackButton.addEventListener('click', addTrackField);
     addTrackField();
 
+    formMode.addEventListener('change', () => {
+      const isEditing = formMode.value === 'edit';
+      existingAlbumField.hidden = !isEditing;
+      deluxeOptions.hidden = isEditing;
+      existingAlbumSelect.required = isEditing;
+      deluxeBaseAlbumSelect.required = !isEditing && isDeluxeEdition.checked;
+      coverInput.required = !isEditing;
+      saveButton.textContent = isEditing ? 'Salvar alterações' : 'Criar álbum';
+      message.textContent = '';
+
+      if (isEditing) {
+        const album = albums[existingAlbumSelect.value];
+        if (album) populateFormForAlbum(album);
+      } else {
+        createAlbumForm.reset();
+        editingOriginalGenres = [];
+        trackListEditor.replaceChildren();
+        addTrackField();
+        deluxeBaseAlbumField.hidden = true;
+        deluxeBaseAlbumSelect.required = false;
+        coverPreview.replaceChildren(Object.assign(document.createElement('span'), {
+          textContent: 'Prévia da capa'
+        }));
+        updateReleaseStatusPreview();
+      }
+    });
+
+    existingAlbumSelect.addEventListener('change', () => {
+      const album = albums[existingAlbumSelect.value];
+      if (album) populateFormForAlbum(album);
+    });
+
+    isDeluxeEdition.addEventListener('change', () => {
+      deluxeBaseAlbumField.hidden = !isDeluxeEdition.checked;
+      deluxeBaseAlbumSelect.required = isDeluxeEdition.checked;
+    });
+
     coverInput.addEventListener('change', async () => {
       const file = coverInput.files[0];
       message.textContent = '';
       if (!file) {
-        coverPreview.replaceChildren(Object.assign(document.createElement('span'), { textContent: 'Prévia da capa' }));
+        const editingAlbum = formMode.value === 'edit' ? albums[existingAlbumSelect.value] : null;
+        if (editingAlbum) showCoverPreview(editingAlbum.image, `Capa atual de ${editingAlbum.name}`);
+        else coverPreview.replaceChildren(Object.assign(document.createElement('span'), { textContent: 'Prévia da capa' }));
         return;
       }
       if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > maximumCoverSize) {
@@ -9794,10 +10212,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       try {
         const imageUrl = await readCoverAsDataUrl(file);
-        const previewImage = document.createElement('img');
-        previewImage.src = imageUrl;
-        previewImage.alt = 'Prévia da capa selecionada';
-        coverPreview.replaceChildren(previewImage);
+        showCoverPreview(imageUrl);
       } catch (error) {
         message.textContent = error.message;
       }
@@ -9808,15 +10223,24 @@ document.addEventListener('DOMContentLoaded', function () {
       message.textContent = '';
       if (!createAlbumForm.reportValidity()) return;
 
-      const genres = Array.from(createAlbumForm.querySelectorAll('input[name="albumGenre"]:checked'))
+      const isEditing = formMode.value === 'edit';
+      const existingAlbum = isEditing ? albums[existingAlbumSelect.value] : null;
+      if (isEditing && !existingAlbum) {
+        message.textContent = 'Selecione um álbum válido para editar.';
+        return;
+      }
+
+      let genres = Array.from(createAlbumForm.querySelectorAll('input[name="albumGenre"]:checked'))
         .map((input) => input.value);
-      if (genres.length === 0) {
+      if (genres.length === 0 && isEditing) genres = [...editingOriginalGenres];
+      if (genres.length === 0 && !isEditing) {
         message.textContent = 'Selecione pelo menos um estilo para o álbum.';
         return;
       }
 
       const cover = coverInput.files[0];
-      if (!cover || !['image/png', 'image/jpeg', 'image/webp'].includes(cover.type) || cover.size > maximumCoverSize) {
+      if ((cover && (!['image/png', 'image/jpeg', 'image/webp'].includes(cover.type)
+        || cover.size > maximumCoverSize)) || (!isEditing && !cover)) {
         message.textContent = 'Escolha uma imagem PNG, JPG ou WEBP de até 1 MB para a capa.';
         return;
       }
@@ -9826,51 +10250,141 @@ document.addEventListener('DOMContentLoaded', function () {
       try {
         const albumName = document.getElementById('newAlbumName').value.trim();
         const artistName = document.getElementById('newAlbumArtist').value.trim();
-        const tracks = Array.from(trackListEditor.querySelectorAll('input[name="trackName"]'))
-          .map((input) => input.value.trim())
-          .filter(Boolean);
-        if (!albumName || !artistName || tracks.length === 0) {
-          message.textContent = 'Preencha o nome, o artista e pelo menos uma faixa.';
+        const albumType = document.getElementById('newAlbumType').value;
+        const releaseDateValue = releaseDateInput.value;
+        const releaseTimestamp = new Date(`${releaseDateValue}:00-03:00`).getTime();
+        const tracks = Array.from(trackListEditor.children)
+          .map((row) => ({
+            name: row.querySelector('input[name="trackName"]').value.trim(),
+            lyrics: row.querySelector('textarea[name="trackLyrics"]').value.trim(),
+            translation: row.querySelector('textarea[name="trackTranslation"]').value.trim()
+          }))
+          .filter((track) => track.name);
+        if (!albumName || !artistName || !tracks.length || !releaseDateValue || !Number.isFinite(releaseTimestamp)) {
+          message.textContent = 'Preencha o nome, o artista, o tipo, a data e hora de lançamento e pelo menos uma faixa.';
           return;
         }
 
+        const image = cover ? await readCoverAsDataUrl(cover) : existingAlbum.image;
+        const updatedTracks = tracks.map(({ name, lyrics, translation }) => {
+          const previousTrack = existingAlbum?.tracks.find((track) => track.name === name);
+          return {
+            ...(previousTrack || {}),
+            name,
+            reviews: previousTrack?.reviews || [],
+            lyrics,
+            translation
+          };
+        });
+        const albumFields = {
+          name: albumName,
+          artist: artistName,
+          type: albumType,
+          releaseDate: new Date(releaseTimestamp).toISOString(),
+          image,
+          genres,
+          tracks: updatedTracks
+        };
+
+        if (isEditing) {
+          const existingAlbumId = existingAlbumSelect.value;
+          persistAlbumRecord({ ...existingAlbum, ...albumFields, id: existingAlbumId });
+          window.location.href = `album.html?id=${encodeURIComponent(existingAlbumId)}`;
+          return;
+        }
+
+        let id;
         const baseSlug = `${albumName}-${artistName}`
           .normalize('NFD')
           .replace(/[\u0300-\u036f]/g, '')
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/^-|-$/g, '') || 'album';
-        let id = `created-${baseSlug}`;
-        let suffix = 2;
-        while (albums[id]) {
-          id = `created-${baseSlug}-${suffix}`;
+        let suffix = 1;
+        do {
+          id = `created-${baseSlug}${suffix === 1 ? '' : `-${suffix}`}`;
           suffix += 1;
-        }
+        } while (albums[id]);
 
         const newAlbum = {
+          ...albumFields,
           id,
-          name: albumName,
-          artist: artistName,
-          image: await readCoverAsDataUrl(cover),
-          genres,
-          tracks: tracks.map((name) => ({ name, reviews: [], lyrics: '', translation: '' }))
+          ...(isDeluxeEdition.checked ? {
+            versionLabel: `Edição Deluxe · ${albumName}`
+          } : {})
         };
-        const updatedAlbums = [...createdAlbums, newAlbum];
-        localStorage.setItem(createdAlbumsStorageKey, JSON.stringify(updatedAlbums));
-        createdAlbums.push(newAlbum);
-        albums[id] = newAlbum;
+
+        if (isDeluxeEdition.checked) {
+          const baseAlbumId = deluxeBaseAlbumSelect.value;
+          const baseAlbum = albums[baseAlbumId];
+          if (!baseAlbum) {
+            message.textContent = 'Selecione o álbum original da edição deluxe.';
+            return;
+          }
+          const versionGroup = baseAlbum.versionGroup || `created-version-${baseAlbumId}`;
+          persistAlbumRecord({
+            ...baseAlbum,
+            id: baseAlbumId,
+            versionGroup,
+            versionLabel: baseAlbum.versionLabel || 'Edição padrão'
+          });
+          newAlbum.versionGroup = versionGroup;
+        }
+        persistAlbumRecord(newAlbum);
         window.location.href = 'index.html#albuns';
       } catch (error) {
-        console.error('Não foi possível salvar o álbum criado.', error);
+        console.error(isEditing
+          ? 'Não foi possível salvar as alterações do álbum.'
+          : 'Não foi possível salvar o álbum criado.', error);
         message.textContent = 'Não foi possível salvar. O armazenamento do navegador pode estar cheio; tente uma capa menor.';
       } finally {
         saveButton.disabled = false;
-        saveButton.textContent = 'Criar álbum';
+        saveButton.textContent = formMode.value === 'edit' ? 'Salvar alterações' : 'Criar álbum';
+      }
+    });
+
+    if (requestedEditAlbumId && albums[requestedEditAlbumId]) {
+      formMode.value = 'edit';
+      formMode.dispatchEvent(new Event('change'));
+    }
+  }
+
+  const albumGrid = document.getElementById('albumGrid');
+  if (albumGrid) {
+    albumGrid.querySelectorAll('.album-showcase-card').forEach((card) => {
+      const albumId = card.querySelector('[data-album-id]')?.dataset.albumId;
+      const album = albumId ? albums[albumId] : null;
+      if (!album) return;
+
+      const artistLabel = card.querySelector('.card-text');
+      if (artistLabel) {
+        artistLabel.textContent = `${album.artist} · ${album.type || 'ÁLBUM'}`;
+      }
+
+      card.querySelectorAll('.album-tags span').forEach((tag) => {
+        if (['ÁLBUM', 'EP', 'SINGLE'].includes(tag.textContent.trim().toLocaleUpperCase('pt-BR'))) {
+          tag.remove();
+        }
+      });
+
+      const releaseTime = album.releaseDate ? new Date(album.releaseDate).getTime() : NaN;
+      if (Number.isFinite(releaseTime) && releaseTime > Date.now()) {
+        const body = card.querySelector('.card-body');
+        if (body && !body.querySelector('.album-release-date')) {
+          const releaseDetails = document.createElement('small');
+          releaseDetails.className = 'text-muted d-block mt-2 album-release-date';
+          releaseDetails.textContent = `Lançamento: ${new Intl.DateTimeFormat('pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            dateStyle: 'short',
+            timeStyle: 'short',
+            hour12: false
+          }).format(new Date(album.releaseDate))}`;
+          body.append(releaseDetails);
+        }
       }
     });
   }
 
-  const albumGrid = document.getElementById('albumGrid');
   if (albumGrid && createdAlbums.length > 0) {
     createdAlbums.forEach((album) => {
       const column = document.createElement('div');
@@ -9893,12 +10407,13 @@ document.addEventListener('DOMContentLoaded', function () {
       title.textContent = album.name;
       const badge = document.createElement('span');
       badge.className = 'rating-pill';
-      badge.textContent = 'Novo';
+      const isPresave = album.releaseDate && new Date(album.releaseDate).getTime() > Date.now();
+      badge.textContent = isPresave ? 'Pré-save' : 'Novo';
       cardTop.append(title, badge);
 
       const artist = document.createElement('p');
       artist.className = 'card-text text-muted';
-      artist.textContent = album.artist;
+      artist.textContent = `${album.artist} · ${album.type || 'ÁLBUM'}`;
       const tags = document.createElement('div');
       tags.className = 'album-tags album-tags--compact';
       album.genres.slice(0, 2).forEach((genre) => {
@@ -9914,16 +10429,41 @@ document.addEventListener('DOMContentLoaded', function () {
         tags.append(remainingGenres);
       }
       body.append(cardTop, artist, tags);
+      if (isPresave) {
+        const releaseDetails = document.createElement('small');
+        releaseDetails.className = 'text-muted d-block mt-2';
+        releaseDetails.textContent = `Lançamento: ${new Intl.DateTimeFormat('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
+          dateStyle: 'short',
+          timeStyle: 'short',
+          hour12: false
+        }).format(new Date(album.releaseDate))}`;
+        body.append(releaseDetails);
+      }
 
       const button = document.createElement('button');
       button.className = 'botao-avaliar';
       button.dataset.albumId = album.id;
-      button.textContent = 'Explorar';
+      button.textContent = isPresave ? 'Fazer Pre-Save' : 'Ver Álbum';
+      button.addEventListener('click', () => {
+        window.location.href = `album.html?id=${encodeURIComponent(album.id)}`;
+      });
 
       card.append(image, body, button);
       column.append(card);
       albumGrid.append(column);
     });
+  }
+
+  if (albumGrid) {
+    const cardsByAlbumId = new Map(Array.from(albumGrid.children).map((column) => {
+      const albumId = column.querySelector('[data-album-id]')?.dataset.albumId;
+      return [albumId, column];
+    }));
+    sortAlbumsByReleaseDate([...cardsByAlbumId.keys()]
+      .filter((albumId) => albumId && albums[albumId])
+      .map((albumId) => [albumId, albums[albumId]]))
+      .forEach(([albumId]) => albumGrid.append(cardsByAlbumId.get(albumId)));
   }
 
   const heroCarousel = document.querySelector('.hero-carousel');
@@ -10020,6 +10560,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (lyricsAlbum && lyricsTrack && document.getElementById('lyricsTitle')) {
     document.getElementById('lyricsCover').src = lyricsAlbum.image;
     document.getElementById('lyricsCover').alt = lyricsAlbum.name;
+    document.getElementById('lyricsBackdrop').src = lyricsAlbum.image;
     document.getElementById('lyricsAlbumName').textContent = lyricsAlbum.name;
     document.getElementById('lyricsArtist').textContent = lyricsAlbum.artist;
     const lyricsTitle = document.getElementById('lyricsTitle');
@@ -10034,6 +10575,24 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('lyricsAlbumLink').href = `album.html?id=${lyricsAlbumId}`;
     document.getElementById('lyricsText').textContent = lyricsTrack.lyrics || 'A letra desta música ainda não foi cadastrada.';
     document.getElementById('translationText').textContent = lyricsTrack.translation || 'A tradução será exibida quando houver uma versão autorizada cadastrada.';
+
+    const lyricsPanel = document.querySelector('.lyrics-glass-panel');
+    const lyricsSections = Array.from(document.querySelectorAll('.lyrics-reading'));
+    const lyricsViewButtons = Array.from(document.querySelectorAll('[data-lyrics-view]'));
+    lyricsViewButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const view = button.dataset.lyricsView;
+        lyricsPanel.dataset.view = view;
+        lyricsSections.forEach((section, index) => {
+          section.hidden = view !== 'both' && (view === 'lyrics' ? index === 1 : index === 0);
+        });
+        lyricsViewButtons.forEach((viewButton) => {
+          const isActive = viewButton === button;
+          viewButton.classList.toggle('is-active', isActive);
+          viewButton.setAttribute('aria-pressed', String(isActive));
+        });
+      });
+    });
   }
 
   const profileForm = document.getElementById('profileForm');
@@ -10158,6 +10717,10 @@ document.addEventListener('DOMContentLoaded', function () {
       albumArtist.textContent = album.artist;
       albumArtist.href = `artista.html?id=${encodeURIComponent(getArtistId(album.artist))}`;
     }
+    const editAlbumButton = document.getElementById('editAlbumButton');
+    if (editAlbumButton) {
+      editAlbumButton.href = `criar-album.html?edit=${encodeURIComponent(albumId)}`;
+    }
     const albumVersions = document.getElementById('albumVersions');
     const albumVersionSelect = document.getElementById('albumVersionSelect');
     if (album.versionGroup && albumVersions && albumVersionSelect) {
@@ -10165,11 +10728,16 @@ document.addEventListener('DOMContentLoaded', function () {
         .filter(([, version]) => version.versionGroup === album.versionGroup);
       if (versions.length > 1) {
         albumVersions.hidden = false;
-        albumVersionSelect.innerHTML = versions.map(([id, version]) =>
-          `<option value="${encodeURIComponent(id)}" ${id === albumId ? 'selected' : ''}>${version.versionLabel}</option>`
-        ).join('');
+        albumVersionSelect.replaceChildren();
+        versions.forEach(([id, version]) => {
+          const option = document.createElement('option');
+          option.value = id;
+          option.textContent = version.versionLabel || version.name;
+          option.selected = id === albumId;
+          albumVersionSelect.append(option);
+        });
         albumVersionSelect.addEventListener('change', function () {
-          window.location.href = `album.html?id=${albumVersionSelect.value}`;
+          window.location.href = `album.html?id=${encodeURIComponent(albumVersionSelect.value)}`;
         });
       }
     }
@@ -10209,7 +10777,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (isPreRelease) {
         releaseDateLabel.textContent = `Lançamento em ${formattedReleaseDate} (horário de Brasília)`;
         preReleaseTitle.textContent = `Faça o Pre-Save de ${album.name}`;
-        preSaveDescription.textContent = `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} neste navegador para receber um aviso dentro do site quando for lançado.`;
+        preSaveDescription.textContent = `Salve ${getReleaseTypeNoun(album.type)} neste navegador para receber um aviso dentro do site quando for lançado.`;
         if (musicPlayer) musicPlayer.hidden = true;
         const hasAvailableTracks = album.tracks.some((track) => track.preReleaseAvailable);
         if (musicPlayer && hasAvailableTracks) musicPlayer.hidden = false;
@@ -10219,7 +10787,7 @@ document.addEventListener('DOMContentLoaded', function () {
         preReleasePanel.classList.add('pre-release-panel--released');
         releaseDateLabel.textContent = 'Já disponível';
         preReleaseTitle.textContent = `${album.name} foi lançado!`;
-        preSaveDescription.textContent = `${album.type === 'EP' ? 'O EP' : 'O álbum'} de ${album.artist} já está disponível no catálogo.`;
+        preSaveDescription.textContent = `${getReleaseTypeNoun(album.type)} de ${album.artist} já está disponível no catálogo.`;
         countdownTimer.hidden = true;
         preSaveButton.hidden = true;
       }
@@ -10231,7 +10799,7 @@ document.addEventListener('DOMContentLoaded', function () {
           preSaveButton.setAttribute('aria-pressed', String(isSaved));
           preSaveDescription.textContent = isSaved
             ? `Este lançamento está salvo neste navegador. Avisaremos dentro do site quando ${album.name} for lançado.`
-            : `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} neste navegador para receber um aviso dentro do site quando for lançado.`;
+            : `Salve ${getReleaseTypeNoun(album.type)} neste navegador para receber um aviso dentro do site quando for lançado.`;
         };
 
         updatePreSaveButton();
@@ -10445,28 +11013,35 @@ document.addEventListener('DOMContentLoaded', function () {
   const artistAlbumsContainer = document.getElementById('artistAlbums');
   if (artistAlbumsContainer) {
     const artistId = new URLSearchParams(window.location.search).get('id');
-    const artistAlbums = Object.entries(albums)
-      .filter(([, album]) => getArtistId(album.artist) === artistId);
+    const artistAlbums = sortAlbumsByReleaseDate(Object.entries(albums)
+      .filter(([, album]) => getArtistId(album.artist) === artistId));
     const artistDiscography = document.getElementById('artistDiscography');
     const artistNotFound = document.getElementById('artistNotFound');
+    const profile = artistProfiles[artistId];
 
-    if (!artistId || artistAlbums.length === 0) {
+    if (!artistId || (artistAlbums.length === 0 && !profile)) {
       artistDiscography.hidden = true;
       artistNotFound.hidden = false;
     } else {
-      const artistName = artistAlbums[0][1].artist;
-      const profile = artistProfiles[artistId];
-      const artistPhoto = profile?.photo || artistAlbums[0][1].image;
+      const artistName = profile?.name || artistAlbums[0]?.[1].artist || artistId;
+      const artistPhoto = profile?.photo || artistAlbums[0]?.[1].image;
       const artistNameElement = document.getElementById('artistName');
       const artistBanner = document.getElementById('artistBanner');
+      const artistPhotoElement = document.getElementById('artistPhoto');
       const artistPhotoCredit = document.getElementById('artistPhotoCredit');
+      const editArtistButton = document.getElementById('editArtistButton');
 
       artistNameElement.textContent = artistName;
-      artistBanner.src = artistPhoto;
+      artistBanner.src = profile?.banner || artistPhoto;
       artistBanner.alt = '';
+      artistPhotoElement.src = artistPhoto;
+      artistPhotoElement.alt = `Foto de ${artistName}`;
+      editArtistButton.href = `criar-artista.html?edit=${encodeURIComponent(artistId)}`;
       document.getElementById('artistAlbumCount').textContent = String(artistAlbums.length);
-      document.getElementById('artistPlayBtn').addEventListener('click', function () {
-        window.location.href = `album.html?id=${encodeURIComponent(artistAlbums[0][0])}`;
+      const playButton = document.getElementById('artistPlayBtn');
+      playButton.disabled = artistAlbums.length === 0;
+      playButton.addEventListener('click', function () {
+        if (artistAlbums[0]) window.location.href = `album.html?id=${encodeURIComponent(artistAlbums[0][0])}`;
       });
 
       const followButton = document.getElementById('artistFollowBtn');
@@ -10501,13 +11076,8 @@ document.addEventListener('DOMContentLoaded', function () {
           <span class="artist-release-row__index">${String(index + 1).padStart(2, '0')}</span>
           <img src="${escapeHtml(album.image)}" alt="" loading="lazy">
           <div class="artist-release-row__details">
-<<<<<<< HEAD
             <h3>${escapeHtml(album.name)}</h3>
-            <p>${album.tracks.length ? `Álbum · ${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Álbum · Faixas em breve'}</p>
-=======
-            <h3>${album.name}</h3>
             <p>${album.type || 'Álbum'} · ${album.tracks.length ? `${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Faixas em breve'}</p>
->>>>>>> 567509e1618a4d9ba7c1d17266ee4383428045d7
           </div>
           <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${escapeHtml(album.name)}">
             Explorar <span aria-hidden="true">↗</span>
@@ -10518,8 +11088,10 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('artistPopularAlbums').innerHTML = artistAlbums
         .slice(0, 3)
         .map(renderAlbumRow)
-        .join('');
-      artistAlbumsContainer.innerHTML = artistAlbums.map(renderAlbumRow).join('');
+        .join('') || '<p class="artist-empty-discography">Ainda não há lançamentos em destaque.</p>';
+      artistAlbumsContainer.innerHTML = artistAlbums.length
+        ? artistAlbums.map(renderAlbumRow).join('')
+        : '<p class="artist-empty-discography">Este artista ainda não tem álbuns no catálogo.</p>';
     }
   }
 
@@ -10527,22 +11099,31 @@ document.addEventListener('DOMContentLoaded', function () {
   if (artistDirectory) {
     const artists = new Map();
     Object.entries(albums).forEach(([id, album]) => {
-      const artist = artists.get(album.artist);
+      const artistId = getArtistId(album.artist);
+      const artist = artists.get(artistId);
       if (artist) artist.albumCount += 1;
-      else artists.set(album.artist, { albumId: id, album, albumCount: 1 });
+      else artists.set(artistId, { name: album.artist, albumId: id, album, albumCount: 1 });
+    });
+
+    Object.entries(savedArtistProfiles).forEach(([artistId, profile]) => {
+      if (!artists.has(artistId)) {
+        artists.set(artistId, { name: profile.name, albumId: null, album: null, albumCount: 0 });
+      } else {
+        artists.get(artistId).name = profile.name;
+      }
     });
 
     [...artists.entries()]
-      .sort(([nameA], [nameB]) => nameA.localeCompare(nameB))
-      .forEach(([name, { albumId, album, albumCount }]) => {
-        const profile = artistProfiles[getArtistId(name)];
+      .sort(([, artistA], [, artistB]) => artistA.name.localeCompare(artistB.name))
+      .forEach(([artistId, { name, albumId, album, albumCount }]) => {
+        const profile = artistProfiles[artistId];
         const link = document.createElement('a');
         link.className = 'artist-directory-card';
-        link.href = `artista.html?id=${encodeURIComponent(getArtistId(name))}`;
+        link.href = `artista.html?id=${encodeURIComponent(artistId)}`;
         link.setAttribute('aria-label', `Ver perfil de ${name}`);
 
         const image = document.createElement('img');
-        image.src = profile?.photo || album.image;
+        image.src = profile?.photo || album?.image || '';
         image.alt = '';
         image.loading = 'lazy';
 
@@ -10558,5 +11139,219 @@ document.addEventListener('DOMContentLoaded', function () {
         link.append(image, info);
         artistDirectory.append(link);
       });
+  }
+
+  const artistForm = document.getElementById('artistForm');
+  if (artistForm) {
+    const modeSelect = document.getElementById('artistFormMode');
+    const existingArtistField = document.getElementById('existingArtistField');
+    const existingArtistSelect = document.getElementById('existingArtistSelect');
+    const artistNameInput = document.getElementById('artistNameInput');
+    const photoInput = document.getElementById('artistPhotoInput');
+    const bannerInput = document.getElementById('artistBannerInput');
+    const photoPreview = document.getElementById('artistPhotoPreview');
+    const bannerPreview = document.getElementById('artistBannerPreview');
+    const formMessage = document.getElementById('artistFormMessage');
+    const saveArtistButton = document.getElementById('saveArtistButton');
+    const formTitle = document.getElementById('artistFormTitle');
+    const maximumArtistImageSize = 1024 * 1024;
+    const requestedArtistId = new URLSearchParams(window.location.search).get('edit');
+    const artistNames = new Map();
+
+    Object.entries(albums).forEach(([, album]) => {
+      const id = getArtistId(album.artist);
+      if (!artistNames.has(id)) artistNames.set(id, album.artist);
+    });
+    Object.entries(savedArtistProfiles).forEach(([id, profile]) => {
+      artistNames.set(id, profile.name);
+    });
+
+    existingArtistSelect.replaceChildren();
+    const selectPrompt = document.createElement('option');
+    selectPrompt.value = '';
+    selectPrompt.textContent = 'Selecione um artista';
+    selectPrompt.disabled = true;
+    selectPrompt.selected = !requestedArtistId;
+    existingArtistSelect.append(selectPrompt);
+    [...artistNames.entries()]
+      .sort(([, nameA], [, nameB]) => nameA.localeCompare(nameB, 'pt-BR'))
+      .forEach(([id, name]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = name;
+        option.selected = id === requestedArtistId;
+        existingArtistSelect.append(option);
+      });
+
+    function showArtistImagePreview(container, imageUrl, altText, emptyText) {
+      if (!imageUrl) {
+        container.replaceChildren(Object.assign(document.createElement('span'), { textContent: emptyText }));
+        return;
+      }
+      const image = document.createElement('img');
+      image.src = imageUrl;
+      image.alt = altText;
+      container.replaceChildren(image);
+    }
+
+    function getArtistProfileForForm(id) {
+      const profile = artistProfiles[id];
+      const firstAlbum = Object.values(albums).find((album) => getArtistId(album.artist) === id);
+      const fallbackImage = profile?.photo || firstAlbum?.image || '';
+      return {
+        name: profile?.name || artistNames.get(id) || '',
+        photo: fallbackImage,
+        banner: profile?.banner || fallbackImage
+      };
+    }
+
+    function populateArtistForm(id) {
+      const profile = getArtistProfileForForm(id);
+      artistNameInput.value = profile.name;
+      photoInput.value = '';
+      bannerInput.value = '';
+      showArtistImagePreview(photoPreview, profile.photo, `Foto de ${profile.name}`, 'Prévia da foto');
+      showArtistImagePreview(bannerPreview, profile.banner, `Banner de ${profile.name}`, 'Prévia do banner');
+    }
+
+    function updateArtistFormMode() {
+      const isEditing = modeSelect.value === 'edit';
+      existingArtistField.hidden = !isEditing;
+      existingArtistSelect.required = isEditing;
+      photoInput.required = !isEditing;
+      bannerInput.required = !isEditing;
+      saveArtistButton.textContent = isEditing ? 'Salvar alterações' : 'Criar artista';
+      formTitle.textContent = isEditing ? 'Editar artista' : 'Criar artista';
+      formMessage.textContent = '';
+
+      if (isEditing && existingArtistSelect.value) {
+        populateArtistForm(existingArtistSelect.value);
+      } else if (!isEditing) {
+        artistForm.reset();
+        showArtistImagePreview(photoPreview, '', '', 'Prévia da foto');
+        showArtistImagePreview(bannerPreview, '', '', 'Prévia do banner');
+      }
+    }
+
+    function readArtistImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => resolve(reader.result));
+        reader.addEventListener('error', () => reject(new Error('Não foi possível ler uma das imagens do artista.')));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleArtistImageChange(input, preview, altText, emptyText) {
+      const file = input.files[0];
+      formMessage.textContent = '';
+      if (!file) {
+        const currentId = modeSelect.value === 'edit' ? existingArtistSelect.value : '';
+        const currentProfile = currentId ? getArtistProfileForForm(currentId) : null;
+        const isPhotoInput = input === photoInput;
+        showArtistImagePreview(
+          preview,
+          currentProfile ? (isPhotoInput ? currentProfile.photo : currentProfile.banner) : '',
+          currentProfile ? `Imagem atual de ${currentProfile.name}` : '',
+          emptyText
+        );
+        return;
+      }
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > maximumArtistImageSize) {
+        input.value = '';
+        formMessage.textContent = 'Escolha imagens PNG, JPG ou WEBP de até 1 MB cada.';
+        return;
+      }
+      try {
+        showArtistImagePreview(preview, await readArtistImage(file), altText, emptyText);
+      } catch (error) {
+        formMessage.textContent = error.message;
+      }
+    }
+
+    modeSelect.addEventListener('change', updateArtistFormMode);
+    existingArtistSelect.addEventListener('change', () => {
+      if (existingArtistSelect.value) populateArtistForm(existingArtistSelect.value);
+    });
+    photoInput.addEventListener('change', () => {
+      handleArtistImageChange(photoInput, photoPreview, 'Prévia da foto do artista', 'Prévia da foto');
+    });
+    bannerInput.addEventListener('change', () => {
+      handleArtistImageChange(bannerInput, bannerPreview, 'Prévia do banner do artista', 'Prévia do banner');
+    });
+
+    artistForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      formMessage.textContent = '';
+      if (!artistForm.reportValidity()) return;
+
+      const isEditing = modeSelect.value === 'edit';
+      const oldArtistId = isEditing ? existingArtistSelect.value : '';
+      const oldProfile = oldArtistId ? getArtistProfileForForm(oldArtistId) : null;
+      const name = artistNameInput.value.trim();
+      const newArtistId = getArtistId(name);
+      if (!name || !newArtistId) {
+        formMessage.textContent = 'Informe um nome de artista válido.';
+        return;
+      }
+      if (artistNames.has(newArtistId) && newArtistId !== oldArtistId) {
+        formMessage.textContent = 'Já existe um artista com esse nome no catálogo.';
+        return;
+      }
+
+      const photoFile = photoInput.files[0];
+      const bannerFile = bannerInput.files[0];
+      const validArtistImage = (file) => !file
+        || (['image/png', 'image/jpeg', 'image/webp'].includes(file.type) && file.size <= maximumArtistImageSize);
+      if (!validArtistImage(photoFile) || !validArtistImage(bannerFile)) {
+        formMessage.textContent = 'Escolha imagens PNG, JPG ou WEBP de até 1 MB cada.';
+        return;
+      }
+      if (!isEditing && (!photoFile || !bannerFile)) {
+        formMessage.textContent = 'Selecione uma foto de perfil e um banner para o artista.';
+        return;
+      }
+
+      saveArtistButton.disabled = true;
+      saveArtistButton.textContent = 'Salvando…';
+      try {
+        const profile = {
+          ...(oldArtistId && savedArtistProfiles[oldArtistId] ? savedArtistProfiles[oldArtistId] : {}),
+          name,
+          photo: photoFile ? await readArtistImage(photoFile) : oldProfile.photo,
+          banner: bannerFile ? await readArtistImage(bannerFile) : oldProfile.banner
+        };
+        const updatedProfiles = { ...savedArtistProfiles };
+        if (oldArtistId && oldArtistId !== newArtistId) delete updatedProfiles[oldArtistId];
+        updatedProfiles[newArtistId] = profile;
+        localStorage.setItem(artistProfilesStorageKey, JSON.stringify(updatedProfiles));
+
+        if (oldArtistId && oldArtistId !== newArtistId) {
+          Object.entries(albums).forEach(([albumId, album]) => {
+            if (getArtistId(album.artist) !== oldArtistId) return;
+            const updatedAlbum = { ...album, id: albumId, artist: name };
+            persistAlbumRecord(updatedAlbum);
+          });
+          delete artistProfiles[oldArtistId];
+        }
+
+        Object.assign(savedArtistProfiles, updatedProfiles);
+        artistProfiles[newArtistId] = profile;
+        window.location.href = `artista.html?id=${encodeURIComponent(newArtistId)}`;
+      } catch (error) {
+        console.error('Não foi possível salvar o perfil do artista.', error);
+        formMessage.textContent = 'Não foi possível salvar o artista. O armazenamento do navegador pode estar cheio; tente imagens menores.';
+      } finally {
+        saveArtistButton.disabled = false;
+        saveArtistButton.textContent = modeSelect.value === 'edit' ? 'Salvar alterações' : 'Criar artista';
+      }
+    });
+
+    updateArtistFormMode();
+    if (requestedArtistId && artistNames.has(requestedArtistId)) {
+      modeSelect.value = 'edit';
+      existingArtistSelect.value = requestedArtistId;
+      updateArtistFormMode();
+    }
   }
 });

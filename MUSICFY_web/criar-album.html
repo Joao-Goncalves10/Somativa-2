@@ -21,6 +21,7 @@
           <li class="nav-item"><a class="nav-link" href="artistas.html">Artistas</a></li>
           <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
           <li class="nav-item"><a class="nav-link active" href="criar-album.html" aria-current="page">Criar álbum</a></li>
+          <li class="nav-item"><a class="nav-link" href="criar-artista.html">Criar artista</a></li>
         </ul>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
           <span class="theme-toggle__icon" aria-hidden="true">◐</span>
@@ -34,10 +35,37 @@
     <div class="create-album-heading">
       <span class="section-pill">Seu próximo lançamento</span>
       <h1>Criar álbum</h1>
-      <p>Adicione as informações, escolha os estilos e monte a tracklist. Seu álbum ficará salvo neste navegador.</p>
+      <p>Adicione as informações, escolha os estilos e monte a tracklist. Seu lançamento ficará salvo neste navegador.</p>
     </div>
 
     <form id="createAlbumForm" class="create-album-form" novalidate>
+      <div class="create-album-mode-fields">
+        <div>
+          <label for="albumFormMode" class="form-label">Ação</label>
+          <select id="albumFormMode" class="form-select">
+            <option value="create">Criar lançamento</option>
+            <option value="edit">Editar álbum existente</option>
+          </select>
+        </div>
+        <div id="existingAlbumField" hidden>
+          <label for="existingAlbumSelect" class="form-label">Álbum para editar</label>
+          <select id="existingAlbumSelect" class="form-select"></select>
+        </div>
+      </div>
+
+      <fieldset id="deluxeOptions" class="deluxe-options mb-4">
+        <legend class="form-label">Edição Deluxe</legend>
+        <label class="deluxe-options__toggle">
+          <input id="isDeluxeEdition" type="checkbox">
+          Este lançamento é uma edição deluxe de um álbum existente
+        </label>
+        <div id="deluxeBaseAlbumField" class="mt-3" hidden>
+          <label for="deluxeBaseAlbumSelect" class="form-label">Álbum original</label>
+          <select id="deluxeBaseAlbumSelect" class="form-select"></select>
+          <p class="form-text">O álbum original e esta edição ficarão disponíveis no seletor de versões.</p>
+        </div>
+      </fieldset>
+
       <div class="create-album-fields">
         <div class="create-album-main-fields">
           <div class="mb-4">
@@ -46,10 +74,27 @@
           </div>
           <div class="mb-4">
             <label for="newAlbumArtist" class="form-label">Nome do artista</label>
-            <input id="newAlbumArtist" name="artistName" class="form-control" type="text" maxlength="80" required>
+            <input id="newAlbumArtist" name="artistName" class="form-control" type="text" maxlength="80" list="availableArtists" required>
+            <datalist id="availableArtists"></datalist>
           </div>
+          <div class="create-album-release-fields mb-4">
+            <div>
+              <label for="newAlbumType" class="form-label">Tipo de lançamento</label>
+              <select id="newAlbumType" name="albumType" class="form-select" required>
+                <option value="ÁLBUM">ÁLBUM</option>
+                <option value="SINGLE">SINGLE</option>
+                <option value="EP">EP</option>
+              </select>
+            </div>
+            <div>
+              <label for="newAlbumReleaseDate" class="form-label">Data e hora de lançamento</label>
+              <input id="newAlbumReleaseDate" name="releaseDate" class="form-control" type="datetime-local" required>
+              <p class="form-text">Horário de Brasília. Lançamentos futuros ficam em Pre-Save.</p>
+            </div>
+          </div>
+          <p id="releaseStatusPreview" class="release-status-preview" aria-live="polite">Selecione a data e a hora para ver a situação do lançamento.</p>
           <fieldset class="mb-4">
-            <legend class="form-label">Estilo do álbum</legend>
+            <legend class="form-label">Estilos do lançamento</legend>
             <p class="form-text">Selecione um ou mais estilos.</p>
             <div class="genre-options">
               <label><input type="checkbox" name="albumGenre" value="Pop"> Pop</label>
@@ -85,7 +130,7 @@
           </div>
           <label for="newAlbumCover" class="form-label">Capa do álbum</label>
           <input id="newAlbumCover" name="albumCover" class="form-control" type="file" accept="image/png,image/jpeg,image/webp" required>
-          <p class="form-text">PNG, JPG ou WEBP. Tamanho máximo: 1 MB.</p>
+          <p class="form-text">PNG, JPG ou WEBP. Tamanho máximo: 1 MB. Ao editar, deixe vazio para manter a capa atual.</p>
         </aside>
       </div>
 
@@ -93,7 +138,7 @@
         <div class="tracklist-editor__heading">
           <div>
             <h2 id="tracklistTitle">Tracklist</h2>
-            <p class="form-text">Adicione as faixas na ordem em que aparecem no álbum.</p>
+            <p class="form-text">Adicione as faixas na ordem em que aparecem. Abra “Adicionar ou editar letra” para cadastrar a letra e a tradução de cada faixa.</p>
           </div>
           <button id="addTrackButton" class="btn btn-outline-primary rounded-pill" type="button">＋ Adicionar faixa</button>
         </div>
