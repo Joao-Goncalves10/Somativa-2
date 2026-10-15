@@ -9623,7 +9623,65 @@ function getArtistId(name) {
     .replace(/^-|-$/g, '');
 }
 
+const accountState = {
+  available: false,
+  user: null,
+  profile: null,
+  followedArtists: [],
+  presavedAlbums: [],
+  reviews: []
+};
+
+async function accountRequest(path, options = {}) {
+  if (!window.MusicfyAuth) throw new Error('O módulo de contas não está carregado.');
+  const auth = await window.MusicfyAuth.ready;
+  if (!auth.available) throw new Error('O cadastro de contas ainda não foi ativado.');
+
+  const tokenResult = await auth.client.token();
+  if (tokenResult.error) throw new Error(tokenResult.error.message || 'Não foi possível validar a sessão.');
+  if (!tokenResult.data?.token) throw new Error('Entre na sua conta MUSICFY para continuar.');
+
+  const headers = new Headers(options.headers || {});
+  headers.set('Authorization', `Bearer ${tokenResult.data.token}`);
+  if (options.body) headers.set('Content-Type', 'application/json');
+  const response = await fetch(path, { ...options, headers });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'Não foi possível salvar os dados da conta.');
+  return result;
+}
+
+async function loadAccountSession() {
+  if (!window.MusicfyAuth) return;
+  const auth = await window.MusicfyAuth.ready;
+  accountState.available = auth.available;
+  accountState.error = '';
+  if (!auth.available) return;
+
+  const sessionResult = await auth.client.getSession();
+  if (sessionResult.error) {
+    throw new Error(sessionResult.error.message || 'Não foi possível verificar a conta.');
+  }
+  if (!sessionResult.data?.user) return;
+
+  const account = await accountRequest('/api/account');
+  Object.assign(accountState, account, { user: sessionResult.data.user });
+}
+
+function requireAccountForAction() {
+  if (accountState.user) return true;
+  const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  window.location.href = `perfil.html?redirect=${encodeURIComponent(returnTo)}`;
+  return false;
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+  try {
+    await loadAccountSession();
+  } catch (error) {
+    console.error('Não foi possível carregar os dados da conta.', error);
+    accountState.error = error.message;
+  }
+
   try {
     const sessionResponse = await fetch('/api/admin/session');
     if (!sessionResponse.ok) {
@@ -9698,7 +9756,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   updateTheme(savedTheme === 'dark');
 
-  const presavedAlbums = JSON.parse(localStorage.getItem('musicfy-presaved-albums') || '[]');
+  const presavedAlbums = accountState.presavedAlbums;
   const notifiedPresaves = JSON.parse(localStorage.getItem('musicfy-presave-notified') || '[]');
   const releasedPresave = Object.entries(albums).find(([id, album]) =>
     album.releaseDate &&
@@ -10146,6 +10204,191 @@ document.addEventListener('DOMContentLoaded', async function () {
   const profileBio = document.getElementById('profileBio');
   const profileAvatar = document.getElementById('profileAvatar');
 
+  const accountSignedOut = document.getElementById('accountSignedOut');
+  const accountSignedIn = document.getElementById('accountSignedIn');
+  const accountAuthUnavailable = document.getElementById('accountAuthUnavailable');
+  const accountAuthMessage = document.getElementById('accountAuthMessage');
+
+  function setAccountMessage(message) {
+    if (accountAuthMessage) accountAuthMessage.textContent = message;
+  }
+
+  function renderAccountReviews() {
+    const reviewsContainer = document.getElementById('profileReviews');
+    if (!reviewsContainer) return;
+
+    reviewsContainer.replaceChildren();
+    if (!accountState.reviews.length) {
+      const empty = document.createElement('p');
+      empty.textContent = accountState.user
+        ? 'Você ainda não avaliou nenhum álbum.'
+        : 'Entre na sua conta para consultar suas avaliações.';
+      reviewsContainer.append(empty);
+      return;
+    }
+
+    accountState.reviews.forEach((review) => {
+      const album = albums[review.albumId];
+      const item = document.createElement('article');
+      item.className = 'review-item';
+
+      const cover = document.createElement('div');
+      cover.className = 'review-cover';
+      const image = document.createElement('img');
+      image.src = album?.image || '';
+      image.alt = album ? `Capa de ${album.name}` : '';
+      cover.append(image);
+
+      const body = document.createElement('div');
+      body.className = 'review-body';
+      const top = document.createElement('div');
+      top.className = 'review-top';
+      const title = document.createElement('h4');
+      title.textContent = album?.name || 'Álbum';
+      const rating = document.createElement('span');
+      rating.className = 'rating';
+      rating.textContent = `${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}`;
+      top.append(title, rating);
+
+      const meta = document.createElement('p');
+      meta.className = 'review-meta';
+      meta.textContent = album?.artist || '';
+      const comment = document.createElement('p');
+      comment.textContent = review.comment || 'Sem comentário';
+      body.append(top, meta, comment);
+
+      if (album) {
+        const link = document.createElement('a');
+        link.href = `album.html?id=${encodeURIComponent(review.albumId)}`;
+        link.className = 'text-link';
+        link.textContent = 'Abrir álbum';
+        body.append(link);
+      }
+      item.append(cover, body);
+      reviewsContainer.append(item);
+    });
+  }
+
+  function renderAccountState() {
+    if (!accountSignedOut || !accountSignedIn) return;
+    accountSignedOut.hidden = accountState.user !== null || !accountState.available;
+    accountSignedIn.hidden = !accountState.user;
+    if (accountAuthUnavailable) accountAuthUnavailable.hidden = accountState.available;
+    if (accountState.error) setAccountMessage(accountState.error);
+
+    const email = document.getElementById('accountEmail');
+    if (email) email.textContent = accountState.user?.email || accountState.user?.name || '';
+    const editProfileButton = document.getElementById('editProfileBtn');
+    if (editProfileButton) editProfileButton.disabled = !accountState.user;
+
+    document.getElementById('accountReviewCount')?.replaceChildren(
+      document.createTextNode(String(accountState.reviews.length))
+    );
+    document.getElementById('accountPresaveCount')?.replaceChildren(
+      document.createTextNode(String(accountState.presavedAlbums.length))
+    );
+    document.getElementById('accountFollowCount')?.replaceChildren(
+      document.createTextNode(String(accountState.followedArtists.length))
+    );
+    const accountDataHint = document.getElementById('accountDataHint');
+    if (accountDataHint) {
+      accountDataHint.textContent = accountState.user
+        ? 'Seu perfil e suas preferências são sincronizados com sua conta.'
+        : 'Entre para ver suas informações sincronizadas.';
+    }
+
+    if (accountState.profile && profileName && profileHandle && profileBio && profileAvatar) {
+      profileName.textContent = accountState.profile.name;
+      profileHandle.textContent = `@${accountState.profile.handle}`;
+      profileBio.textContent = accountState.profile.bio;
+      profileAvatar.textContent = accountState.profile.initials;
+      profileAvatar.dataset.image = accountState.profile.avatarImage || '';
+      profileAvatar.classList.toggle('has-image', Boolean(accountState.profile.avatarImage));
+      profileAvatar.style.backgroundImage = accountState.profile.avatarImage
+        ? `url("${accountState.profile.avatarImage}")`
+        : '';
+    }
+    renderAccountReviews();
+  }
+
+  const accountRegisterForm = document.getElementById('accountRegisterForm');
+  const accountLoginForm = document.getElementById('accountLoginForm');
+  if (accountAuthUnavailable && !accountState.available) {
+    accountAuthUnavailable.hidden = false;
+    if (accountState.error) setAccountMessage(accountState.error);
+  }
+  if (accountRegisterForm && accountLoginForm) {
+    renderAccountState();
+
+    async function submitAccountForm(event, isRegistration) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      setAccountMessage('');
+      try {
+        const auth = await window.MusicfyAuth.ready;
+        if (!auth.available) {
+          throw new Error('O cadastro de contas ainda não foi ativado pelo administrador do site.');
+        }
+        const email = form.querySelector('input[type="email"]').value.trim();
+        const password = form.querySelector('input[type="password"]').value;
+        const result = isRegistration
+          ? await auth.client.signUp.email({
+            name: document.getElementById('accountRegisterName').value.trim(),
+            email,
+            password
+          })
+          : await auth.client.signIn.email({ email, password });
+        if (result.error) throw new Error(result.error.message || 'Não foi possível autenticar a conta.');
+
+        await loadAccountSession();
+        if (!accountState.user) {
+          setAccountMessage('Conta criada. Confirme seu e-mail, se solicitado, e entre para continuar.');
+          return;
+        }
+        renderAccountState();
+        setAccountMessage('Sua conta foi conectada.');
+        const redirect = new URLSearchParams(window.location.search).get('redirect');
+        if (redirect) {
+          const target = new URL(redirect, window.location.origin);
+          if (target.origin === window.location.origin) {
+            window.location.assign(`${target.pathname}${target.search}${target.hash}`);
+          }
+        }
+      } catch (error) {
+        console.error('Não foi possível autenticar a conta MUSICFY.', error);
+        setAccountMessage(error.message || 'Não foi possível autenticar a conta.');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    accountRegisterForm.addEventListener('submit', (event) => submitAccountForm(event, true));
+    accountLoginForm.addEventListener('submit', (event) => submitAccountForm(event, false));
+    document.getElementById('accountSignOutButton')?.addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        const auth = await window.MusicfyAuth.ready;
+        const result = await auth.client.signOut();
+        if (result.error) throw new Error(result.error.message || 'Não foi possível sair da conta.');
+        accountState.user = null;
+        accountState.profile = null;
+        accountState.followedArtists = [];
+        accountState.presavedAlbums = [];
+        accountState.reviews = [];
+        renderAccountState();
+        setAccountMessage('Você saiu da sua conta.');
+      } catch (error) {
+        console.error('Não foi possível encerrar a sessão da conta.', error);
+        setAccountMessage(error.message || 'Não foi possível sair da conta.');
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
   if (profileForm && profileName && profileHandle && profileBio && profileAvatar) {
     const profileNameInput = document.getElementById('profileNameInput');
     const profileHandleInput = document.getElementById('profileHandleInput');
@@ -10153,8 +10396,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const profileInitialsInput = document.getElementById('profileInitialsInput');
     const profilePhotoInput = document.getElementById('profilePhotoInput');
     const removeProfilePhotoBtn = document.getElementById('removeProfilePhotoBtn');
-    const savedProfile = JSON.parse(localStorage.getItem('musicfy-profile') || 'null');
-    const initialProfile = savedProfile || {
+    const initialProfile = accountState.profile || {
       name: profileName.textContent,
       handle: profileHandle.textContent.replace(/^@/, ''),
       bio: profileBio.textContent,
@@ -10189,6 +10431,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     profilePhotoInput.addEventListener('change', function () {
       const file = profilePhotoInput.files[0];
       if (!file) return;
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 1024 * 1024) {
+        profilePhotoInput.value = '';
+        setAccountMessage('Escolha uma foto PNG, JPG ou WEBP de até 1 MB.');
+        return;
+      }
 
       const reader = new FileReader();
       reader.addEventListener('load', function () {
@@ -10196,6 +10443,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         profileAvatar.dataset.image = pendingAvatarImage;
         profileAvatar.classList.add('has-image');
         profileAvatar.style.backgroundImage = `url("${pendingAvatarImage}")`;
+      });
+      reader.addEventListener('error', () => {
+        setAccountMessage('Não foi possível ler o arquivo da foto.');
       });
       reader.readAsDataURL(file);
     });
@@ -10208,7 +10458,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       profileAvatar.style.backgroundImage = '';
     });
 
-    profileForm.addEventListener('submit', function (event) {
+    profileForm.addEventListener('submit', async function (event) {
       event.preventDefault();
       const profile = {
         name: profileNameInput.value.trim(),
@@ -10218,9 +10468,19 @@ document.addEventListener('DOMContentLoaded', async function () {
         avatarImage: pendingAvatarImage
       };
 
-      renderProfile(profile);
-      localStorage.setItem('musicfy-profile', JSON.stringify(profile));
-      bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+      try {
+        const updatedProfile = await accountRequest('/api/account/profile', {
+          method: 'PUT',
+          body: JSON.stringify(profile)
+        });
+        accountState.profile = updatedProfile;
+        renderProfile(updatedProfile);
+        bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+        setAccountMessage('Perfil salvo na sua conta.');
+      } catch (error) {
+        console.error('Não foi possível salvar o perfil da conta.', error);
+        setAccountMessage(error.message || 'Não foi possível salvar o perfil.');
+      }
     });
   }
 
@@ -10298,7 +10558,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         minute: '2-digit',
         hour12: false
       }).format(releaseTimestamp);
-      const preSavedIds = JSON.parse(localStorage.getItem('musicfy-presaved-albums') || '[]');
+      const preSavedIds = accountState.presavedAlbums;
       const countdownParts = {
         days: document.getElementById('countdownDays'),
         hours: document.getElementById('countdownHours'),
@@ -10313,7 +10573,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (isPreRelease) {
         releaseDateLabel.textContent = `Lançamento em ${formattedReleaseDate} (horário de Brasília)`;
         preReleaseTitle.textContent = `Faça o Pre-Save de ${album.name}`;
-        preSaveDescription.textContent = `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} neste navegador para receber um aviso dentro do site quando for lançado.`;
+        preSaveDescription.textContent = `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} na sua conta para receber um aviso dentro do site quando for lançado.`;
         if (musicPlayer) musicPlayer.hidden = true;
         const hasAvailableTracks = album.tracks.some((track) => track.preReleaseAvailable);
         if (musicPlayer && hasAvailableTracks) musicPlayer.hidden = false;
@@ -10334,20 +10594,30 @@ document.addEventListener('DOMContentLoaded', async function () {
           preSaveButton.textContent = isSaved ? 'Remover Pre-Save' : 'Fazer Pre-Save';
           preSaveButton.setAttribute('aria-pressed', String(isSaved));
           preSaveDescription.textContent = isSaved
-            ? `Este lançamento está salvo neste navegador. Avisaremos dentro do site quando ${album.name} for lançado.`
-            : `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} neste navegador para receber um aviso dentro do site quando for lançado.`;
+            ? `Este lançamento está salvo na sua conta. Avisaremos dentro do site quando ${album.name} for lançado.`
+            : `Salve ${album.type === 'EP' ? 'o EP' : 'o álbum'} na sua conta para receber um aviso dentro do site quando for lançado.`;
         };
 
         updatePreSaveButton();
-        preSaveButton.addEventListener('click', () => {
+        preSaveButton.addEventListener('click', async () => {
+          if (!requireAccountForAction()) return;
           const savedIndex = preSavedIds.indexOf(albumId);
-          if (savedIndex === -1) {
-            preSavedIds.push(albumId);
-          } else {
-            preSavedIds.splice(savedIndex, 1);
+          const enabled = savedIndex === -1;
+          preSaveButton.disabled = true;
+          try {
+            await accountRequest('/api/account/presaves', {
+              method: 'PATCH',
+              body: JSON.stringify({ albumId, enabled })
+            });
+            if (enabled) preSavedIds.push(albumId);
+            else preSavedIds.splice(savedIndex, 1);
+            updatePreSaveButton();
+          } catch (error) {
+            console.error('Não foi possível salvar o pré-save.', error);
+            window.alert(error.message || 'Não foi possível salvar o pré-save.');
+          } finally {
+            preSaveButton.disabled = false;
           }
-          localStorage.setItem('musicfy-presaved-albums', JSON.stringify(preSavedIds));
-          updatePreSaveButton();
         });
       }
 
@@ -10509,6 +10779,60 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const avaliarBtn = document.getElementById('avaliarAlbumBtn');
     const reviewForm = document.getElementById('albumReviewForm');
+    const albumReviewsList = document.getElementById('albumReviewsList');
+    const albumReviewMessage = document.getElementById('albumReviewMessage');
+
+    async function refreshCommunityReviews() {
+      if (!albumReviewsList) return;
+      const response = await fetch(`/api/reviews?albumId=${encodeURIComponent(albumId)}`);
+      const result = await response.json();
+      if (!response.ok || !Array.isArray(result)) {
+        throw new Error(result.error || 'Não foi possível carregar as avaliações.');
+      }
+      albumReviewsList.replaceChildren();
+      if (accountState.user) {
+        const ownReview = result.find((review) => review.userId === accountState.user.id);
+        if (ownReview) {
+          document.getElementById('albumRating').value = String(ownReview.rating);
+          document.getElementById('albumReviewText').value = ownReview.comment;
+        }
+      }
+      if (!result.length) {
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = 'Este álbum ainda não tem avaliações.';
+        albumReviewsList.append(emptyMessage);
+        return;
+      }
+
+      result.forEach((review) => {
+        const card = document.createElement('article');
+        card.className = 'card mb-3 shadow-sm';
+        const body = document.createElement('div');
+        body.className = 'card-body';
+        const heading = document.createElement('h3');
+        heading.className = 'h5 card-title';
+        heading.textContent = review.name || 'Ouvinte MUSICFY';
+        const handle = document.createElement('p');
+        handle.className = 'text-muted mb-2';
+        handle.textContent = review.handle ? `@${review.handle}` : '';
+        const stars = document.createElement('p');
+        stars.className = 'mb-2';
+        stars.textContent = `${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}`;
+        const comment = document.createElement('p');
+        comment.className = 'mb-0';
+        comment.textContent = review.comment || 'Sem comentário';
+        body.append(heading, handle, stars, comment);
+        card.append(body);
+        albumReviewsList.append(card);
+      });
+    }
+
+    refreshCommunityReviews().catch((error) => {
+      console.error('Não foi possível carregar as avaliações do álbum.', error);
+      if (albumReviewsList) {
+        albumReviewsList.textContent = error.message || 'Não foi possível carregar as avaliações.';
+      }
+    });
 
     if (avaliarBtn && reviewForm) {
       avaliarBtn.addEventListener('click', function () {
@@ -10518,30 +10842,34 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     if (reviewForm) {
-      reviewForm.addEventListener('submit', function (event) {
-        // Impede o recarregamento da página e coleta os dados preenchidos.
+      reviewForm.addEventListener('submit', async function (event) {
         event.preventDefault();
+        if (!requireAccountForAction()) return;
         const rating = document.getElementById('albumRating').value;
         const reviewText = document.getElementById('albumReviewText').value;
-
-        // Cria um novo cartão com a avaliação enviada pelo usuário.
-        const item = document.createElement('div');
-        item.className = 'card mb-3 shadow-sm';
-        item.innerHTML = `
-          <div class="card-body">
-            <h5 class="card-title mb-2 fw-bold">Sua Avaliação</h5>
-            <p class="mb-1"><strong>Nota:</strong> ${rating} ★</p>
-            <p class="mb-0 text-muted">${reviewText || 'Sem comentário'}</p>
-          </div>`;
-
-        // Exibe a nova avaliação no início da lista.
-        if (trackReviews) {
-          trackReviews.prepend(item);
+        const button = reviewForm.querySelector('button[type="submit"]');
+        button.disabled = true;
+        if (albumReviewMessage) albumReviewMessage.textContent = '';
+        try {
+          const savedReview = await accountRequest('/api/reviews', {
+            method: 'POST',
+            body: JSON.stringify({
+              albumId,
+              rating: Number(rating),
+              comment: reviewText
+            })
+          });
+          accountState.reviews = accountState.reviews.filter((review) => review.albumId !== albumId);
+          accountState.reviews.unshift(savedReview);
+          renderAccountReviews();
+          await refreshCommunityReviews();
+          if (albumReviewMessage) albumReviewMessage.textContent = 'Sua avaliação foi salva na conta.';
+        } catch (error) {
+          console.error('Não foi possível salvar a avaliação.', error);
+          if (albumReviewMessage) albumReviewMessage.textContent = error.message || 'Não foi possível salvar a avaliação.';
+        } finally {
+          button.disabled = false;
         }
-
-        // Limpa o formulário e informa que a avaliação foi adicionada.
-        reviewForm.reset();
-        alert('Avaliação salva com sucesso!');
       });
     }
   }
@@ -10574,7 +10902,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       });
 
       const followButton = document.getElementById('artistFollowBtn');
-      const followedArtists = JSON.parse(localStorage.getItem('musicfy-followed-artists') || '[]');
+      const followedArtists = accountState.followedArtists;
       let isFollowing = followedArtists.includes(artistId);
 
       function updateFollowButton() {
@@ -10583,13 +10911,25 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
 
       updateFollowButton();
-      followButton.addEventListener('click', function () {
-        isFollowing = !isFollowing;
-        const updatedArtists = new Set(followedArtists);
-        if (isFollowing) updatedArtists.add(artistId);
-        else updatedArtists.delete(artistId);
-        localStorage.setItem('musicfy-followed-artists', JSON.stringify([...updatedArtists]));
-        updateFollowButton();
+      followButton.addEventListener('click', async function () {
+        if (!requireAccountForAction()) return;
+        const following = !isFollowing;
+        followButton.disabled = true;
+        try {
+          await accountRequest('/api/account/follows', {
+            method: 'PATCH',
+            body: JSON.stringify({ artistId, enabled: following })
+          });
+          isFollowing = following;
+          if (following) followedArtists.push(artistId);
+          else followedArtists.splice(followedArtists.indexOf(artistId), 1);
+          updateFollowButton();
+        } catch (error) {
+          console.error('Não foi possível atualizar os artistas favoritos.', error);
+          window.alert(error.message || 'Não foi possível atualizar os artistas favoritos.');
+        } finally {
+          followButton.disabled = false;
+        }
       });
 
       if (profile?.credit && profile.creditUrl) {

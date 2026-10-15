@@ -4,8 +4,8 @@ services:
     runtime: node
     plan: free
     rootDir: MUSICFY_web
-    buildCommand: npm ci
-    startCommand: npm start
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node scripts/start.js
     healthCheckPath: /healthz
     envVars:
       - key: NODE_VERSION
@@ -13,4 +13,8 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: ADMIN_PASSWORD
+        sync: false
+      - key: NEON_AUTH_BASE_URL
+        sync: false
+      - key: NEON_AUTH_JWKS_URL
         sync: false

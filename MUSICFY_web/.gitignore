@@ -5,5 +5,6 @@ node_modules/
 data/*.db
 data/*.db-shm
 data/*.db-wal
+public/assets/js/auth-client.bundle.js
 npm-debug.log*
 .neon

@@ -32,17 +32,66 @@
     </nav>
 
     <main class="container my-5 profile-page">
+        <section id="accountAccess" class="card p-4 mb-4" aria-labelledby="accountAccessTitle">
+            <h2 id="accountAccessTitle" class="h4">Sua conta MUSICFY</h2>
+            <div id="accountAuthUnavailable" hidden>
+                <p class="mb-0">O cadastro de contas ainda não foi ativado pelo administrador do site.</p>
+            </div>
+            <div id="accountSignedOut">
+                <p>Crie uma conta ou entre para salvar seu perfil, artistas favoritos, pré-saves e avaliações neste site.</p>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <form id="accountRegisterForm">
+                            <h3 class="h5">Criar conta</h3>
+                            <div class="mb-2">
+                                <label for="accountRegisterName" class="form-label">Nome</label>
+                                <input id="accountRegisterName" class="form-control" type="text" maxlength="40" autocomplete="name" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="accountRegisterEmail" class="form-label">E-mail</label>
+                                <input id="accountRegisterEmail" class="form-control" type="email" autocomplete="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountRegisterPassword" class="form-label">Senha (mínimo 8 caracteres)</label>
+                                <input id="accountRegisterPassword" class="form-control" type="password" minlength="8" autocomplete="new-password" required>
+                            </div>
+                            <button class="btn btn-primary rounded-pill" type="submit">Criar conta</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form id="accountLoginForm">
+                            <h3 class="h5">Já tenho uma conta</h3>
+                            <div class="mb-2">
+                                <label for="accountLoginEmail" class="form-label">E-mail</label>
+                                <input id="accountLoginEmail" class="form-control" type="email" autocomplete="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountLoginPassword" class="form-label">Senha</label>
+                                <input id="accountLoginPassword" class="form-control" type="password" autocomplete="current-password" required>
+                            </div>
+                            <button class="btn btn-outline-primary rounded-pill" type="submit">Entrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="accountSignedIn" hidden>
+                <p>Conectado como <strong id="accountEmail"></strong></p>
+                <button id="accountSignOutButton" class="btn btn-outline-secondary rounded-pill" type="button">Sair da conta</button>
+            </div>
+            <p id="accountAuthMessage" class="create-album-message mb-0 mt-3" role="status" aria-live="polite"></p>
+        </section>
+
         <section class="profile-header card">
             <div class="row align-items-center g-4">
                 <div class="col-md-3 text-center">
-                    <div class="profile-avatar" id="profileAvatar">LM</div>
+                    <div class="profile-avatar" id="profileAvatar">MF</div>
                 </div>
 
                 <div class="col-md-6">
                     <p class="profile-kicker">Perfil do usuário</p>
-                    <h1 class="profile-name" id="profileName">João Lucas</h1>
-                    <p class="profile-handle" id="profileHandle">@joao.lucas10</p>
-                    <p class="profile-bio" id="profileBio">Amante de pop, indie e playlists de chuva.</p>
+                    <h1 class="profile-name" id="profileName">Visitante</h1>
+                    <p class="profile-handle" id="profileHandle">@visitante</p>
+                    <p class="profile-bio" id="profileBio">Entre ou crie uma conta para configurar seu perfil.</p>
                 </div>
 
                 <div class="col-md-3 d-flex flex-column gap-2">
@@ -58,27 +107,22 @@
                     <h3>Resumo</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-value">18</span>
+                            <span class="stat-value" id="accountReviewCount">0</span>
                             <span class="stat-label">Avaliações</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-value">24</span>
-                            <span class="stat-label">Listas</span>
+                            <span class="stat-value" id="accountPresaveCount">0</span>
+                            <span class="stat-label">Pré-saves</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-value">12</span>
+                            <span class="stat-value" id="accountFollowCount">0</span>
                             <span class="stat-label">Artistas favoritos</span>
                         </div>
                     </div>
 
                     <div class="favorites-box">
-                        <h4>Gêneros favoritos</h4>
-                        <div class="tags">
-                            <span>Pop</span>
-                            <span>Indie</span>
-                            <span>R&B</span>
-                            <span>Alternativo</span>
-                        </div>
+                        <h4>Dados da conta</h4>
+                        <p id="accountDataHint" class="mb-0">Entre para ver suas informações sincronizadas.</p>
                     </div>
                 </aside>
             </div>
@@ -90,54 +134,8 @@
                         <a href="#" class="text-link">Ver todas</a>
                     </div>
 
-                    <div class="review-item">
-                        <div class="review-cover">
-                            <img src="assets/images/SOUR_OliviaRodrigo_cover.jpg" alt="SOUR">
-                        </div>
-                        <div class="review-body">
-                            <div class="review-top">
-                                <h4>SOUR</h4>
-                                <span class="rating">★★★★★</span>
-                            </div>
-                            <p class="review-meta">Olivia Rodrigo • 3 horas atrás</p>
-                            <p>
-                                Um álbum cheio de vulnerabilidade e frases que parecem ter sido
-                                escritas por mim.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="review-item">
-                        <div class="review-cover">
-                            <img src="assets/images/soclosetowhat_cover.png.jpg" alt="So Close to What">
-                        </div>
-                        <div class="review-body">
-                            <div class="review-top">
-                                <h4>So Close to What</h4>
-                                <span class="rating">★★★☆☆</span>
-                            </div>
-                            <p class="review-meta">Tate Mcrae • 4 dias atrás</p>
-                            <p>
-                                As músicas são boas, a produção é refrescante e dançante. Muito performática.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="review-item">
-                        <div class="review-cover">
-                            <img src="assets/images/petal_cover.jpg" alt="petal">
-                        </div>
-                        <div class="review-body">
-                            <div class="review-top">
-                                <h4>Petal</h4>
-                                <span class="rating">★★★★☆</span>
-                            </div>
-                            <p class="review-meta">Ariana Grande • 1 sem atrás</p>
-                            <p>
-                                Produção impecável, letras muito fortes e uma mistura de emoção
-                                e energia que funciona muito bem em qualquer playlist.
-                            </p>
-                        </div>
+                    <div id="profileReviews" aria-live="polite">
+                        <p id="profileReviewsEmpty">Entre na sua conta para consultar suas avaliações.</p>
                     </div>
                 </section>
             </div>
@@ -163,7 +161,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="profileBioInput" class="form-label">Bio</label>
-                            <textarea id="profileBioInput" class="form-control" rows="3" maxlength="140" required></textarea>
+                            <textarea id="profileBioInput" class="form-control" rows="3" maxlength="140"></textarea>
                         </div>
                         <div>
                             <label for="profileInitialsInput" class="form-label">Iniciais do avatar</label>
@@ -173,7 +171,7 @@
                             <label for="profilePhotoInput" class="form-label">Foto de perfil</label>
                             <input id="profilePhotoInput" class="form-control" type="file" accept="image/png, image/jpeg, image/webp">
                             <button id="removeProfilePhotoBtn" class="btn btn-link px-0 text-danger" type="button">Remover foto atual</button>
-                            <small class="d-block text-muted">PNG, JPG ou WEBP. A imagem fica salva neste navegador.</small>
+                            <small class="d-block text-muted">PNG, JPG ou WEBP. A imagem fica salva na sua conta.</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -190,6 +188,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/auth-client.bundle.js" defer></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

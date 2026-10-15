@@ -30,32 +30,60 @@ do Render atende as páginas e a API na mesma origem, e a senha do banco permane
 no ambiente do servidor.
 
 1. Envie o repositório GitHub que contém esta pasta (`MUSICFY_web`).
-2. Crie um projeto PostgreSQL no [Neon](https://neon.tech/). Copie a URL de
-   conexão **pooled** fornecida pelo Neon e mantenha-a privada.
-3. No [Render](https://render.com/), crie um **Blueprint** usando o repositório
+2. Crie um projeto PostgreSQL no [Neon](https://neon.tech/) e escolha a branch
+   que será usada em produção. O projeto deve estar em uma região AWS compatível
+   com Neon Auth e não pode usar IP Allow nem Private Networking.
+3. Vincule o projeto com o Neon CLI e aplique a configuração declarada em
+   `neon.ts`:
+
+   ```bash
+   neon link --project-id <project-id> -y
+   neon deploy
+   ```
+
+   Isso habilita Neon Auth e mantém os buckets já declarados. Copie a URL
+   **pooled** do banco (`DATABASE_URL`), além de `NEON_AUTH_BASE_URL` e
+   `NEON_AUTH_JWKS_URL` geradas pelo Neon. Mantenha privada a URL do banco; as
+   URLs de autenticação são configuração pública.
+   Para testar cadastro localmente, adicione também a origem usada pelo
+   servidor de desenvolvimento:
+
+   ```bash
+   neon neon-auth domain add http://localhost:5500
+   ```
+
+4. No [Render](https://render.com/), crie um **Blueprint** usando o repositório
    e informe `MUSICFY_web/render.yaml` como caminho do Blueprint. Esse arquivo
-   configura a pasta-raiz da aplicação, os comandos de instalação e
-   inicialização, a versão do Node e a verificação de saúde.
-4. Durante a configuração do Blueprint, forneça `DATABASE_URL` como variável
-   secreta, usando a URL PostgreSQL copiada do Neon. Não coloque essa URL no
-   código, em arquivos públicos, nem no repositório.
-5. Defina `ADMIN_PASSWORD` como outro segredo, com pelo menos 16 caracteres.
+   configura a pasta-raiz da aplicação, a instalação e inicialização, a versão
+   do Node, as variáveis de ambiente e a verificação de saúde.
+5. Configure `DATABASE_URL` como variável secreta no Render, usando a URL pooled
+   copiada do Neon. Configure também `NEON_AUTH_BASE_URL` e
+   `NEON_AUTH_JWKS_URL` com os valores gerados pelo Neon. Não coloque essas
+   variáveis em arquivos públicos ou no repositório.
+6. Defina `ADMIN_PASSWORD` como outro segredo, com pelo menos 16 caracteres.
    Gere uma senha aleatória longa e não reutilize a senha da sua conta; por
    exemplo, gere uma credencial nova localmente com
    `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`
    e coloque o resultado apenas no campo secreto do Render. O site permite que
    visitantes consultem álbuns, mas exige o login de administrador para
    publicar. A sessão usa um cookie HttpOnly e expira em 12 horas.
-6. Aguarde o deploy. O Render exibirá um endereço HTTPS público, por exemplo
+7. Aguarde o primeiro deploy do Render e adicione a origem HTTPS do site à lista
+   de domínios confiáveis do Neon Auth (sem barra no final):
+
+   ```bash
+   neon neon-auth domain add https://<seu-endereco-render>
+   ```
+
+8. O Render exibirá um endereço HTTPS público, por exemplo
    `https://musicfy.onrender.com`. Abra esse endereço para acessar o site.
-7. Confirme que `/healthz` responde com `{"status":"ok"}`. Entre em
+9. Confirme que `/healthz` responde com `{"status":"ok"}`. Entre em
    `https://<seu-endereco-render>/criar-album.html` com a senha de administrador
-   para publicar. O servidor cria a tabela PostgreSQL automaticamente.
+   para publicar. O servidor cria as tabelas PostgreSQL automaticamente.
 
 Se preferir criar o serviço sem Blueprint, escolha **New > Web Service**, use
-este repositório, configure o comando de build `npm ci`, o comando de início
-`npm start`, o health check `/healthz`, Node `24.13.0` e as variáveis secretas
-`DATABASE_URL` e `ADMIN_PASSWORD`.
+este repositório, configure o comando de build `npm ci --include=dev && npm run build`,
+o comando de início `node scripts/start.js`, o health check `/healthz`, Node `24.13.0` e as variáveis
+`DATABASE_URL`, `ADMIN_PASSWORD`, `NEON_AUTH_BASE_URL` e `NEON_AUTH_JWKS_URL`.
 
 Se `DATABASE_URL` não for configurada, o servidor em produção falhará ao iniciar,
 em vez de criar silenciosamente um banco SQLite temporário. O servidor também
@@ -66,6 +94,14 @@ O serviço Render do plano gratuito pode suspender a aplicação quando ociosa,
 causando demora na primeira visita. Planos, limites e disponibilidade mudam;
 consulte os provedores para os detalhes atuais. Neon e Render precisam permitir
 conexões entre si.
+
+Visitantes podem consultar o catálogo e as avaliações públicas. Cada pessoa
+cria uma conta na página **Perfil**; perfil, artistas seguidos, pré-saves e
+avaliações ficam associados ao identificador seguro da conta no PostgreSQL.
+Somente o administrador publica álbuns. A API valida os tokens do Neon Auth no
+servidor; a senha e as credenciais do banco nunca são enviadas ao navegador.
+Antes de liberar cadastros em produção, configure um provedor SMTP próprio no
+Neon Auth, seguindo o [checklist oficial](https://neon.com/docs/auth/production-checklist.md).
 
 ## Neon Object Storage
 
@@ -108,6 +144,12 @@ isso antes de trocar de endereço local ou perder o acesso ao perfil antigo do
 navegador. Defina `ADMIN_PASSWORD` com pelo menos 16 caracteres em `.env.local`
 e entre como administrador na página de criação; essa senha local pode ser
 diferente da senha configurada no Render.
+
+As contas locais também usam o Neon Auth e precisam de `NEON_AUTH_BASE_URL` e
+`NEON_AUTH_JWKS_URL` no `.env.local`. Sem essas variáveis, o catálogo continua
+disponível, mas o formulário de conta informa que o cadastro ainda não foi
+ativado. O modo SQLite local não oferece contas; use a branch Neon para validar
+login e sincronização entre navegadores.
 
 ## Verificação
 

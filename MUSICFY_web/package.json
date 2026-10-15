@@ -8,12 +8,20 @@
   },
   "dependencies": {
     "@neon/config": "^1.8.4",
+    "@neondatabase/auth": "0.6.0-beta",
     "@neon/env": "^1.5.1",
+    "jose": "^6.2.12",
     "pg": "^8.16.3"
   },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  },
   "scripts": {
+    "build": "esbuild public/assets/js/auth-client.js --bundle --format=iife --outfile=public/assets/js/auth-client.bundle.js",
     "start": "node scripts/start.js",
-    "check": "node --check server/index.js && node --check server/database.js && node --check server/admin-auth.js && node --check scripts/start.js && node --check scripts/load-env.js && node --check scripts/import-sqlite.js && node --check public/assets/js/app.js",
-    "import:sqlite": "node scripts/import-sqlite.js"
+    "prestart": "npm run build",
+    "check": "node --check server/index.js && node --check server/database.js && node --check server/admin-auth.js && node --check server/user-auth.js && node --check scripts/start.js && node --check scripts/load-env.js && node --check scripts/import-sqlite.js && node --check public/assets/js/app.js",
+    "import:sqlite": "node scripts/import-sqlite.js",
+    "test": "node --test"
   }
 }

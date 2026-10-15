@@ -6,9 +6,16 @@ const { randomUUID } = require('node:crypto');
 const {
   checkDatabaseConnection,
   closeDatabase,
+  getAccount,
   initializeDatabase,
   insertAlbum,
-  listAlbums
+  listAlbumReviews,
+  listAlbums,
+  listUserReviews,
+  saveAlbumReview,
+  setAlbumPresave,
+  setArtistFollow,
+  updateAccountProfile
 } = require('./database');
 const {
   clearSessionCookie,
@@ -19,6 +26,7 @@ const {
   passwordsMatch,
   setSessionCookie
 } = require('./admin-auth');
+const { authenticateUser, getManagedAuthConfig } = require('./user-auth');
 
 const projectRoot = path.resolve(__dirname, '..');
 const publicRoot = path.join(projectRoot, 'public');
@@ -41,6 +49,10 @@ function sendJson(response, statusCode, value) {
     'Cache-Control': 'no-store'
   });
   response.end(JSON.stringify(value));
+}
+
+function isUniqueConstraintError(error) {
+  return error?.code === '23505' || error?.errcode === 2067;
 }
 
 function readJsonBody(request) {
@@ -115,7 +127,76 @@ function validateAlbum(input) {
   };
 }
 
-async function handleApiRequest(request, response, pathname) {
+function validateAccountProfile(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    throw Object.assign(new Error('Os dados do perfil são inválidos.'), { statusCode: 400 });
+  }
+
+  const name = typeof input.name === 'string' ? input.name.trim() : '';
+  const handle = typeof input.handle === 'string' ? input.handle.trim().toLowerCase() : '';
+  const bio = typeof input.bio === 'string' ? input.bio.trim() : '';
+  const initials = typeof input.initials === 'string' ? input.initials.trim().toUpperCase() : '';
+  const avatarImage = typeof input.avatarImage === 'string' ? input.avatarImage : '';
+  if (!name || name.length > 40 || !/^[a-z0-9._-]{3,30}$/.test(handle)
+    || bio.length > 140 || !/^[\p{L}\p{N}]{1,3}$/u.test(initials)) {
+    throw Object.assign(new Error('Informe nome, usuário, bio e iniciais válidos.'), { statusCode: 400 });
+  }
+  if (avatarImage && (!/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(avatarImage)
+    || avatarImage.length > maximumCoverLength)) {
+    throw Object.assign(new Error('A foto deve ser PNG, JPG ou WEBP de até 1 MB.'), { statusCode: 400 });
+  }
+  return { name, handle, bio, initials, avatarImage };
+}
+
+function validateAccountItem(input, fieldName) {
+  const value = input?.[fieldName];
+  if (typeof value !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,199}$/.test(value)) {
+    throw Object.assign(new Error('O identificador informado é inválido.'), { statusCode: 400 });
+  }
+  if (typeof input.enabled !== 'boolean') {
+    throw Object.assign(new Error('O estado da preferência é inválido.'), { statusCode: 400 });
+  }
+  return { id: value, enabled: input.enabled };
+}
+
+function validateReview(input) {
+  const { id: albumId } = validateAccountItem({ albumId: input?.albumId, enabled: true }, 'albumId');
+  if (!Number.isInteger(input?.rating) || input.rating < 1 || input.rating > 5
+    || typeof input.comment !== 'string' || input.comment.trim().length > 1000) {
+    throw Object.assign(new Error('Informe uma nota entre 1 e 5 e um comentário de até 1000 caracteres.'), {
+      statusCode: 400
+    });
+  }
+  return { albumId, rating: input.rating, comment: input.comment.trim() };
+}
+
+function getDefaultProfile(user) {
+  const emailName = user.email.split('@')[0] || '';
+  const name = (user.name || emailName || 'Ouvinte MUSICFY').trim().slice(0, 40);
+  const normalizedName = emailName.toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 20);
+  const suffix = user.id.toLowerCase().replace(/[^a-z0-9]/g, '').slice(-8) || 'ouvinte';
+  const handle = `${normalizedName || 'ouvinte'}-${suffix}`.slice(0, 30);
+  const initials = name.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase().slice(0, 3);
+  return { name, handle, bio: '', initials: initials || 'MU', avatarImage: '' };
+}
+
+async function requireAccount(request, response) {
+  const user = await authenticateUser(request);
+  if (!user) {
+    sendJson(response, 401, { error: 'Entre na sua conta MUSICFY para continuar.' });
+    return null;
+  }
+  return user;
+}
+
+async function handleApiRequest(request, response, requestUrl) {
+  const pathname = requestUrl.pathname;
+  if (pathname === '/api/auth/config') {
+    const config = getManagedAuthConfig();
+    sendJson(response, 200, { available: Boolean(config), authUrl: config?.baseUrl || '' });
+    return;
+  }
+
   if (pathname === '/api/admin/session') {
     if (request.method === 'GET') {
       const required = isAdminLoginRequired();
@@ -153,6 +234,95 @@ async function handleApiRequest(request, response, pathname) {
 
     response.setHeader('Allow', 'GET, POST, DELETE');
     sendJson(response, 405, { error: 'Método não permitido.' });
+    return;
+  }
+
+  if (pathname === '/api/account') {
+    if (request.method !== 'GET') {
+      response.setHeader('Allow', 'GET');
+      sendJson(response, 405, { error: 'Método não permitido.' });
+      return;
+    }
+    const user = await requireAccount(request, response);
+    if (!user) return;
+    sendJson(response, 200, await getAccount(user.id, getDefaultProfile(user)));
+    return;
+  }
+
+  if (pathname === '/api/account/profile') {
+    if (request.method !== 'PUT') {
+      response.setHeader('Allow', 'PUT');
+      sendJson(response, 405, { error: 'Método não permitido.' });
+      return;
+    }
+    if (!isSameOriginRequest(request)) {
+      sendJson(response, 403, { error: 'Solicitação de origem não autorizada.' });
+      return;
+    }
+    const user = await requireAccount(request, response);
+    if (!user) return;
+    await getAccount(user.id, getDefaultProfile(user));
+    const profile = validateAccountProfile(await readJsonBody(request));
+    try {
+      sendJson(response, 200, await updateAccountProfile(user.id, profile));
+    } catch (error) {
+      if (!isUniqueConstraintError(error)) throw error;
+      throw Object.assign(new Error('Este nome de usuário já está em uso.'), { statusCode: 409 });
+    }
+    return;
+  }
+
+  if (pathname === '/api/account/follows' || pathname === '/api/account/presaves') {
+    if (request.method !== 'PATCH') {
+      response.setHeader('Allow', 'PATCH');
+      sendJson(response, 405, { error: 'Método não permitido.' });
+      return;
+    }
+    if (!isSameOriginRequest(request)) {
+      sendJson(response, 403, { error: 'Solicitação de origem não autorizada.' });
+      return;
+    }
+    const user = await requireAccount(request, response);
+    if (!user) return;
+    const item = validateAccountItem(
+      await readJsonBody(request),
+      pathname.endsWith('/follows') ? 'artistId' : 'albumId'
+    );
+    await getAccount(user.id, getDefaultProfile(user));
+    if (pathname.endsWith('/follows')) {
+      await setArtistFollow(user.id, item.id, item.enabled);
+    } else {
+      await setAlbumPresave(user.id, item.id, item.enabled);
+    }
+    sendJson(response, 200, { saved: item.enabled });
+    return;
+  }
+
+  if (pathname === '/api/reviews') {
+    if (request.method === 'GET') {
+      const albumId = requestUrl.searchParams.get('albumId');
+      if (!albumId || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,199}$/.test(albumId)) {
+        sendJson(response, 400, { error: 'O identificador do álbum é inválido.' });
+        return;
+      }
+      sendJson(response, 200, await listAlbumReviews(albumId));
+      return;
+    }
+    if (request.method !== 'POST') {
+      response.setHeader('Allow', 'GET, POST');
+      sendJson(response, 405, { error: 'Método não permitido.' });
+      return;
+    }
+    if (!isSameOriginRequest(request)) {
+      sendJson(response, 403, { error: 'Solicitação de origem não autorizada.' });
+      return;
+    }
+    const user = await requireAccount(request, response);
+    if (!user) return;
+    const review = validateReview(await readJsonBody(request));
+    await getAccount(user.id, getDefaultProfile(user));
+    const savedReview = await saveAlbumReview(user.id, review.albumId, review.rating, review.comment);
+    sendJson(response, 200, savedReview);
     return;
   }
 
@@ -197,11 +367,11 @@ const server = http.createServer(async (request, response) => {
 
   if (requestUrl.pathname.startsWith('/api/')) {
     try {
-      await handleApiRequest(request, response, requestUrl.pathname);
+      await handleApiRequest(request, response, requestUrl);
     } catch (error) {
       console.error('Falha ao processar solicitação da API.', error);
       sendJson(response, error.statusCode || 500, {
-        error: error.statusCode ? error.message : 'Não foi possível acessar o banco de dados.'
+        error: error.statusCode ? error.message : 'Não foi possível processar a solicitação.'
       });
     }
     return;
