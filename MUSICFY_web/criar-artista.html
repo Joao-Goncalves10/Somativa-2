@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>musicfy - Criar artista</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="src/styles/styles.css">
+</head>
+<body>
+  <nav style="background: linear-gradient(to top right, #7c9bf0, #59f3cd);" class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">musicfy</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+          <li class="nav-item"><a class="nav-link" href="explorar.html">Explorar</a></li>
+          <li class="nav-item"><a class="nav-link active" href="artistas.html" aria-current="page">Artistas</a></li>
+          <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
+          <li class="nav-item"><a class="nav-link" href="criar-album.html">Criar álbum</a></li>
+          <li class="nav-item"><a class="nav-link active" href="criar-artista.html" aria-current="page">Criar artista</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+          <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+          <span class="theme-toggle__label">Modo escuro</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-5 create-album-page create-artist-page">
+    <div class="create-album-heading">
+      <span class="section-pill">Artistas do catálogo</span>
+      <h1 id="artistFormTitle">Criar artista</h1>
+      <p>Cadastre o artista e personalize o perfil que aparece junto à discografia.</p>
+    </div>
+
+    <form id="artistForm" class="create-album-form" novalidate>
+      <div class="create-album-mode-fields">
+        <div>
+          <label for="artistFormMode" class="form-label">Ação</label>
+          <select id="artistFormMode" class="form-select">
+            <option value="create">Criar artista</option>
+            <option value="edit">Editar artista existente</option>
+          </select>
+        </div>
+        <div id="existingArtistField" hidden>
+          <label for="existingArtistSelect" class="form-label">Artista para editar</label>
+          <select id="existingArtistSelect" class="form-select"></select>
+        </div>
+      </div>
+
+      <div class="artist-form-fields">
+        <div class="mb-4">
+          <label for="artistNameInput" class="form-label">Nome do artista</label>
+          <input id="artistNameInput" class="form-control" type="text" maxlength="80" required>
+        </div>
+
+        <div class="artist-image-fields">
+          <section class="artist-image-field" aria-labelledby="artistPhotoLabel">
+            <div id="artistPhotoPreview" class="artist-image-preview">
+              <span>Prévia da foto</span>
+            </div>
+            <label id="artistPhotoLabel" for="artistPhotoInput" class="form-label">Foto de perfil</label>
+            <input id="artistPhotoInput" class="form-control" type="file" accept="image/png,image/jpeg,image/webp" required>
+            <p class="form-text">PNG, JPG ou WEBP até 1 MB. Ao editar, deixe vazio para manter a foto.</p>
+          </section>
+
+          <section class="artist-image-field" aria-labelledby="artistBannerLabel">
+            <div id="artistBannerPreview" class="artist-image-preview artist-image-preview--banner">
+              <span>Prévia do banner</span>
+            </div>
+            <label id="artistBannerLabel" for="artistBannerInput" class="form-label">Banner de fundo</label>
+            <input id="artistBannerInput" class="form-control" type="file" accept="image/png,image/jpeg,image/webp" required>
+            <p class="form-text">PNG, JPG ou WEBP até 1 MB. Ao editar, deixe vazio para manter o banner.</p>
+          </section>
+        </div>
+      </div>
+
+      <p id="artistFormMessage" class="create-album-message" role="status" aria-live="polite"></p>
+      <div class="create-album-actions">
+        <a href="artistas.html" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+        <button id="saveArtistButton" class="btn btn-primary rounded-pill px-4" type="submit">Criar artista</button>
+      </div>
+    </form>
+  </main>
+
+  <footer class="bg-light py-3 text-center">MUSICFY - todos os direitos reservados</footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="src/scripts/script.js" defer></script>
+</body>
+</html>
