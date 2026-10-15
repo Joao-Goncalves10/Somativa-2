@@ -11,6 +11,20 @@
   <nav style="background: linear-gradient(to top right, #7c9bf0, #59f3cd);" class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">musicfy</a>
+      <form class="site-search" role="search" autocomplete="off">
+        <label class="visually-hidden" for="siteSearchInput">Buscar no MUSICFY</label>
+        <div class="site-search__field">
+          <span class="site-search__icon" aria-hidden="true">⌕</span>
+          <input id="siteSearchInput" class="site-search__input" type="search" placeholder="Buscar músicas, álbuns, artistas..." aria-controls="siteSearchResults" aria-expanded="false">
+          <button class="site-search__submit" type="submit" aria-label="Buscar">↵</button>
+        </div>
+        <div id="siteSearchResults" class="site-search__results" role="listbox" aria-label="Resultados da busca" hidden></div>
+        <p class="visually-hidden site-search__status" role="status" aria-live="polite"></p>
+      </form>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+        <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+        <span class="theme-toggle__label">Modo escuro</span>
+      </button>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Abrir menu">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -23,10 +37,6 @@
           <li class="nav-item"><a class="nav-link active" href="criar-album.html" aria-current="page">Criar álbum</a></li>
           <li class="nav-item"><a class="nav-link" href="criar-artista.html">Criar artista</a></li>
         </ul>
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
-          <span class="theme-toggle__icon" aria-hidden="true">◐</span>
-          <span class="theme-toggle__label">Modo escuro</span>
-        </button>
       </div>
     </div>
   </nav>
@@ -63,6 +73,17 @@
           <label for="deluxeBaseAlbumSelect" class="form-label">Álbum original</label>
           <select id="deluxeBaseAlbumSelect" class="form-select"></select>
           <p class="form-text">O álbum original e esta edição ficarão disponíveis no seletor de versões.</p>
+          <div id="deluxeTrackPicker" class="deluxe-track-picker mt-3" hidden>
+            <div class="deluxe-track-picker__heading">
+              <div>
+                <h3>Faixas da versão normal</h3>
+                <p class="form-text">Selecione as faixas que também farão parte desta edição deluxe. As letras e os links de áudio serão copiados.</p>
+              </div>
+              <button id="addDeluxeTracksButton" class="btn btn-outline-primary rounded-pill" type="button">Adicionar selecionadas</button>
+            </div>
+            <div id="deluxeTrackChoices" class="deluxe-track-choices"></div>
+            <p id="deluxeTrackPickerMessage" class="form-text mb-0" role="status" aria-live="polite"></p>
+          </div>
         </div>
       </fieldset>
 
@@ -138,7 +159,7 @@
         <div class="tracklist-editor__heading">
           <div>
             <h2 id="tracklistTitle">Tracklist</h2>
-            <p class="form-text">Adicione as faixas na ordem em que aparecem. Abra “Adicionar ou editar letra” para cadastrar a letra e a tradução de cada faixa.</p>
+            <p class="form-text">Arraste a alça ⠿ para mudar a ordem das faixas. Em cada faixa, você pode cadastrar a letra, a tradução e um MP3 ou link do YouTube.</p>
           </div>
           <button id="addTrackButton" class="btn btn-outline-primary rounded-pill" type="button">＋ Adicionar faixa</button>
         </div>

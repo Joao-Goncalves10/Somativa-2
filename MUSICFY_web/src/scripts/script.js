@@ -9560,7 +9560,13 @@ const createdAlbums = (() => {
               name: name.trim().slice(0, 100),
               reviews: Array.isArray(track.reviews) ? track.reviews : [],
               lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
-              translation: typeof track.translation === 'string' ? track.translation : ''
+              translation: typeof track.translation === 'string' ? track.translation : '',
+              audioDataUrl: typeof track.audioDataUrl === 'string'
+                && /^data:audio\/(?:mpeg|mp3);base64,[A-Za-z0-9+/=]+$/.test(track.audioDataUrl)
+                ? track.audioDataUrl
+                : '',
+              audioFileName: typeof track.audioFileName === 'string' ? track.audioFileName.slice(0, 150) : '',
+              youtubeUrl: typeof track.youtubeUrl === 'string' ? track.youtubeUrl : ''
             };
           })
       }));
@@ -9697,7 +9703,27 @@ function persistAlbumRecord(album) {
     Object.assign(albumOverrides, updatedOverrides);
   }
 
+  localStorage.removeItem(`musicfy-youtube-${album.id}`);
   albums[album.id] = album;
+}
+
+function getYoutubeVideoId(value) {
+  try {
+    const url = new URL(value);
+    const isYoutubeHost = url.hostname === 'youtu.be'
+      || url.hostname === 'youtube.com'
+      || url.hostname.endsWith('.youtube.com');
+    if (!isYoutubeHost) return null;
+
+    let videoId = null;
+    if (url.hostname === 'youtu.be') videoId = url.pathname.slice(1).split('/')[0];
+    else if (url.pathname === '/watch') videoId = url.searchParams.get('v');
+    else if (url.pathname.startsWith('/shorts/')) videoId = url.pathname.split('/')[2];
+    else if (url.pathname.startsWith('/embed/')) videoId = url.pathname.split('/')[2];
+    return videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId) ? videoId : null;
+  } catch (error) {
+    return null;
+  }
 }
 
 function escapeHtml(value) {
@@ -9717,12 +9743,35 @@ function getReleaseTypeNoun(type) {
 }
 
 // Garante que todas as músicas tenham a mesma estrutura para letra e tradução.
-Object.values(albums).forEach((album) => {
-  album.tracks = album.tracks.map((track) => ({
-    ...track,
-    lyrics: track.lyrics || '',
-    translation: track.translation || ''
-  }));
+Object.entries(albums).forEach(([albumId, album]) => {
+  let legacyYoutubeTracks = {};
+  try {
+    legacyYoutubeTracks = JSON.parse(localStorage.getItem(`musicfy-youtube-${albumId}`) || '{}');
+    if (!legacyYoutubeTracks || typeof legacyYoutubeTracks !== 'object' || Array.isArray(legacyYoutubeTracks)) {
+      legacyYoutubeTracks = {};
+    }
+  } catch (error) {
+    console.error(`Não foi possível carregar os links antigos do YouTube do álbum ${albumId}.`, error);
+  }
+  album.tracks = album.tracks.map((track, index) => {
+    const youtubeVideoId = getYoutubeVideoId(track.youtubeUrl || '');
+    const legacyVideoId = legacyYoutubeTracks[index];
+    return {
+      ...track,
+      lyrics: track.lyrics || '',
+      translation: track.translation || '',
+      audioDataUrl: typeof track.audioDataUrl === 'string'
+        && /^data:audio\/(?:mpeg|mp3);base64,[A-Za-z0-9+/=]+$/.test(track.audioDataUrl)
+        ? track.audioDataUrl
+        : '',
+      audioFileName: typeof track.audioFileName === 'string' ? track.audioFileName : '',
+      youtubeUrl: youtubeVideoId
+        ? `https://www.youtube.com/watch?v=${youtubeVideoId}`
+        : (typeof legacyVideoId === 'string' && /^[A-Za-z0-9_-]{11}$/.test(legacyVideoId)
+          ? `https://www.youtube.com/watch?v=${legacyVideoId}`
+          : '')
+    };
+  });
 });
 
 const artistProfiles = {
@@ -9861,6 +9910,247 @@ document.addEventListener('DOMContentLoaded', function () {
 
   updateTheme(savedTheme === 'dark');
 
+  const siteSearch = document.querySelector('.site-search');
+  if (siteSearch) {
+    const searchInput = siteSearch.querySelector('.site-search__input');
+    const searchResults = siteSearch.querySelector('.site-search__results');
+    const searchStatus = siteSearch.querySelector('.site-search__status');
+    let activeSearchIndex = -1;
+    let currentSearchResults = [];
+
+    function normalizeSearchText(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLocaleLowerCase('pt-BR')
+        .trim();
+    }
+
+    function buildSearchIndex() {
+      const entries = [];
+      const artists = new Map();
+
+      Object.entries(albums).forEach(([albumId, album]) => {
+        const releaseType = album.type === 'EP'
+          ? 'EP'
+          : (album.type === 'SINGLE' ? 'Single' : 'Álbum');
+        entries.push({
+          kind: releaseType,
+          title: album.name,
+          description: `${album.artist} · ${releaseType} · ${album.tracks.length} faixas`,
+          href: `album.html?id=${encodeURIComponent(albumId)}`,
+          image: album.image,
+          primaryText: album.name,
+          secondaryText: `${album.artist} ${album.type || ''} álbum álbuns album albums lançamento lançamentos ${(album.type === 'EP' ? 'eps' : '')} ${(album.type === 'SINGLE' ? 'single singles' : '')} ${(album.genres || []).join(' ')}`,
+          priority: 2
+        });
+
+        album.tracks.forEach((track, index) => {
+          entries.push({
+            kind: 'Música',
+            title: track.name,
+            description: `${album.artist} · ${album.name}`,
+            href: `lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}`,
+            image: album.image,
+            primaryText: track.name,
+            secondaryText: `${album.artist} ${album.name} ${album.type || ''} música músicas faixa faixas track tracks`,
+            priority: 1
+          });
+        });
+
+        const artistId = getArtistId(album.artist);
+        if (!artists.has(artistId)) {
+          artists.set(artistId, {
+            name: album.artist,
+            albumId,
+            photo: album.image
+          });
+        }
+      });
+
+      Object.entries(artistProfiles).forEach(([artistId, profile]) => {
+        const existingArtist = artists.get(artistId);
+        if (!profile.name && !existingArtist) return;
+        artists.set(artistId, {
+          name: profile.name || existingArtist.name,
+          albumId: existingArtist?.albumId || null,
+          photo: profile.photo || existingArtist?.photo || ''
+        });
+      });
+
+      artists.forEach(({ name, photo }, artistId) => {
+        entries.push({
+          kind: 'Artista',
+          title: name,
+          description: 'Perfil do artista',
+          href: `artista.html?id=${encodeURIComponent(artistId)}`,
+          image: photo,
+          primaryText: name,
+          secondaryText: 'artista artistas perfil perfis profile profiles música músicas',
+          priority: 3,
+          icon: photo ? '♫' : '♬'
+        });
+      });
+
+      let profile = {};
+      try {
+        const savedProfile = JSON.parse(localStorage.getItem('musicfy-profile') || '{}');
+        if (savedProfile && typeof savedProfile === 'object' && !Array.isArray(savedProfile)) {
+          profile = savedProfile;
+        }
+      } catch (error) {
+        console.error('Não foi possível ler o perfil local durante a busca.', error);
+      }
+      entries.push({
+        kind: 'Perfil',
+        title: typeof profile.name === 'string' && profile.name.trim() ? profile.name.trim() : 'Meu perfil',
+        description: typeof profile.handle === 'string' && profile.handle.trim()
+          ? `@${profile.handle.replace(/^@/, '')} · Perfil pessoal`
+          : 'Perfil pessoal',
+        href: 'perfil.html',
+        image: typeof profile.photo === 'string' ? profile.photo : '',
+        primaryText: `${profile.name || ''} ${profile.handle || ''}`,
+        secondaryText: 'perfil perfis profiles pessoal usuário user account',
+        priority: 4
+      });
+
+      return entries;
+    }
+
+    function findSearchResults(query) {
+      const normalizedQuery = normalizeSearchText(query);
+      const queryWords = normalizedQuery.split(/\s+/).filter(Boolean);
+      if (!queryWords.length) return [];
+
+      return buildSearchIndex()
+        .map((entry) => {
+          const primary = normalizeSearchText(entry.primaryText);
+          const secondary = normalizeSearchText(entry.secondaryText);
+          const allText = `${primary} ${secondary}`;
+          if (!queryWords.every((word) => allText.includes(word))) return null;
+
+          let score = entry.priority || 0;
+          if (primary === normalizedQuery) score += 160;
+          else if (primary.startsWith(normalizedQuery)) score += 120;
+          else if (queryWords.every((word) => primary.includes(word))) score += 95;
+          else score += 25;
+          return { ...entry, score };
+        })
+        .filter(Boolean)
+        .sort((first, second) => second.score - first.score
+          || first.title.localeCompare(second.title, 'pt-BR'))
+        .slice(0, 8);
+    }
+
+    function closeSearchResults() {
+      searchResults.hidden = true;
+      searchInput.setAttribute('aria-expanded', 'false');
+      searchInput.removeAttribute('aria-activedescendant');
+      activeSearchIndex = -1;
+    }
+
+    function renderSearchResults(query) {
+      currentSearchResults = findSearchResults(query);
+      activeSearchIndex = -1;
+      searchResults.replaceChildren();
+      searchInput.removeAttribute('aria-activedescendant');
+
+      if (!query.trim()) {
+        closeSearchResults();
+        searchStatus.textContent = '';
+        return;
+      }
+
+      searchResults.hidden = false;
+      searchInput.setAttribute('aria-expanded', 'true');
+      if (!currentSearchResults.length) {
+        const emptyResult = document.createElement('p');
+        emptyResult.className = 'site-search__empty';
+        emptyResult.textContent = 'Nenhum resultado. Tente buscar por música, álbum ou artista.';
+        searchResults.append(emptyResult);
+        searchStatus.textContent = 'Nenhum resultado encontrado.';
+        return;
+      }
+
+      currentSearchResults.forEach((result, index) => {
+        const link = document.createElement('a');
+        link.className = 'site-search__result';
+        link.href = result.href;
+        link.id = `siteSearchResult${index}`;
+        link.setAttribute('role', 'option');
+        link.setAttribute('aria-selected', 'false');
+        link.tabIndex = -1;
+
+        const icon = document.createElement('span');
+        icon.className = 'site-search__result-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = result.icon || (
+          result.kind === 'Música' ? '♪' : (result.kind === 'Perfil' ? '◎' : '▧')
+        );
+        if (result.image) {
+          const image = document.createElement('img');
+          image.className = 'site-search__result-image';
+          image.src = result.image;
+          image.alt = '';
+          image.setAttribute('aria-hidden', 'true');
+          image.addEventListener('error', () => image.hidden = true, { once: true });
+          icon.append(image);
+        }
+
+        const content = document.createElement('span');
+        content.className = 'site-search__result-copy';
+        const title = document.createElement('strong');
+        title.textContent = result.title;
+        const description = document.createElement('small');
+        description.textContent = result.description;
+        content.append(title, description);
+
+        const kind = document.createElement('span');
+        kind.className = 'site-search__result-kind';
+        kind.textContent = result.kind;
+        link.append(icon, content, kind);
+        searchResults.append(link);
+      });
+      searchStatus.textContent = `${currentSearchResults.length} resultados encontrados.`;
+    }
+
+    function setActiveSearchResult(index) {
+      const resultLinks = searchResults.querySelectorAll('.site-search__result');
+      if (!resultLinks.length) return;
+      activeSearchIndex = (index + resultLinks.length) % resultLinks.length;
+      resultLinks.forEach((link, resultIndex) => {
+        const isActive = resultIndex === activeSearchIndex;
+        link.setAttribute('aria-selected', String(isActive));
+        if (isActive) {
+          searchInput.setAttribute('aria-activedescendant', link.id);
+          link.scrollIntoView({ block: 'nearest' });
+        }
+      });
+    }
+
+    searchInput.addEventListener('input', () => renderSearchResults(searchInput.value));
+    searchInput.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' && !searchResults.hidden) {
+        event.preventDefault();
+        setActiveSearchResult(activeSearchIndex + 1);
+      } else if (event.key === 'ArrowUp' && !searchResults.hidden) {
+        event.preventDefault();
+        setActiveSearchResult(activeSearchIndex - 1);
+      } else if (event.key === 'Escape') {
+        closeSearchResults();
+      }
+    });
+    siteSearch.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const result = currentSearchResults[activeSearchIndex] || currentSearchResults[0];
+      if (result) window.location.href = result.href;
+      else if (searchInput.value.trim()) renderSearchResults(searchInput.value);
+    });
+    document.addEventListener('click', (event) => {
+      if (!siteSearch.contains(event.target)) closeSearchResults();
+    });
+  }
+
   const presavedAlbums = JSON.parse(localStorage.getItem('musicfy-presaved-albums') || '[]');
   const notifiedPresaves = JSON.parse(localStorage.getItem('musicfy-presave-notified') || '[]');
   const releasedPresaves = Object.entries(albums).filter(([id, album]) =>
@@ -9925,7 +10215,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const isDeluxeEdition = document.getElementById('isDeluxeEdition');
     const deluxeBaseAlbumField = document.getElementById('deluxeBaseAlbumField');
     const deluxeBaseAlbumSelect = document.getElementById('deluxeBaseAlbumSelect');
+    const deluxeTrackPicker = document.getElementById('deluxeTrackPicker');
+    const deluxeTrackChoices = document.getElementById('deluxeTrackChoices');
+    const deluxeTrackPickerMessage = document.getElementById('deluxeTrackPickerMessage');
+    const addDeluxeTracksButton = document.getElementById('addDeluxeTracksButton');
     const maximumCoverSize = 1024 * 1024;
+    const maximumTrackAudioSize = 4 * 1024 * 1024;
     const requestedEditAlbumId = new URLSearchParams(window.location.search).get('edit');
     let editingOriginalGenres = [];
 
@@ -9973,20 +10268,36 @@ document.addEventListener('DOMContentLoaded', function () {
       coverPreview.replaceChildren(previewImage);
     }
 
+    function populateTrackField(row, track) {
+      const trackData = typeof track === 'string' ? { name: track } : track;
+      const youtubeUrl = trackData.youtubeUrl || '';
+      const audioDataUrl = trackData.audioDataUrl || '';
+      const audioFileName = trackData.audioFileName || '';
+      row.sourceTrack = typeof track === 'string' ? null : track;
+      row.querySelector('input[name="trackName"]').value = trackData.name;
+      row.querySelector('textarea[name="trackLyrics"]').value = trackData.lyrics || '';
+      row.querySelector('textarea[name="trackTranslation"]').value = trackData.translation || '';
+      row.dataset.audioDataUrl = audioDataUrl;
+      row.dataset.audioFileName = audioFileName;
+      row.querySelector('select[name="trackAudioType"]').value = audioDataUrl
+        ? 'mp3'
+        : (youtubeUrl ? 'youtube' : '');
+      row.querySelector('input[name="trackYoutubeUrl"]').value = youtubeUrl;
+      row.querySelector('.track-audio-current').textContent = audioFileName
+        ? `MP3 atual: ${audioFileName}. Selecione outro arquivo para substituir.`
+        : '';
+      row.querySelector('.track-youtube-field').hidden = !youtubeUrl;
+      row.querySelector('select[name="trackAudioType"]').dispatchEvent(new Event('change'));
+      row.querySelector('.new-track-lyrics summary').textContent =
+        trackData.lyrics || trackData.translation || audioDataUrl || youtubeUrl
+          ? 'Editar letra, tradução e áudio'
+          : 'Adicionar letra, tradução ou áudio';
+    }
+
     function setTrackFields(tracks) {
       trackListEditor.replaceChildren();
       tracks.forEach((track) => {
-        addTrackField();
-        const row = trackListEditor.lastElementChild;
-        row.querySelector('input[name="trackName"]').value =
-          typeof track === 'string' ? track : track.name;
-        row.querySelector('textarea[name="trackLyrics"]').value =
-          typeof track === 'string' ? '' : track.lyrics || '';
-        row.querySelector('textarea[name="trackTranslation"]').value =
-          typeof track === 'string' ? '' : track.translation || '';
-        const hasLyrics = typeof track !== 'string' && Boolean(track.lyrics || track.translation);
-        row.querySelector('.new-track-lyrics summary').textContent =
-          hasLyrics ? 'Editar letra e tradução' : 'Adicionar letra';
+        addTrackField(track);
       });
       if (tracks.length === 0) addTrackField();
       updateTrackRemoveButtons();
@@ -10007,6 +10318,33 @@ document.addEventListener('DOMContentLoaded', function () {
       setTrackFields(album.tracks);
       showCoverPreview(album.image, `Capa atual de ${album.name}`);
       updateReleaseStatusPreview();
+    }
+
+    function renderDeluxeTrackChoices(album) {
+      deluxeTrackChoices.replaceChildren();
+      deluxeTrackPickerMessage.textContent = '';
+      deluxeTrackPicker.hidden = !album;
+      if (!album) return;
+
+      if (!album.tracks.length) {
+        deluxeTrackChoices.textContent = 'Este álbum ainda não possui faixas cadastradas.';
+        addDeluxeTracksButton.disabled = true;
+        return;
+      }
+
+      addDeluxeTracksButton.disabled = false;
+      album.tracks.forEach((track, index) => {
+        const label = document.createElement('label');
+        label.className = 'deluxe-track-choice';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = String(index);
+        checkbox.checked = true;
+        const name = document.createElement('span');
+        name.textContent = `${String(index + 1).padStart(2, '0')}. ${track.name}`;
+        label.append(checkbox, name);
+        deluxeTrackChoices.append(label);
+      });
     }
 
     populateAlbumSelect(existingAlbumSelect, requestedEditAlbumId);
@@ -10060,7 +10398,28 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    function addTrackField() {
+    function updateTrackPositions() {
+      Array.from(trackListEditor.children).forEach((trackRow, index) => {
+        const position = index + 1;
+        const number = trackRow.querySelector('.new-track-row__number');
+        const label = trackRow.querySelector('label.visually-hidden');
+        const trackInput = trackRow.querySelector('input[name="trackName"]');
+        const removeButton = trackRow.querySelector('.remove-track-button');
+        const dragHandle = trackRow.querySelector('.track-reorder-handle');
+        number.textContent = String(position).padStart(2, '0');
+        label.textContent = `Nome da faixa ${position}`;
+        label.htmlFor = `newTrack${position}`;
+        trackInput.id = `newTrack${position}`;
+        removeButton.setAttribute('aria-label', `Remover faixa ${position}`);
+        dragHandle.setAttribute('aria-label', `Arraste para reordenar faixa ${position}`);
+        dragHandle.title = `Arraste para reordenar faixa ${position}`;
+      });
+      updateTrackRemoveButtons();
+    }
+
+    let draggedTrackRow = null;
+
+    function addTrackField(track = null) {
       const trackId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const row = document.createElement('div');
       row.className = 'new-track-row';
@@ -10069,6 +10428,38 @@ document.addEventListener('DOMContentLoaded', function () {
       number.className = 'new-track-row__number';
       number.setAttribute('aria-hidden', 'true');
       number.textContent = String(trackListEditor.children.length + 1).padStart(2, '0');
+
+      const dragHandle = document.createElement('button');
+      dragHandle.className = 'track-reorder-handle';
+      dragHandle.type = 'button';
+      dragHandle.draggable = true;
+      dragHandle.setAttribute('aria-label', `Arraste para reordenar faixa ${trackListEditor.children.length + 1}`);
+      dragHandle.title = 'Arraste para reordenar';
+      dragHandle.textContent = '⠿';
+      dragHandle.addEventListener('dragstart', (event) => {
+        draggedTrackRow = row;
+        row.classList.add('new-track-row--dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', input.value);
+      });
+      dragHandle.addEventListener('dragend', () => {
+        row.classList.remove('new-track-row--dragging');
+        draggedTrackRow = null;
+        updateTrackPositions();
+      });
+      row.addEventListener('dragover', (event) => {
+        if (!draggedTrackRow || draggedTrackRow === row) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        const bounds = row.getBoundingClientRect();
+        const insertAfter = event.clientY > bounds.top + bounds.height / 2;
+        trackListEditor.insertBefore(draggedTrackRow, insertAfter ? row.nextSibling : row);
+      });
+      row.addEventListener('drop', (event) => {
+        if (!draggedTrackRow) return;
+        event.preventDefault();
+        updateTrackPositions();
+      });
 
       const label = document.createElement('label');
       label.className = 'visually-hidden';
@@ -10091,25 +10482,13 @@ document.addEventListener('DOMContentLoaded', function () {
       removeButton.textContent = '×';
       removeButton.addEventListener('click', () => {
         row.remove();
-        Array.from(trackListEditor.children).forEach((trackRow, index) => {
-          const trackNumber = trackRow.querySelector('.new-track-row__number');
-          const trackLabel = trackRow.querySelector('label');
-          const trackInput = trackRow.querySelector('input');
-          const trackRemoveButton = trackRow.querySelector('.remove-track-button');
-          const position = index + 1;
-          trackNumber.textContent = String(position).padStart(2, '0');
-          trackLabel.textContent = `Nome da faixa ${position}`;
-          trackLabel.htmlFor = `newTrack${position}`;
-          trackInput.id = `newTrack${position}`;
-          trackRemoveButton.setAttribute('aria-label', `Remover faixa ${position}`);
-        });
-        updateTrackRemoveButtons();
+        updateTrackPositions();
       });
 
       const lyricsDetails = document.createElement('details');
       lyricsDetails.className = 'new-track-lyrics';
       const lyricsSummary = document.createElement('summary');
-      lyricsSummary.textContent = 'Adicionar ou editar letra';
+      lyricsSummary.textContent = 'Adicionar letra, tradução ou áudio';
       const lyricsLabel = document.createElement('label');
       lyricsLabel.className = 'form-label';
       lyricsLabel.htmlFor = `newTrackLyrics${trackId}`;
@@ -10132,18 +10511,111 @@ document.addEventListener('DOMContentLoaded', function () {
       translationInput.maxLength = 30000;
       translationInput.rows = 6;
       translationInput.placeholder = 'Tradução autorizada, se houver';
+
+      const audioTypeLabel = document.createElement('label');
+      audioTypeLabel.className = 'form-label mt-3';
+      audioTypeLabel.htmlFor = `newTrackAudioType${trackId}`;
+      audioTypeLabel.textContent = 'Áudio da faixa (opcional)';
+      const audioTypeSelect = document.createElement('select');
+      audioTypeSelect.className = 'form-select';
+      audioTypeSelect.id = audioTypeLabel.htmlFor;
+      audioTypeSelect.name = 'trackAudioType';
+      [
+        ['', 'Sem áudio'],
+        ['mp3', 'Arquivo MP3'],
+        ['youtube', 'Link do YouTube']
+      ].forEach(([value, text]) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = text;
+        audioTypeSelect.append(option);
+      });
+
+      const audioFileLabel = document.createElement('label');
+      audioFileLabel.className = 'form-label mt-2';
+      audioFileLabel.hidden = true;
+      audioFileLabel.htmlFor = `newTrackAudioFile${trackId}`;
+      audioFileLabel.textContent = 'Arquivo MP3 (até 4 MB)';
+      const audioFileInput = document.createElement('input');
+      audioFileInput.className = 'form-control';
+      audioFileInput.type = 'file';
+      audioFileInput.id = audioFileLabel.htmlFor;
+      audioFileInput.name = 'trackAudioFile';
+      audioFileInput.accept = '.mp3,audio/mpeg,audio/mp3';
+      audioFileInput.hidden = true;
+      audioFileInput.addEventListener('change', () => {
+        const file = audioFileInput.files[0];
+        if (!file) return;
+        const isMp3 = file.type === 'audio/mpeg'
+          || file.type === 'audio/mp3'
+          || /\.mp3$/i.test(file.name);
+        if (!isMp3 || file.size > maximumTrackAudioSize) {
+          audioFileInput.value = '';
+          message.textContent = 'Escolha um arquivo MP3 de até 4 MB.';
+          return;
+        }
+        currentAudio.textContent = `Novo MP3: ${file.name}.`;
+        currentAudio.hidden = false;
+        message.textContent = '';
+      });
+      const currentAudio = document.createElement('small');
+      currentAudio.className = 'track-audio-current form-text d-block';
+      currentAudio.hidden = true;
+
+      const youtubeField = document.createElement('div');
+      youtubeField.className = 'track-youtube-field mt-2';
+      youtubeField.hidden = true;
+      const youtubeLabel = document.createElement('label');
+      youtubeLabel.className = 'form-label';
+      youtubeLabel.htmlFor = `newTrackYoutubeUrl${trackId}`;
+      youtubeLabel.textContent = 'Link do YouTube';
+      const youtubeInput = document.createElement('input');
+      youtubeInput.className = 'form-control';
+      youtubeInput.type = 'url';
+      youtubeInput.id = youtubeLabel.htmlFor;
+      youtubeInput.name = 'trackYoutubeUrl';
+      youtubeInput.placeholder = 'https://www.youtube.com/watch?v=...';
+      youtubeField.append(youtubeLabel, youtubeInput);
+
+      audioTypeSelect.addEventListener('change', () => {
+        const isMp3 = audioTypeSelect.value === 'mp3';
+        const isYoutube = audioTypeSelect.value === 'youtube';
+        audioFileLabel.hidden = !isMp3;
+        audioFileInput.hidden = !isMp3;
+        currentAudio.hidden = !isMp3 || !row.dataset.audioDataUrl;
+        youtubeField.hidden = !isYoutube;
+        youtubeInput.required = isYoutube;
+      });
+
       const updateLyricsSummary = () => {
-        lyricsSummary.textContent = lyricsInput.value || translationInput.value
-          ? 'Editar letra e tradução'
-          : 'Adicionar letra';
+        const hasContent = lyricsInput.value || translationInput.value
+          || audioTypeSelect.value;
+        lyricsSummary.textContent = hasContent
+          ? 'Editar letra, tradução e áudio'
+          : 'Adicionar letra, tradução ou áudio';
       };
       lyricsInput.addEventListener('input', updateLyricsSummary);
       translationInput.addEventListener('input', updateLyricsSummary);
-      lyricsDetails.append(lyricsSummary, lyricsLabel, lyricsInput, translationLabel, translationInput);
+      audioTypeSelect.addEventListener('change', updateLyricsSummary);
+      lyricsDetails.append(
+        lyricsSummary,
+        lyricsLabel,
+        lyricsInput,
+        translationLabel,
+        translationInput,
+        audioTypeLabel,
+        audioTypeSelect,
+        audioFileLabel,
+        audioFileInput,
+        currentAudio,
+        youtubeField
+      );
 
-      row.append(number, label, input, removeButton, lyricsDetails);
+      row.append(number, dragHandle, label, input, removeButton, lyricsDetails);
       trackListEditor.append(row);
-      updateTrackRemoveButtons();
+      if (track) populateTrackField(row, track);
+      updateTrackPositions();
+      return row;
     }
 
     function readCoverAsDataUrl(file) {
@@ -10151,6 +10623,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const reader = new FileReader();
         reader.addEventListener('load', () => resolve(reader.result));
         reader.addEventListener('error', () => reject(new Error('Não foi possível ler o arquivo da capa.')));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function readTrackAudioAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          if (typeof reader.result !== 'string') {
+            reject(new Error('O arquivo MP3 não pôde ser convertido para armazenamento.'));
+            return;
+          }
+          resolve(reader.result.replace(/^data:[^;,]*;base64,/, 'data:audio/mpeg;base64,'));
+        });
+        reader.addEventListener('error', () => reject(new Error('Não foi possível ler o arquivo MP3.')));
         reader.readAsDataURL(file);
       });
     }
@@ -10178,6 +10665,9 @@ document.addEventListener('DOMContentLoaded', function () {
         addTrackField();
         deluxeBaseAlbumField.hidden = true;
         deluxeBaseAlbumSelect.required = false;
+        deluxeTrackPicker.hidden = true;
+        deluxeTrackChoices.replaceChildren();
+        deluxeTrackPickerMessage.textContent = '';
         coverPreview.replaceChildren(Object.assign(document.createElement('span'), {
           textContent: 'Prévia da capa'
         }));
@@ -10193,6 +10683,56 @@ document.addEventListener('DOMContentLoaded', function () {
     isDeluxeEdition.addEventListener('change', () => {
       deluxeBaseAlbumField.hidden = !isDeluxeEdition.checked;
       deluxeBaseAlbumSelect.required = isDeluxeEdition.checked;
+      renderDeluxeTrackChoices(isDeluxeEdition.checked ? albums[deluxeBaseAlbumSelect.value] : null);
+      deluxeTrackPicker.hidden = !isDeluxeEdition.checked || !deluxeBaseAlbumSelect.value;
+    });
+
+    deluxeBaseAlbumSelect.addEventListener('change', () => {
+      renderDeluxeTrackChoices(albums[deluxeBaseAlbumSelect.value] || null);
+    });
+
+    addDeluxeTracksButton.addEventListener('click', () => {
+      const sourceAlbumId = deluxeBaseAlbumSelect.value;
+      const sourceAlbum = albums[sourceAlbumId];
+      if (!sourceAlbum) {
+        deluxeTrackPickerMessage.textContent = 'Selecione o álbum original para importar as faixas.';
+        return;
+      }
+
+      const selectedTracks = Array.from(deluxeTrackChoices.querySelectorAll('input[type="checkbox"]:checked'));
+      if (!selectedTracks.length) {
+        deluxeTrackPickerMessage.textContent = 'Selecione pelo menos uma faixa para adicionar.';
+        return;
+      }
+
+      Array.from(trackListEditor.children).forEach((row) => {
+        if (!row.querySelector('input[name="trackName"]').value.trim()) row.remove();
+      });
+      const existingSourceTracks = new Set(
+        Array.from(trackListEditor.children)
+          .map((row) => row.dataset.sourceTrackKey)
+          .filter(Boolean)
+      );
+      let addedCount = 0;
+
+      selectedTracks.forEach((checkbox) => {
+        const trackIndex = Number(checkbox.value);
+        const sourceTrackKey = `${sourceAlbumId}:${trackIndex}`;
+        if (existingSourceTracks.has(sourceTrackKey)) return;
+
+        const sourceTrack = sourceAlbum.tracks[trackIndex];
+        if (!sourceTrack) return;
+        const importedRow = addTrackField(sourceTrack);
+        importedRow.dataset.sourceTrackKey = sourceTrackKey;
+        existingSourceTracks.add(sourceTrackKey);
+        addedCount += 1;
+      });
+
+      if (addedCount > 0) {
+        deluxeTrackPickerMessage.textContent = `${addedCount} faixa(s) adicionada(s) à tracklist.`;
+      } else {
+        deluxeTrackPickerMessage.textContent = 'As faixas selecionadas já estão na tracklist.';
+      }
     });
 
     coverInput.addEventListener('change', async () => {
@@ -10253,27 +10793,67 @@ document.addEventListener('DOMContentLoaded', function () {
         const albumType = document.getElementById('newAlbumType').value;
         const releaseDateValue = releaseDateInput.value;
         const releaseTimestamp = new Date(`${releaseDateValue}:00-03:00`).getTime();
-        const tracks = Array.from(trackListEditor.children)
-          .map((row) => ({
-            name: row.querySelector('input[name="trackName"]').value.trim(),
+        const tracks = [];
+        for (const row of Array.from(trackListEditor.children)) {
+          const name = row.querySelector('input[name="trackName"]').value.trim();
+          if (!name) continue;
+          const audioType = row.querySelector('select[name="trackAudioType"]').value;
+          const audioFile = row.querySelector('input[name="trackAudioFile"]').files[0];
+          let audioDataUrl = '';
+          let audioFileName = '';
+          let youtubeUrl = '';
+
+          if (audioType === 'mp3') {
+            if (audioFile) {
+              const isMp3 = audioFile.type === 'audio/mpeg'
+                || audioFile.type === 'audio/mp3'
+                || /\.mp3$/i.test(audioFile.name);
+              if (!isMp3 || audioFile.size > maximumTrackAudioSize) {
+                message.textContent = 'Escolha um arquivo MP3 de até 4 MB.';
+                return;
+              }
+              audioDataUrl = await readTrackAudioAsDataUrl(audioFile);
+              audioFileName = audioFile.name;
+            } else {
+              audioDataUrl = row.dataset.audioDataUrl || '';
+              audioFileName = row.dataset.audioFileName || '';
+            }
+            if (!audioDataUrl) {
+              message.textContent = `Selecione um arquivo MP3 para a faixa “${name}”.`;
+              return;
+            }
+          } else if (audioType === 'youtube') {
+            const videoId = getYoutubeVideoId(row.querySelector('input[name="trackYoutubeUrl"]').value.trim());
+            if (!videoId) {
+              message.textContent = `Informe um link válido do YouTube para a faixa “${name}”.`;
+              return;
+            }
+            youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+          }
+
+          tracks.push({
+            ...(row.sourceTrack || {}),
+            name,
             lyrics: row.querySelector('textarea[name="trackLyrics"]').value.trim(),
-            translation: row.querySelector('textarea[name="trackTranslation"]').value.trim()
-          }))
-          .filter((track) => track.name);
+            translation: row.querySelector('textarea[name="trackTranslation"]').value.trim(),
+            audioDataUrl,
+            audioFileName,
+            youtubeUrl
+          });
+        }
         if (!albumName || !artistName || !tracks.length || !releaseDateValue || !Number.isFinite(releaseTimestamp)) {
           message.textContent = 'Preencha o nome, o artista, o tipo, a data e hora de lançamento e pelo menos uma faixa.';
           return;
         }
 
         const image = cover ? await readCoverAsDataUrl(cover) : existingAlbum.image;
-        const updatedTracks = tracks.map(({ name, lyrics, translation }) => {
-          const previousTrack = existingAlbum?.tracks.find((track) => track.name === name);
+        const updatedTracks = tracks.map((track, index) => {
+          const previousTrack = existingAlbum?.tracks.find((existingTrack) => existingTrack.name === track.name)
+            || existingAlbum?.tracks[index];
           return {
             ...(previousTrack || {}),
-            name,
-            reviews: previousTrack?.reviews || [],
-            lyrics,
-            translation
+            ...track,
+            reviews: previousTrack?.reviews || track.reviews || [],
           };
         });
         const albumFields = {
@@ -10336,7 +10916,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error(isEditing
           ? 'Não foi possível salvar as alterações do álbum.'
           : 'Não foi possível salvar o álbum criado.', error);
-        message.textContent = 'Não foi possível salvar. O armazenamento do navegador pode estar cheio; tente uma capa menor.';
+        message.textContent = 'Não foi possível salvar. O armazenamento do navegador pode estar cheio; tente uma capa ou MP3 menor.';
       } finally {
         saveButton.disabled = false;
         saveButton.textContent = formMode.value === 'edit' ? 'Salvar alterações' : 'Criar álbum';
@@ -10770,7 +11350,6 @@ document.addEventListener('DOMContentLoaded', function () {
         seconds: document.getElementById('countdownSeconds')
       };
       const countdownTimer = preReleasePanel.querySelector('.release-countdown');
-      const musicPlayer = document.querySelector('.music-player');
       const reviewForm = document.getElementById('reviewForm');
       const rateAlbumButton = document.getElementById('avaliarAlbumBtn');
 
@@ -10778,9 +11357,6 @@ document.addEventListener('DOMContentLoaded', function () {
         releaseDateLabel.textContent = `Lançamento em ${formattedReleaseDate} (horário de Brasília)`;
         preReleaseTitle.textContent = `Faça o Pre-Save de ${album.name}`;
         preSaveDescription.textContent = `Salve ${getReleaseTypeNoun(album.type)} neste navegador para receber um aviso dentro do site quando for lançado.`;
-        if (musicPlayer) musicPlayer.hidden = true;
-        const hasAvailableTracks = album.tracks.some((track) => track.preReleaseAvailable);
-        if (musicPlayer && hasAvailableTracks) musicPlayer.hidden = false;
         if (reviewForm) reviewForm.hidden = true;
         if (rateAlbumButton) rateAlbumButton.hidden = true;
       } else {
@@ -10837,8 +11413,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Monta a lista resumida de músicas e suas avaliações.
     if (trackList) {
-      const musicPlayer = document.querySelector('.music-player');
-      if (musicPlayer && album.tracks.length === 0) musicPlayer.hidden = true;
       trackList.innerHTML = album.tracks.length
         ? album.tracks.map((track, index) => isPreRelease && !track.preReleaseAvailable
           ? `<div class="track-item track-row track-row--upcoming">
@@ -10846,117 +11420,26 @@ document.addEventListener('DOMContentLoaded', function () {
               <div class="track-details"><strong>${track.name}</strong></div>
               <span class="track-upcoming-label">Em breve</span>
             </div>`
-          : `
+          : (() => {
+            const videoId = getYoutubeVideoId(track.youtubeUrl || '');
+            const audioLink = track.audioDataUrl
+              && /^data:audio\/(?:mpeg|mp3);base64,[A-Za-z0-9+/=]+$/.test(track.audioDataUrl)
+              ? `<a class="track-media-link" href="${track.audioDataUrl}" download="${escapeHtml(track.audioFileName || `${track.name}.mp3`)}">Baixar MP3</a>`
+              : (videoId
+                ? `<a class="track-media-link" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer">YouTube</a>`
+                : '');
+            return `
           <div class="track-item track-row">
-            <button class="track-play-button" type="button" data-track-index="${index}" aria-label="Ouvir ${escapeHtml(track.name)}">
-              <span aria-hidden="true">▶</span>
-            </button>
             <div class="track-details">
               <strong>${index + 1}. ${escapeHtml(track.name)}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
               <span class="text-muted">${track.reviews.join(' • ')}</span>
             </div>
+            ${audioLink}
             <a class="track-link" href="lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
-          </div>`)
+          </div>`;
+          })())
           .join('')
         : '<p class="track-item text-muted">As faixas deste álbum ainda não foram cadastradas.</p>';
-
-      const audioPlayer = document.getElementById('audioPlayer');
-      const audioFilesInput = document.getElementById('audioFilesInput');
-      const playerTitle = document.getElementById('playerTitle');
-      const playerStatus = document.getElementById('playerStatus');
-      const youtubeUrlInput = document.getElementById('youtubeUrlInput');
-      const connectYoutubeBtn = document.getElementById('connectYoutubeBtn');
-      const youtubePlayer = document.getElementById('youtubePlayer');
-      const youtubeFallbackLink = document.getElementById('youtubeFallbackLink');
-      const audioFiles = [];
-      const youtubeTracks = JSON.parse(localStorage.getItem(`musicfy-youtube-${albumId}`) || '{}');
-      let selectedTrackIndex = 0;
-
-      function getYoutubeId(value) {
-        try {
-          const url = new URL(value);
-          if (url.hostname.includes('youtu.be')) return url.pathname.slice(1).split('/')[0];
-          if (url.hostname.includes('youtube.com')) {
-            if (url.pathname === '/watch') return url.searchParams.get('v');
-            if (url.pathname.startsWith('/shorts/')) return url.pathname.split('/')[2];
-            if (url.pathname.startsWith('/embed/')) return url.pathname.split('/')[2];
-          }
-        } catch (error) {
-          return null;
-        }
-        return null;
-      }
-
-      function loadTrack(index, shouldPlay = false) {
-        const track = album.tracks[index];
-        const audioUrl = audioFiles[index];
-        if (!track || !audioPlayer) return;
-
-        selectedTrackIndex = index;
-        playerTitle.textContent = track.name;
-        youtubeUrlInput.value = youtubeTracks[index] ? `https://www.youtube.com/watch?v=${youtubeTracks[index]}` : '';
-
-        if (youtubeTracks[index]) {
-          audioPlayer.pause();
-          audioPlayer.removeAttribute('src');
-          audioPlayer.load();
-          youtubePlayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeTracks[index]}?autoplay=${shouldPlay ? 1 : 0}&rel=0&origin=${encodeURIComponent(window.location.origin)}" title="${escapeHtml(track.name)}" referrerpolicy="origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
-          youtubePlayer.hidden = false;
-          youtubeFallbackLink.href = `https://www.youtube.com/watch?v=${youtubeTracks[index]}`;
-          youtubeFallbackLink.hidden = false;
-          playerStatus.textContent = `${album.name} · ${album.artist} · Clique em “Assistir vídeo” para iniciar`;
-          return;
-        }
-
-        youtubePlayer.innerHTML = '';
-        youtubePlayer.hidden = true;
-        youtubeFallbackLink.hidden = true;
-        if (!audioUrl) {
-          playerStatus.textContent = 'Nenhum áudio carregado para esta faixa.';
-          audioPlayer.removeAttribute('src');
-          audioPlayer.load();
-          return;
-        }
-
-        playerStatus.textContent = `${album.name} · ${album.artist}`;
-        audioPlayer.src = audioUrl;
-        audioPlayer.load();
-        if (shouldPlay) audioPlayer.play().catch(() => {});
-      }
-
-      document.querySelectorAll('.track-play-button').forEach((button) => {
-        button.addEventListener('click', function () {
-          loadTrack(Number(button.dataset.trackIndex), true);
-        });
-      });
-
-      if (audioFilesInput) {
-        audioFilesInput.addEventListener('change', function () {
-          audioFiles.forEach((url) => URL.revokeObjectURL(url));
-          audioFiles.length = 0;
-          Array.from(audioFilesInput.files).forEach((file) => {
-            audioFiles.push(URL.createObjectURL(file));
-          });
-          loadTrack(0);
-          playerStatus.textContent = `${audioFiles.length} áudio(s) carregado(s), na ordem das faixas.`;
-        });
-      }
-
-      if (connectYoutubeBtn) {
-        connectYoutubeBtn.addEventListener('click', function () {
-          const videoId = getYoutubeId(youtubeUrlInput.value.trim());
-          if (!videoId) {
-            playerStatus.textContent = 'Cole uma URL válida do YouTube para conectar esta faixa.';
-            return;
-          }
-
-          youtubeTracks[selectedTrackIndex] = videoId;
-          localStorage.setItem(`musicfy-youtube-${albumId}`, JSON.stringify(youtubeTracks));
-          loadTrack(selectedTrackIndex);
-        });
-      }
-
-      loadTrack(0);
     }
 
     // Monta os cartões completos de avaliação de cada música.

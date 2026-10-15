@@ -13,6 +13,20 @@
     <nav style="background: linear-gradient(to top right, #7c9bf0, #59f3cd);" class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">musicfy</a>
+      <form class="site-search" role="search" autocomplete="off">
+        <label class="visually-hidden" for="siteSearchInput">Buscar no MUSICFY</label>
+        <div class="site-search__field">
+          <span class="site-search__icon" aria-hidden="true">⌕</span>
+          <input id="siteSearchInput" class="site-search__input" type="search" placeholder="Buscar músicas, álbuns, artistas..." aria-controls="siteSearchResults" aria-expanded="false">
+          <button class="site-search__submit" type="submit" aria-label="Buscar">↵</button>
+        </div>
+        <div id="siteSearchResults" class="site-search__results" role="listbox" aria-label="Resultados da busca" hidden></div>
+        <p class="visually-hidden site-search__status" role="status" aria-live="polite"></p>
+      </form>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
+        <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+        <span class="theme-toggle__label">Modo escuro</span>
+      </button>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -24,10 +38,6 @@
           <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
           <li class="nav-item"><a class="nav-link" href="criar-album.html">Criar álbum</a></li>
           <li class="nav-item"><a class="nav-link" href="criar-artista.html">Criar artista</a></li>
-          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false">
-                <span class="theme-toggle__icon" aria-hidden="true">◐</span>
-                <span class="theme-toggle__label">Modo escuro</span>
-          </button>
         </ul>
       </div>
     </div>
