@@ -34,6 +34,7 @@
     <div class="create-album-heading">
       <span class="section-pill">Seu próximo lançamento</span>
       <h1>Criar álbum</h1>
+<<<<<<< HEAD:MUSICFY_web/public/criar-album.html
       <p>Adicione as informações, escolha os estilos e monte a tracklist. Seu álbum será salvo no banco de dados do servidor e ficará disponível para quem acessar este MUSICFY.</p>
     </div>
 
@@ -44,6 +45,42 @@
         <div class="mb-3">
           <label for="adminPassword" class="form-label">Senha de administrador</label>
           <input id="adminPassword" name="password" class="form-control" type="password" autocomplete="current-password" required>
+=======
+      <p>Adicione as informações, escolha os estilos e monte a tracklist. Os lançamentos publicados ficam salvos para todos os visitantes.</p>
+    </div>
+
+    <section class="home-release-manager catalog-admin-gate mb-4" aria-labelledby="catalogAdminTitle">
+      <div class="home-release-manager__heading">
+        <h2 id="catalogAdminTitle">Acesso de administrador</h2>
+        <p>Entre para criar ou editar álbuns, artistas e destaques. As alterações ficam salvas no servidor.</p>
+      </div>
+      <form id="catalogAdminLoginForm" class="home-release-login">
+        <label for="catalogAdminPassword" class="form-label">Senha do administrador</label>
+        <div class="home-release-login__fields">
+          <input id="catalogAdminPassword" class="form-control" type="password" autocomplete="current-password" required>
+          <button class="btn btn-primary rounded-pill" type="submit">Entrar</button>
+        </div>
+        <p id="catalogAdminLoginMessage" class="create-album-message" role="status" aria-live="polite"></p>
+      </form>
+      <div id="catalogAdminSession" class="home-release-admin-bar" hidden>
+        <span>Sessão de administrador ativa</span>
+        <button id="catalogAdminLogout" class="btn btn-sm btn-outline-secondary rounded-pill" type="button">Sair</button>
+      </div>
+    </section>
+
+    <form id="createAlbumForm" class="create-album-form" novalidate hidden>
+      <div class="create-album-mode-fields">
+        <div>
+          <label for="albumFormMode" class="form-label">Ação</label>
+          <select id="albumFormMode" class="form-select">
+            <option value="create">Criar lançamento</option>
+            <option value="edit">Editar álbum existente</option>
+          </select>
+        </div>
+        <div id="existingAlbumField" hidden>
+          <label for="existingAlbumSelect" class="form-label">Álbum para editar</label>
+          <select id="existingAlbumSelect" class="form-select"></select>
+>>>>>>> 6260f02 (finalizacao):MUSICFY_web/criar-album.html
         </div>
         <button id="adminLoginButton" class="btn btn-primary rounded-pill px-4" type="submit">Entrar</button>
       </form>
@@ -124,10 +161,94 @@
         <button id="saveAlbumButton" class="btn btn-primary rounded-pill px-4" type="submit">Criar álbum</button>
       </div>
     </form>
+
+    <section id="homeReleaseManager" class="home-release-manager mt-5" aria-labelledby="homeReleaseManagerTitle">
+      <div class="home-release-manager__heading">
+        <div>
+          <span class="section-pill">Painel de conteúdo</span>
+          <h2 id="homeReleaseManagerTitle">Destaques da página inicial</h2>
+          <p>Cadastre banners personalizados com áudio para aparecer no carrossel “Em alta”. Os destaques publicados ficam disponíveis para todos os visitantes.</p>
+        </div>
+      </div>
+
+      <form id="homeReleaseLoginForm" class="home-release-login">
+        <label for="homeReleaseAdminPassword" class="form-label">Senha do administrador</label>
+        <div class="home-release-login__fields">
+          <input id="homeReleaseAdminPassword" class="form-control" type="password" autocomplete="current-password" required>
+          <button class="btn btn-primary rounded-pill" type="submit">Entrar no painel</button>
+        </div>
+        <small class="form-text">O servidor deve ter MUSICFY_ADMIN_PASSWORD configurada com pelo menos 10 caracteres.</small>
+        <p id="homeReleaseLoginMessage" class="create-album-message" role="status" aria-live="polite"></p>
+      </form>
+
+      <div id="homeReleaseAdminControls" hidden>
+        <div class="home-release-admin-bar">
+          <span>Sessão de administrador ativa</span>
+          <button id="homeReleaseLogout" class="btn btn-sm btn-outline-secondary rounded-pill" type="button">Sair</button>
+        </div>
+
+        <form id="homeReleaseForm" class="home-release-form">
+        <input id="homeReleaseId" type="hidden">
+        <div class="home-release-form__fields">
+          <div>
+            <label for="homeReleaseTitle" class="form-label">Nome da música ou lançamento</label>
+            <input id="homeReleaseTitle" class="form-control" type="text" maxlength="100" required>
+          </div>
+          <div>
+            <label for="homeReleaseArtist" class="form-label">Artista</label>
+            <input id="homeReleaseArtist" class="form-control" type="text" maxlength="80" required>
+          </div>
+          <div class="home-release-form__wide">
+            <label for="homeReleaseCaption" class="form-label">Chamada do banner</label>
+            <input id="homeReleaseCaption" class="form-control" type="text" maxlength="160" placeholder="Ex.: Nova música! Confira o lançamento">
+          </div>
+          <div class="home-release-form__wide">
+            <label for="homeReleaseBanner" class="form-label">Banner personalizado</label>
+            <input id="homeReleaseBanner" class="form-control" type="file" accept="image/png,image/jpeg,image/webp,image/avif">
+            <small class="form-text">PNG, JPG, WEBP ou AVIF, até 5 MB. Recomendado: imagem horizontal.</small>
+          </div>
+          <div>
+            <label for="homeReleaseAudio" class="form-label">Arquivo para ouvir</label>
+            <input id="homeReleaseAudio" class="form-control" type="file" accept=".mp3,audio/mpeg,audio/mp3">
+            <small class="form-text">MP3 de até 4 MB. Se preferir, informe um link do YouTube.</small>
+            <label class="home-release-remove-audio mt-2">
+              <input id="homeReleaseRemoveAudio" class="form-check-input" type="checkbox">
+              Remover o MP3 atual ao editar
+            </label>
+          </div>
+          <div>
+            <label for="homeReleaseYoutube" class="form-label">Link do YouTube (opcional)</label>
+            <input id="homeReleaseYoutube" class="form-control" type="url" placeholder="https://youtu.be/...">
+          </div>
+          <div class="home-release-form__wide">
+            <label for="homeReleaseAlbum" class="form-label">Álbum relacionado (opcional)</label>
+            <select id="homeReleaseAlbum" class="form-select">
+              <option value="">Sem link para álbum</option>
+            </select>
+          </div>
+        </div>
+        <p id="homeReleaseFormMessage" class="create-album-message" role="status" aria-live="polite"></p>
+        <div class="home-release-form__actions">
+          <button id="cancelHomeReleaseEdit" class="btn btn-outline-secondary rounded-pill" type="button" hidden>Cancelar edição</button>
+          <button id="saveHomeRelease" class="btn btn-primary rounded-pill" type="submit">Adicionar destaque</button>
+        </div>
+        </form>
+
+        <div class="home-release-list">
+          <h3>Destaques cadastrados</h3>
+          <div id="homeReleaseItems" class="home-release-items"></div>
+          <p id="homeReleaseEmptyState" class="form-text mb-0">Nenhum destaque personalizado cadastrado.</p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="bg-light py-3 text-center">MUSICFY - todos os direitos reservados</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<<<<<<< HEAD:MUSICFY_web/public/criar-album.html
   <script src="assets/js/app.js" defer></script>
+=======
+  <script src="src/scripts/catalog-bootstrap.js" defer></script>
+>>>>>>> 6260f02 (finalizacao):MUSICFY_web/criar-album.html
 </body>
 </html>

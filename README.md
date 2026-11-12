@@ -17,6 +17,7 @@ João Miguel Lima Faustino - Nº11
 * **Navegação Responsiva**: Barra de navegação flexível com menu colapsável para dispositivos móveis e gradiente personalizado.
 * **Galeria de Álbuns**: Exibição em cards responsivos com capas, nomes dos álbuns, artistas e botões de chamada para avaliação.
 * **Design Responsivo**: Adaptação automática para telas de celulares, tablets e computadores.
+* **Catálogo compartilhado**: Álbuns e perfis de artistas são armazenados pelo servidor e as alterações administrativas exigem login.
 
 **Estrutura do Projeto**
 
@@ -31,4 +32,8 @@ João Miguel Lima Faustino - Nº11
 
 1. Faça o download ou clone este repositório em sua máquina.
 2. Certifique-se de que a estrutura de arquivos e pastas (`src/styles/` e `src/img/`) seja mantida.
-3. Abra o arquivo `index.html` em qualquer navegador web de sua preferência.
+3. Configure `MUSICFY_ADMIN_PASSWORD` no ambiente do Windows com pelo menos 10 caracteres.
+4. Inicie o site pelo arquivo `MUSICFY_web/iniciar-site.bat` e acesse o painel para criar ou editar álbuns e artistas.
+5. Os dados compartilhados são armazenados em `musicfy-data/` ao lado da pasta `MUSICFY_web`. Faça backup dessa pasta para preservar o catálogo e os arquivos enviados.
+
+Abrir `index.html` diretamente não inicia a API do servidor nem habilita o gerenciamento compartilhado do catálogo.
