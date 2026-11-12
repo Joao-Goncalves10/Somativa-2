@@ -9559,6 +9559,7 @@ const createdAlbums = (() => {
             return {
               name: name.trim().slice(0, 100),
               reviews: Array.isArray(track.reviews) ? track.reviews : [],
+              explicit: typeof track.explicit === 'boolean' ? track.explicit : false,
               lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
               translation: typeof track.translation === 'string' ? track.translation : '',
               audioDataUrl: typeof track.audioDataUrl === 'string'
@@ -9580,6 +9581,21 @@ createdAlbums.forEach((album) => {
   albums[album.id] = album;
 });
 
+const serverCatalog = window.musicfyCatalogServer === true ? window.musicfyCatalog : null;
+const serverCatalogAlbumIds = new Set([
+  ...(serverCatalog?.createdAlbums || []).map((album) => album.id),
+  ...Object.keys(serverCatalog?.albumOverrides || {})
+]);
+if (serverCatalog && Array.isArray(serverCatalog.createdAlbums)) {
+  serverCatalog.createdAlbums.forEach((album) => {
+    if (!album || typeof album.id !== 'string' || !album.id.startsWith('created-')) return;
+    const index = createdAlbums.findIndex((createdAlbum) => createdAlbum.id === album.id);
+    if (index === -1) createdAlbums.push(album);
+    else createdAlbums[index] = album;
+    albums[album.id] = album;
+  });
+}
+
 const albumOverridesStorageKey = 'musicfy-album-overrides';
 const albumOverrides = (() => {
   try {
@@ -9594,6 +9610,11 @@ const albumOverrides = (() => {
     return {};
   }
 })();
+
+const localAlbumOverrideIds = new Set(Object.keys(albumOverrides));
+if (serverCatalog?.albumOverrides && typeof serverCatalog.albumOverrides === 'object') {
+  Object.assign(albumOverrides, serverCatalog.albumOverrides);
+}
 
 Object.entries(albumOverrides).forEach(([id, overrides]) => {
   if (albums[id] && overrides && typeof overrides === 'object') {
@@ -9656,6 +9677,7 @@ const trackLyricsRecords = (() => {
 
 Object.entries(trackLyricsRecords).forEach(([albumId, tracks]) => {
   if (!albums[albumId] || !Array.isArray(tracks)) return;
+  if (serverCatalogAlbumIds.has(albumId)) return;
   tracks.forEach((trackLyrics, index) => {
     if (!trackLyrics || typeof trackLyrics !== 'object') return;
     const track = albums[albumId].tracks[index];
@@ -9665,7 +9687,46 @@ Object.entries(trackLyricsRecords).forEach(([albumId, tracks]) => {
   });
 });
 
-function persistAlbumRecord(album) {
+async function persistAlbumRecord(album) {
+  if (window.musicfyCatalogServer === true) {
+    const response = await fetch('/api/admin/catalog/album', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ album })
+    });
+    const result = await response.json();
+    if (response.status === 401) {
+      document.dispatchEvent(new CustomEvent('musicfy-admin-logged-out'));
+      throw new Error(result.error || 'Sua sessão expirou. Entre novamente para continuar.');
+    }
+    if (!response.ok) throw new Error(result.error || 'Não foi possível salvar o álbum no servidor.');
+
+    const savedAlbum = result;
+    const updatedTrackLyrics = {
+      [savedAlbum.id]: savedAlbum.tracks.map((track) => ({
+        lyrics: track.lyrics || '',
+        translation: track.translation || ''
+      }))
+    };
+    Object.assign(trackLyricsRecords, updatedTrackLyrics);
+    if (savedAlbum.id.startsWith('created-')) {
+      const index = createdAlbums.findIndex((createdAlbum) => createdAlbum.id === savedAlbum.id);
+      if (index === -1) createdAlbums.push(savedAlbum);
+      else createdAlbums[index] = savedAlbum;
+      const serverAlbums = window.musicfyCatalog.createdAlbums;
+      const serverIndex = serverAlbums.findIndex((createdAlbum) => createdAlbum.id === savedAlbum.id);
+      if (serverIndex === -1) serverAlbums.push(savedAlbum);
+      else serverAlbums[serverIndex] = savedAlbum;
+    } else {
+      const { id, ...overrides } = savedAlbum;
+      albumOverrides[id] = overrides;
+      window.musicfyCatalog.albumOverrides[id] = overrides;
+    }
+    albums[savedAlbum.id] = savedAlbum;
+    serverCatalogAlbumIds.add(savedAlbum.id);
+    return savedAlbum;
+  }
+
   const updatedTrackLyrics = {
     ...trackLyricsRecords,
     [album.id]: album.tracks.map((track) => ({
@@ -9705,6 +9766,49 @@ function persistAlbumRecord(album) {
 
   localStorage.removeItem(`musicfy-youtube-${album.id}`);
   albums[album.id] = album;
+  return album;
+}
+
+let legacyCatalogImportPromise;
+
+function importLegacyCatalog() {
+  if (window.musicfyCatalogServer !== true || !serverCatalog) return Promise.resolve();
+  if (legacyCatalogImportPromise) return legacyCatalogImportPromise;
+
+  legacyCatalogImportPromise = (async () => {
+    for (const album of createdAlbums) {
+      if (serverCatalogAlbumIds.has(album.id)) continue;
+      await persistAlbumRecord(album);
+    }
+
+    for (const albumId of localAlbumOverrideIds) {
+      if (serverCatalogAlbumIds.has(albumId) || !albums[albumId]) continue;
+      await persistAlbumRecord({ ...albums[albumId], id: albumId });
+    }
+
+    for (const artistId of localArtistProfileIds) {
+      if (serverCatalog.artistProfiles[artistId]) continue;
+      const profile = savedArtistProfiles[artistId];
+      if (!profile) continue;
+      const response = await fetch('/api/admin/catalog/artist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: artistId, oldId: '', profile })
+      });
+      const result = await response.json();
+      if (response.status === 401) {
+        document.dispatchEvent(new CustomEvent('musicfy-admin-logged-out'));
+        throw new Error(result.error || 'Sua sessão expirou. Entre novamente para continuar.');
+      }
+      if (!response.ok) throw new Error(result.error || `Não foi possível migrar o perfil de ${profile.name}.`);
+      savedArtistProfiles[artistId] = result;
+      artistProfiles[artistId] = { ...artistProfiles[artistId], ...result };
+      serverCatalog.artistProfiles[artistId] = result;
+    }
+  })().finally(() => {
+    legacyCatalogImportPromise = null;
+  });
+  return legacyCatalogImportPromise;
 }
 
 function getYoutubeVideoId(value) {
@@ -9855,6 +9959,11 @@ const savedArtistProfiles = (() => {
   }
 })();
 
+const localArtistProfileIds = new Set(Object.keys(savedArtistProfiles));
+if (serverCatalog?.artistProfiles && typeof serverCatalog.artistProfiles === 'object') {
+  Object.assign(savedArtistProfiles, serverCatalog.artistProfiles);
+}
+
 Object.entries(savedArtistProfiles).forEach(([id, profile]) => {
   if (!/^[a-z0-9-]+$/.test(id) || !profile || typeof profile !== 'object'
     || typeof profile.name !== 'string' || !profile.name.trim()
@@ -9894,7 +10003,113 @@ function sortAlbumsByReleaseDate(albumEntries) {
     .map(({ entry }) => entry);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+let homeReleases = [];
+
+async function loadHomeReleases() {
+  const response = await fetch('/api/home-releases', { headers: { Accept: 'application/json' } });
+  if (!response.ok) throw new Error('O servidor não conseguiu carregar os lançamentos em destaque.');
+  const releases = await response.json();
+  if (!Array.isArray(releases)) throw new TypeError('A resposta do servidor para os destaques não é válida.');
+  return releases;
+}
+
+async function initializeMusicfy() {
+  try {
+    homeReleases = await loadHomeReleases();
+  } catch (error) {
+    console.error('Não foi possível carregar os destaques publicados no servidor.', error);
+    homeReleases = [];
+  }
+
+  const catalogAdminLoginForm = document.getElementById('catalogAdminLoginForm');
+  if (catalogAdminLoginForm) {
+    const catalogAdminPassword = document.getElementById('catalogAdminPassword');
+    const catalogAdminLoginMessage = document.getElementById('catalogAdminLoginMessage');
+    const catalogAdminSession = document.getElementById('catalogAdminSession');
+    const catalogAdminLoginButton = catalogAdminLoginForm.querySelector('button[type="submit"]');
+    const protectedForms = [
+      document.getElementById('createAlbumForm'),
+      document.getElementById('artistForm')
+    ].filter(Boolean);
+
+    const updateCatalogAdminAccess = (authenticated) => {
+      catalogAdminLoginForm.hidden = authenticated;
+      catalogAdminSession.hidden = !authenticated;
+      protectedForms.forEach((form) => {
+        form.hidden = !authenticated;
+      });
+    };
+
+    document.addEventListener('musicfy-admin-authenticated', () => updateCatalogAdminAccess(true));
+    document.addEventListener('musicfy-admin-logged-out', () => updateCatalogAdminAccess(false));
+
+    catalogAdminLoginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      catalogAdminLoginMessage.textContent = '';
+      catalogAdminLoginButton.disabled = true;
+      try {
+        const response = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ password: catalogAdminPassword.value })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Não foi possível entrar no painel.');
+        catalogAdminPassword.value = '';
+        await importLegacyCatalog();
+        catalogAdminLoginMessage.textContent = 'Acesso autorizado.';
+        updateCatalogAdminAccess(true);
+        document.dispatchEvent(new CustomEvent('musicfy-admin-authenticated'));
+      } catch (error) {
+        console.error('Não foi possível autenticar o administrador do catálogo.', error);
+        catalogAdminLoginMessage.textContent = error.message || 'Não foi possível conectar ao servidor.';
+      } finally {
+        catalogAdminLoginButton.disabled = false;
+      }
+    });
+
+    document.getElementById('catalogAdminLogout').addEventListener('click', async () => {
+      catalogAdminLoginMessage.textContent = '';
+      try {
+        const response = await fetch('/api/admin/logout', { method: 'POST' });
+        if (!response.ok) throw new Error('O servidor não encerrou a sessão administrativa.');
+        updateCatalogAdminAccess(false);
+        catalogAdminLoginMessage.textContent = 'Sessão encerrada.';
+        document.dispatchEvent(new CustomEvent('musicfy-admin-logged-out'));
+      } catch (error) {
+        console.error('Não foi possível encerrar a sessão administrativa.', error);
+        catalogAdminLoginMessage.textContent = 'Não foi possível encerrar a sessão. Tente novamente.';
+      }
+    });
+
+    try {
+      const response = await fetch('/api/admin/session', { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error('Não foi possível verificar a sessão administrativa.');
+      const result = await response.json();
+      updateCatalogAdminAccess(result.authenticated === true && window.musicfyCatalogServer === true);
+      if (result.authenticated === true && window.musicfyCatalogServer === true) {
+        try {
+          await importLegacyCatalog();
+        } catch (error) {
+          console.error('Não foi possível migrar o catálogo local para o servidor.', error);
+          catalogAdminLoginMessage.textContent = error.message || 'Não foi possível migrar os cadastros locais.';
+        }
+      }
+      if (!result.configured) {
+        catalogAdminPassword.disabled = true;
+        catalogAdminLoginButton.disabled = true;
+        catalogAdminLoginMessage.textContent = 'Configure MUSICFY_ADMIN_PASSWORD no servidor para habilitar o catálogo.';
+      } else if (window.musicfyCatalogServer !== true) {
+        catalogAdminPassword.disabled = true;
+        catalogAdminLoginButton.disabled = true;
+        catalogAdminLoginMessage.textContent = 'Inicie o MUSICFY pelo iniciar-site.bat para usar o catálogo compartilhado.';
+      }
+    } catch (error) {
+      console.error('Não foi possível verificar a sessão administrativa do catálogo.', error);
+      catalogAdminLoginMessage.textContent = 'Não foi possível conectar ao servidor. Inicie o MUSICFY pelo iniciar-site.bat.';
+    }
+  }
+
   const themeToggle = document.getElementById('themeToggle');
   const savedTheme = localStorage.getItem('musicfy-theme');
 
@@ -10197,6 +10412,307 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  const homeReleaseForm = document.getElementById('homeReleaseForm');
+  if (homeReleaseForm) {
+    const loginForm = document.getElementById('homeReleaseLoginForm');
+    const loginPasswordInput = document.getElementById('homeReleaseAdminPassword');
+    const loginMessage = document.getElementById('homeReleaseLoginMessage');
+    const adminControls = document.getElementById('homeReleaseAdminControls');
+    const logoutButton = document.getElementById('homeReleaseLogout');
+    const releaseIdInput = document.getElementById('homeReleaseId');
+    const releaseTitleInput = document.getElementById('homeReleaseTitle');
+    const releaseArtistInput = document.getElementById('homeReleaseArtist');
+    const releaseCaptionInput = document.getElementById('homeReleaseCaption');
+    const releaseBannerInput = document.getElementById('homeReleaseBanner');
+    const releaseAudioInput = document.getElementById('homeReleaseAudio');
+    const releaseRemoveAudioInput = document.getElementById('homeReleaseRemoveAudio');
+    const releaseYoutubeInput = document.getElementById('homeReleaseYoutube');
+    const releaseAlbumSelect = document.getElementById('homeReleaseAlbum');
+    const releaseFormMessage = document.getElementById('homeReleaseFormMessage');
+    const releaseItems = document.getElementById('homeReleaseItems');
+    const releaseEmptyState = document.getElementById('homeReleaseEmptyState');
+    const saveReleaseButton = document.getElementById('saveHomeRelease');
+    const cancelReleaseEditButton = document.getElementById('cancelHomeReleaseEdit');
+    const maximumBannerSize = 5 * 1024 * 1024;
+    const maximumReleaseAudioSize = 4 * 1024 * 1024;
+
+    Object.entries(albums).sort(([, first], [, second]) =>
+      `${first.artist} ${first.name}`.localeCompare(`${second.artist} ${second.name}`, 'pt-BR')
+    ).forEach(([id, album]) => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = `${album.artist} — ${album.name}`;
+      releaseAlbumSelect.append(option);
+    });
+
+    const persistHomeReleases = async () => {
+      const response = await fetch('/api/admin/home-releases', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(homeReleases)
+      });
+      if (response.status === 401) {
+        adminControls.hidden = true;
+        loginForm.hidden = false;
+        throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+      }
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.error || 'Não foi possível publicar os destaques no servidor.');
+      }
+      homeReleases = await response.json();
+      renderHomeReleaseItems();
+    };
+
+    const updateAdminAccess = (authenticated) => {
+      loginForm.hidden = authenticated;
+      adminControls.hidden = !authenticated;
+      if (authenticated) renderHomeReleaseItems();
+    };
+
+    document.addEventListener('musicfy-admin-authenticated', () => updateAdminAccess(true));
+    document.addEventListener('musicfy-admin-logged-out', () => updateAdminAccess(false));
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      loginMessage.textContent = '';
+      const submitButton = loginForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      try {
+        const response = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ password: loginPasswordInput.value })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Não foi possível entrar no painel.');
+        loginPasswordInput.value = '';
+        updateAdminAccess(true);
+        document.dispatchEvent(new CustomEvent('musicfy-admin-authenticated'));
+        await importLegacyCatalog();
+        loginMessage.textContent = 'Acesso autorizado.';
+      } catch (error) {
+        console.error('Não foi possível autenticar o administrador.', error);
+        loginMessage.textContent = error.message || 'Não foi possível conectar ao servidor.';
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    logoutButton.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/admin/logout', { method: 'POST' });
+        if (!response.ok) throw new Error('O servidor não encerrou a sessão administrativa.');
+        updateAdminAccess(false);
+        loginMessage.textContent = 'Sessão encerrada.';
+        document.dispatchEvent(new CustomEvent('musicfy-admin-logged-out'));
+      } catch (error) {
+        console.error('Não foi possível encerrar a sessão administrativa.', error);
+        loginMessage.textContent = 'Não foi possível encerrar a sessão. Tente novamente.';
+      }
+    });
+
+    fetch('/api/admin/session', { headers: { Accept: 'application/json' } })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Não foi possível verificar a sessão administrativa.');
+        const result = await response.json();
+        updateAdminAccess(result.authenticated === true);
+        if (!result.configured) {
+          loginPasswordInput.disabled = true;
+          loginForm.querySelector('button[type="submit"]').disabled = true;
+          loginMessage.textContent = 'O administrador precisa configurar MUSICFY_ADMIN_PASSWORD no servidor para habilitar o painel.';
+        }
+      })
+      .catch((error) => {
+        console.error('Não foi possível verificar a sessão do administrador.', error);
+        loginMessage.textContent = 'Não foi possível conectar ao servidor. Verifique se o MUSICFY está aberto pelo servidor.';
+      });
+
+    function resetHomeReleaseForm() {
+      homeReleaseForm.reset();
+      releaseIdInput.value = '';
+      releaseFormMessage.textContent = '';
+      saveReleaseButton.textContent = 'Adicionar destaque';
+      cancelReleaseEditButton.hidden = true;
+    }
+
+    function renderHomeReleaseItems() {
+      releaseItems.replaceChildren();
+      releaseEmptyState.hidden = homeReleases.length > 0;
+      homeReleases.forEach((release, index) => {
+        const row = document.createElement('article');
+        row.className = 'home-release-item';
+        const image = document.createElement('img');
+        image.src = release.banner;
+        image.alt = '';
+        const details = document.createElement('div');
+        details.className = 'home-release-item__details';
+        const title = document.createElement('strong');
+        title.textContent = `${release.title} — ${release.artist}`;
+        const caption = document.createElement('span');
+        caption.textContent = release.caption || 'Destaque da página inicial';
+        details.append(title, caption);
+
+        const actions = document.createElement('div');
+        actions.className = 'home-release-item__actions';
+        [
+          ['↑', 'Mover destaque para cima', index === 0, -1],
+          ['↓', 'Mover destaque para baixo', index === homeReleases.length - 1, 1]
+        ].forEach(([label, accessibleLabel, disabled, direction]) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'home-release-item__move';
+          button.textContent = label;
+          button.setAttribute('aria-label', accessibleLabel);
+          button.disabled = disabled;
+          button.addEventListener('click', async () => {
+            const targetIndex = index + direction;
+            const previousReleases = [...homeReleases];
+            [homeReleases[index], homeReleases[targetIndex]] = [homeReleases[targetIndex], homeReleases[index]];
+            try {
+              await persistHomeReleases();
+            } catch (error) {
+              console.error('Não foi possível reordenar os destaques da página inicial.', error);
+              homeReleases = previousReleases;
+              renderHomeReleaseItems();
+              releaseFormMessage.textContent = error.message || 'Não foi possível publicar a nova ordem.';
+            }
+          });
+          actions.append(button);
+        });
+
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'btn btn-sm btn-outline-primary rounded-pill';
+        editButton.textContent = 'Editar';
+        editButton.addEventListener('click', () => {
+          releaseIdInput.value = release.id;
+          releaseTitleInput.value = release.title;
+          releaseArtistInput.value = release.artist;
+          releaseCaptionInput.value = release.caption;
+          releaseYoutubeInput.value = release.youtubeUrl;
+          releaseAlbumSelect.value = release.albumId;
+          releaseFormMessage.textContent = 'Envie uma nova imagem ou áudio somente se quiser substituir os arquivos atuais.';
+          saveReleaseButton.textContent = 'Salvar alterações';
+          cancelReleaseEditButton.hidden = false;
+          releaseTitleInput.focus();
+          document.getElementById('homeReleaseManager').scrollIntoView({ behavior: 'smooth' });
+        });
+        actions.append(editButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'btn btn-sm btn-outline-danger rounded-pill';
+        deleteButton.textContent = 'Remover';
+        deleteButton.addEventListener('click', async () => {
+          const previousReleases = [...homeReleases];
+          homeReleases.splice(index, 1);
+          try {
+            await persistHomeReleases();
+            if (releaseIdInput.value === release.id) resetHomeReleaseForm();
+            releaseFormMessage.textContent = 'Destaque removido e publicação atualizada.';
+          } catch (error) {
+            console.error('Não foi possível remover o destaque da página inicial.', error);
+            homeReleases = previousReleases;
+            renderHomeReleaseItems();
+            releaseFormMessage.textContent = error.message || 'Não foi possível publicar a remoção.';
+          }
+        });
+        actions.append(deleteButton);
+        row.append(image, details, actions);
+        releaseItems.append(row);
+      });
+    }
+
+    function readReleaseFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          if (typeof reader.result !== 'string') {
+            reject(new Error('O arquivo selecionado não pôde ser armazenado.'));
+            return;
+          }
+          resolve(reader.result);
+        });
+        reader.addEventListener('error', () => reject(new Error('Não foi possível ler o arquivo selecionado.')));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    cancelReleaseEditButton.addEventListener('click', resetHomeReleaseForm);
+    homeReleaseForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      releaseFormMessage.textContent = '';
+      const title = releaseTitleInput.value.trim();
+      const artist = releaseArtistInput.value.trim();
+      const youtubeUrl = releaseYoutubeInput.value.trim();
+      const youtubeVideoId = youtubeUrl ? getYoutubeVideoId(youtubeUrl) : null;
+      const existingIndex = homeReleases.findIndex((release) => release.id === releaseIdInput.value);
+      const existingRelease = existingIndex >= 0 ? homeReleases[existingIndex] : null;
+      const bannerFile = releaseBannerInput.files[0];
+      const audioFile = releaseAudioInput.files[0];
+
+      if (youtubeUrl && !youtubeVideoId) {
+        releaseFormMessage.textContent = 'Informe um link válido de vídeo do YouTube.';
+        return;
+      }
+      if ((!bannerFile && !existingRelease)
+        || (bannerFile && (!['image/png', 'image/jpeg', 'image/webp', 'image/avif'].includes(bannerFile.type)
+          || bannerFile.size > maximumBannerSize))) {
+        releaseFormMessage.textContent = 'Escolha um banner PNG, JPG ou WEBP de até 5 MB.';
+        return;
+      }
+      if (audioFile) {
+        const isMp3 = audioFile.type === 'audio/mpeg'
+          || audioFile.type === 'audio/mp3'
+          || /\.mp3$/i.test(audioFile.name);
+        if (!isMp3 || audioFile.size > maximumReleaseAudioSize) {
+          releaseFormMessage.textContent = 'Escolha um arquivo MP3 de até 4 MB.';
+          return;
+        }
+      }
+      if (!audioFile && !youtubeVideoId
+        && (!existingRelease?.audio || releaseRemoveAudioInput.checked)
+        && !existingRelease?.youtubeUrl) {
+        releaseFormMessage.textContent = 'Adicione um MP3 ou um link do YouTube para que as pessoas possam ouvir.';
+        return;
+      }
+
+      saveReleaseButton.disabled = true;
+      const previousReleases = [...homeReleases];
+      try {
+        const banner = bannerFile ? await readReleaseFile(bannerFile) : existingRelease.banner;
+        const audio = audioFile
+          ? await readReleaseFile(audioFile)
+          : (releaseRemoveAudioInput.checked ? '' : existingRelease?.audio || '');
+        const release = {
+          id: existingRelease?.id || `home-release-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          title,
+          artist,
+          caption: releaseCaptionInput.value.trim(),
+          banner,
+          audio,
+          youtubeUrl: youtubeVideoId
+            ? `https://www.youtube.com/watch?v=${youtubeVideoId}`
+            : (!youtubeUrl ? existingRelease?.youtubeUrl || '' : ''),
+          albumId: releaseAlbumSelect.value
+        };
+        if (existingIndex >= 0) homeReleases[existingIndex] = release;
+        else homeReleases.unshift(release);
+        await persistHomeReleases();
+        resetHomeReleaseForm();
+        releaseFormMessage.textContent = 'Destaque publicado na página inicial.';
+      } catch (error) {
+        console.error('Não foi possível salvar o destaque da página inicial.', error);
+        homeReleases = previousReleases;
+        renderHomeReleaseItems();
+        releaseFormMessage.textContent = error.message || 'Não foi possível publicar o destaque. Tente arquivos menores.';
+      } finally {
+        saveReleaseButton.disabled = false;
+      }
+    });
+  }
+
   const createAlbumForm = document.getElementById('createAlbumForm');
   if (createAlbumForm) {
     const trackListEditor = document.getElementById('newTrackList');
@@ -10275,6 +10791,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const audioFileName = trackData.audioFileName || '';
       row.sourceTrack = typeof track === 'string' ? null : track;
       row.querySelector('input[name="trackName"]').value = trackData.name;
+      row.querySelector('input[name="trackExplicit"]').checked = trackData.explicit === true;
       row.querySelector('textarea[name="trackLyrics"]').value = trackData.lyrics || '';
       row.querySelector('textarea[name="trackTranslation"]').value = trackData.translation || '';
       row.dataset.audioDataUrl = audioDataUrl;
@@ -10404,12 +10921,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const number = trackRow.querySelector('.new-track-row__number');
         const label = trackRow.querySelector('label.visually-hidden');
         const trackInput = trackRow.querySelector('input[name="trackName"]');
+        const explicitInput = trackRow.querySelector('input[name="trackExplicit"]');
         const removeButton = trackRow.querySelector('.remove-track-button');
         const dragHandle = trackRow.querySelector('.track-reorder-handle');
         number.textContent = String(position).padStart(2, '0');
         label.textContent = `Nome da faixa ${position}`;
         label.htmlFor = `newTrack${position}`;
         trackInput.id = `newTrack${position}`;
+        explicitInput.setAttribute('aria-label', `Marcar faixa ${position} como explícita`);
         removeButton.setAttribute('aria-label', `Remover faixa ${position}`);
         dragHandle.setAttribute('aria-label', `Arraste para reordenar faixa ${position}`);
         dragHandle.title = `Arraste para reordenar faixa ${position}`;
@@ -10474,6 +10993,26 @@ document.addEventListener('DOMContentLoaded', function () {
       input.placeholder = 'Nome da faixa';
       label.htmlFor = `newTrack${trackListEditor.children.length + 1}`;
       input.id = label.htmlFor;
+
+      const trackMain = document.createElement('div');
+      trackMain.className = 'new-track-row__main';
+      const explicitLabel = document.createElement('label');
+      explicitLabel.className = 'new-track-explicit';
+      const explicitInput = document.createElement('input');
+      explicitInput.className = 'form-check-input';
+      explicitInput.type = 'checkbox';
+      explicitInput.name = 'trackExplicit';
+      explicitInput.setAttribute('aria-label', `Marcar faixa ${trackListEditor.children.length + 1} como explícita`);
+      const explicitText = document.createElement('span');
+      explicitText.append(
+        'Conteúdo explícito ',
+        Object.assign(document.createElement('span'), {
+          className: 'explicit-badge',
+          textContent: 'E'
+        })
+      );
+      explicitLabel.append(explicitInput, explicitText);
+      trackMain.append(input, explicitLabel);
 
       const removeButton = document.createElement('button');
       removeButton.className = 'remove-track-button';
@@ -10611,7 +11150,7 @@ document.addEventListener('DOMContentLoaded', function () {
         youtubeField
       );
 
-      row.append(number, dragHandle, label, input, removeButton, lyricsDetails);
+      row.append(number, dragHandle, label, trackMain, removeButton, lyricsDetails);
       trackListEditor.append(row);
       if (track) populateTrackField(row, track);
       updateTrackPositions();
@@ -10834,6 +11373,7 @@ document.addEventListener('DOMContentLoaded', function () {
           tracks.push({
             ...(row.sourceTrack || {}),
             name,
+            explicit: row.querySelector('input[name="trackExplicit"]').checked,
             lyrics: row.querySelector('textarea[name="trackLyrics"]').value.trim(),
             translation: row.querySelector('textarea[name="trackTranslation"]').value.trim(),
             audioDataUrl,
@@ -10868,7 +11408,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (isEditing) {
           const existingAlbumId = existingAlbumSelect.value;
-          persistAlbumRecord({ ...existingAlbum, ...albumFields, id: existingAlbumId });
+          await persistAlbumRecord({ ...existingAlbum, ...albumFields, id: existingAlbumId });
           window.location.href = `album.html?id=${encodeURIComponent(existingAlbumId)}`;
           return;
         }
@@ -10902,7 +11442,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
           }
           const versionGroup = baseAlbum.versionGroup || `created-version-${baseAlbumId}`;
-          persistAlbumRecord({
+          await persistAlbumRecord({
             ...baseAlbum,
             id: baseAlbumId,
             versionGroup,
@@ -10910,13 +11450,13 @@ document.addEventListener('DOMContentLoaded', function () {
           });
           newAlbum.versionGroup = versionGroup;
         }
-        persistAlbumRecord(newAlbum);
+        await persistAlbumRecord(newAlbum);
         window.location.href = 'index.html#albuns';
       } catch (error) {
         console.error(isEditing
           ? 'Não foi possível salvar as alterações do álbum.'
           : 'Não foi possível salvar o álbum criado.', error);
-        message.textContent = 'Não foi possível salvar. O armazenamento do navegador pode estar cheio; tente uma capa ou MP3 menor.';
+        message.textContent = error.message || 'Não foi possível salvar o álbum. Verifique a conexão com o servidor.';
       } finally {
         saveButton.disabled = false;
         saveButton.textContent = formMode.value === 'edit' ? 'Salvar alterações' : 'Criar álbum';
@@ -10965,8 +11505,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  if (albumGrid && createdAlbums.length > 0) {
-    createdAlbums.forEach((album) => {
+  if (albumGrid) {
+    const displayedAlbumIds = new Set(Array.from(albumGrid.querySelectorAll('[data-album-id]'))
+      .map((button) => button.dataset.albumId));
+    Object.entries(albums).forEach(([albumId, album]) => {
+      if (displayedAlbumIds.has(albumId)) return;
+
       const column = document.createElement('div');
       column.className = 'col-12 col-sm-6 col-lg-4 col-xl-3';
 
@@ -10996,16 +11540,17 @@ document.addEventListener('DOMContentLoaded', function () {
       artist.textContent = `${album.artist} · ${album.type || 'ÁLBUM'}`;
       const tags = document.createElement('div');
       tags.className = 'album-tags album-tags--compact';
-      album.genres.slice(0, 2).forEach((genre) => {
+      const genres = Array.isArray(album.genres) ? album.genres : [];
+      genres.slice(0, 2).forEach((genre) => {
         const tag = document.createElement('span');
         tag.textContent = genre;
         tags.append(tag);
       });
-      if (album.genres.length > 2) {
+      if (genres.length > 2) {
         const remainingGenres = document.createElement('span');
         remainingGenres.className = 'album-tags__more';
-        remainingGenres.textContent = `+${album.genres.length - 2}`;
-        remainingGenres.title = `${album.genres.length - 2} outros estilos`;
+        remainingGenres.textContent = `+${genres.length - 2}`;
+        remainingGenres.title = `${genres.length - 2} outros estilos`;
         tags.append(remainingGenres);
       }
       body.append(cardTop, artist, tags);
@@ -11023,10 +11568,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const button = document.createElement('button');
       button.className = 'botao-avaliar';
-      button.dataset.albumId = album.id;
+      button.dataset.albumId = albumId;
       button.textContent = isPresave ? 'Fazer Pre-Save' : 'Ver Álbum';
       button.addEventListener('click', () => {
-        window.location.href = `album.html?id=${encodeURIComponent(album.id)}`;
+        window.location.href = `album.html?id=${encodeURIComponent(albumId)}`;
       });
 
       card.append(image, body, button);
@@ -11046,12 +11591,375 @@ document.addEventListener('DOMContentLoaded', function () {
       .forEach(([albumId]) => albumGrid.append(cardsByAlbumId.get(albumId)));
   }
 
+  const exploreSections = document.getElementById('exploreSections');
+  const exploreAlbumSource = document.getElementById('exploreAlbumSource');
+  const exploreGenreFilters = document.getElementById('exploreGenreFilters');
+  if (exploreSections && exploreAlbumSource && exploreGenreFilters) {
+    const genreCatalog = [
+      ['pop', 'Pop', ['pop']],
+      ['k-pop', 'K-pop', ['k-pop', 'kpop']],
+      ['r-and-b', 'R&B', ['r&b', 'r and b', 'rnb']],
+      ['indie', 'Indie', ['indie']],
+      ['alternative', 'Alternative', ['alternative', 'alternativo', 'alternativa']],
+      ['rock', 'Rock', ['rock']],
+      ['mpb', 'MPB', ['mpb']],
+      ['hip-hop', 'Hip-hop', ['hip-hop', 'hip hop']],
+      ['rap', 'Rap', ['rap']],
+      ['eletronica', 'Eletrônica', ['eletrônica', 'eletronica', 'electronic']],
+      ['jazz', 'Jazz', ['jazz']],
+      ['soul', 'Soul', ['soul']],
+      ['funk', 'Funk', ['funk']],
+      ['samba', 'Samba', ['samba']],
+      ['forro', 'Forró', ['forró', 'forro']],
+      ['reggae', 'Reggae', ['reggae']],
+      ['metal', 'Metal', ['metal']],
+      ['punk', 'Punk', ['punk']],
+      ['folk', 'Folk', ['folk']],
+      ['country', 'Country', ['country']],
+      ['classica', 'Clássica', ['clássica', 'classica']],
+      ['dance', 'Dance', ['dance']],
+      ['hyperpop', 'Hyperpop', ['hyperpop']],
+      ['synthpop', 'Synthpop', ['synthpop']],
+      ['electropop', 'Electropop', ['electropop']]
+    ];
+    const normalizeGenre = (genre) => genre
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLocaleLowerCase('pt-BR');
+    const genreByAlias = new Map();
+    genreCatalog.forEach(([key, label, aliases]) => {
+      aliases.forEach((alias) => genreByAlias.set(normalizeGenre(alias), { key, label }));
+    });
+
+    const exploreAlbums = Array.from(exploreAlbumSource.querySelectorAll('.explore-album-card'))
+      .map((card, index) => {
+        const albumLink = card.querySelector('a[href*="album.html?id="]');
+        const albumId = albumLink
+          ? new URL(albumLink.href, window.location.href).searchParams.get('id')
+          : '';
+        const album = albumId ? albums[albumId] : null;
+        const cardGenres = album && Array.isArray(album.genres) && album.genres.length
+          ? album.genres
+          : Array.from(card.querySelectorAll('.album-meta span'), (tag) => tag.textContent);
+        const genres = new Map();
+        cardGenres.forEach((genre) => {
+          const entry = genreByAlias.get(normalizeGenre(genre));
+          if (entry) genres.set(entry.key, entry);
+        });
+        const scoreLabel = card.querySelector('.score-badge')?.textContent.trim().toLocaleLowerCase('pt-BR');
+        const releaseTime = album?.releaseDate ? new Date(album.releaseDate).getTime() : NaN;
+
+        return {
+          id: albumId || `catalog-${index}`,
+          card: card.parentElement.cloneNode(true),
+          genres: [...genres.values()],
+          releaseTime,
+          isNew: scoreLabel === 'novo' || scoreLabel === 'pré-save',
+          trackCount: album?.tracks.length ?? 0
+        };
+      });
+
+    createdAlbums.forEach((album) => {
+      const cardColumn = document.createElement('div');
+      cardColumn.className = 'col-md-6 col-xl-4';
+      const card = document.createElement('article');
+      card.className = 'explore-album-card h-100';
+      const cover = document.createElement('img');
+      cover.src = album.image;
+      cover.alt = `Capa do álbum ${album.name}`;
+      cover.loading = 'lazy';
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      const top = document.createElement('div');
+      top.className = 'd-flex justify-content-between align-items-start gap-2';
+      const titleAndArtist = document.createElement('div');
+      const title = document.createElement('h2');
+      title.textContent = album.name;
+      const artist = document.createElement('p');
+      artist.textContent = album.artist;
+      titleAndArtist.append(title, artist);
+      const isPresave = album.releaseDate && new Date(album.releaseDate).getTime() > Date.now();
+      const status = document.createElement('span');
+      status.className = 'score-badge';
+      status.textContent = isPresave ? 'Pré-save' : 'Novo';
+      top.append(titleAndArtist, status);
+
+      const metadata = document.createElement('div');
+      metadata.className = 'album-meta';
+      const genres = new Map();
+      (Array.isArray(album.genres) ? album.genres : []).forEach((genre) => {
+        const entry = genreByAlias.get(normalizeGenre(genre));
+        if (entry) genres.set(entry.key, entry);
+      });
+      [...genres.values()].forEach(({ label }) => {
+        const tag = document.createElement('span');
+        tag.textContent = label;
+        metadata.append(tag);
+      });
+
+      const footer = document.createElement('div');
+      footer.className = 'mt-3 d-flex justify-content-between align-items-center';
+      const trackCount = document.createElement('small');
+      trackCount.textContent = album.tracks.length
+        ? `${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}`
+        : 'Faixas em breve';
+      const link = document.createElement('a');
+      link.href = `album.html?id=${encodeURIComponent(album.id)}`;
+      link.className = 'btn btn-primary btn-sm rounded-pill';
+      link.textContent = 'Ver álbum';
+      footer.append(trackCount, link);
+      body.append(top, metadata, footer);
+
+      if (album.releaseDate) {
+        const release = document.createElement('small');
+        release.className = 'explore-release-date';
+        release.textContent = `${isPresave ? 'Lançamento' : 'Lançado em'} ${new Intl.DateTimeFormat('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
+          dateStyle: 'short'
+        }).format(new Date(album.releaseDate))}`;
+        body.append(release);
+      }
+
+      card.append(cover, body);
+      cardColumn.append(card);
+      exploreAlbums.push({
+        id: album.id,
+        card: cardColumn,
+        genres: [...genres.values()],
+        releaseTime: album.releaseDate ? new Date(album.releaseDate).getTime() : NaN,
+        isNew: true,
+        trackCount: album.tracks.length
+      });
+    });
+
+    const sortedByRelease = (items) => [...items].sort((first, second) => {
+      const firstHasDate = Number.isFinite(first.releaseTime);
+      const secondHasDate = Number.isFinite(second.releaseTime);
+      if (firstHasDate !== secondHasDate) return firstHasDate ? -1 : 1;
+      if (firstHasDate && first.releaseTime !== second.releaseTime) {
+        return second.releaseTime - first.releaseTime;
+      }
+      return first.id.localeCompare(second.id, 'pt-BR');
+    });
+    const shelves = [];
+    const renderShelf = (key, title, items, description = '') => {
+      if (!items.length) return;
+      const section = document.createElement('section');
+      section.className = 'explore-genre-section';
+      section.dataset.exploreSection = key;
+      const heading = document.createElement('div');
+      heading.className = 'explore-genre-heading';
+      const headingText = document.createElement('div');
+      const titleElement = document.createElement('h2');
+      titleElement.textContent = title;
+      headingText.append(titleElement);
+      if (description) {
+        const descriptionElement = document.createElement('p');
+        descriptionElement.textContent = description;
+        headingText.append(descriptionElement);
+      }
+      const count = document.createElement('span');
+      count.className = 'explore-genre-count';
+      count.textContent = `${items.length} ${items.length === 1 ? 'álbum' : 'álbuns'}`;
+      heading.append(headingText, count);
+      const grid = document.createElement('div');
+      grid.className = 'row g-4';
+      sortedByRelease(items).forEach(({ card }) => grid.append(card.cloneNode(true)));
+      section.append(heading, grid);
+      exploreSections.append(section);
+      shelves.push({ key, title });
+    };
+
+    const novidades = sortedByRelease(exploreAlbums.filter((album) => album.isNew));
+    renderShelf('new', 'Novidades', novidades, 'Lançamentos recentes e pré-saves do catálogo.');
+
+    const genrePriority = ['pop', 'k-pop', 'r-and-b'];
+    const availableGenres = new Map();
+    exploreAlbums.forEach((album) => {
+      album.genres.forEach((genre) => availableGenres.set(genre.key, genre));
+    });
+    const orderedGenres = [...availableGenres.values()].sort((first, second) => {
+      const firstPriority = genrePriority.indexOf(first.key);
+      const secondPriority = genrePriority.indexOf(second.key);
+      if (firstPriority !== -1 || secondPriority !== -1) {
+        return (firstPriority === -1 ? Infinity : firstPriority)
+          - (secondPriority === -1 ? Infinity : secondPriority);
+      }
+      return first.label.localeCompare(second.label, 'pt-BR');
+    });
+
+    orderedGenres.forEach((genre) => {
+      const genreAlbums = exploreAlbums.filter((album) =>
+        album.genres.some((albumGenre) => albumGenre.key === genre.key)
+      );
+      const title = genre.key === 'pop'
+        ? 'Lançamentos Pop'
+        : genre.key === 'k-pop'
+          ? 'Destaques K-pop'
+          : genre.key === 'r-and-b'
+            ? 'R&B em destaque'
+            : `Em destaque: ${genre.label}`;
+      renderShelf(`genre:${genre.key}`, title, genreAlbums, `Álbuns catalogados como ${genre.label}.`);
+    });
+
+    const uncategorized = exploreAlbums.filter((album) => album.genres.length === 0);
+    renderShelf('other', 'Outros lançamentos', uncategorized, 'Álbuns sem gênero informado no catálogo.');
+    exploreAlbumSource.remove();
+
+    const createFilterButton = (key, label) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'filter-chip';
+      button.dataset.exploreFilter = key;
+      button.setAttribute('aria-pressed', 'false');
+      button.textContent = label;
+      exploreGenreFilters.append(button);
+    };
+    shelves.forEach(({ key, title }) => createFilterButton(key, title));
+    orderedGenres.forEach((genre) => {
+      createFilterButton(`genre:${genre.key}`, genre.label);
+    });
+    if (uncategorized.length) createFilterButton('other', 'Outros');
+
+    exploreGenreFilters.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-explore-filter]');
+      if (!button) return;
+      exploreGenreFilters.querySelectorAll('.filter-chip').forEach((filter) => {
+        const isActive = filter === button;
+        filter.classList.toggle('active', isActive);
+        filter.setAttribute('aria-pressed', String(isActive));
+      });
+      const filterKey = button.dataset.exploreFilter;
+      exploreSections.querySelectorAll('[data-explore-section]').forEach((section) => {
+        section.hidden = filterKey !== 'all' && section.dataset.exploreSection !== filterKey;
+      });
+    });
+
+    const albumCount = document.getElementById('exploreAlbumCount');
+    const trackCount = document.getElementById('exploreTrackCount');
+    const genreCount = document.getElementById('exploreGenreCount');
+    if (albumCount) albumCount.textContent = String(exploreAlbums.length);
+    if (trackCount) {
+      trackCount.textContent = String(exploreAlbums.reduce((total, album) => total + album.trackCount, 0));
+    }
+    if (genreCount) genreCount.textContent = String(availableGenres.size);
+  }
+
   const heroCarousel = document.querySelector('.hero-carousel');
   if (heroCarousel) {
     const track = heroCarousel.querySelector('.hero-carousel__track');
-    const slides = Array.from(heroCarousel.querySelectorAll('.hero-slide'));
-    const indicators = Array.from(heroCarousel.querySelectorAll('.hero-carousel__indicators button'));
+    const indicatorList = heroCarousel.querySelector('.hero-carousel__indicators');
     const rotationButton = heroCarousel.querySelector('.hero-carousel__rotation');
+    const defaultReleaseIds = ['prima', 'youSeemPrettySad', 'mansBestFriend'];
+    const defaultReleases = defaultReleaseIds
+      .filter((albumId) => albums[albumId])
+      .map((albumId) => {
+        const album = albums[albumId];
+        const playableTrack = album.tracks.find((song) => song.audioDataUrl || song.youtubeUrl);
+        return {
+          title: album.name,
+          artist: album.artist,
+          caption: 'Confira o lançamento e descubra mais sobre o álbum.',
+          banner: album.image,
+          albumId,
+          audio: playableTrack?.audioDataUrl || '',
+          youtubeUrl: playableTrack?.youtubeUrl || ''
+        };
+      });
+    const featuredReleases = homeReleases.length ? homeReleases : defaultReleases;
+
+    featuredReleases.forEach((release, index) => {
+      const slide = document.createElement('article');
+      slide.className = 'featured-album hero-slide';
+      slide.setAttribute('aria-roledescription', 'slide');
+      slide.setAttribute('aria-label', `${index + 1} de ${featuredReleases.length}`);
+      if (index > 0) {
+        slide.setAttribute('aria-hidden', 'true');
+        slide.inert = true;
+      }
+
+      const image = document.createElement('img');
+      image.className = 'hero-slide__banner';
+      image.src = release.banner;
+      image.alt = `Banner de ${release.title}, por ${release.artist}`;
+
+      const content = document.createElement('div');
+      content.className = 'featured-album__body';
+      const label = document.createElement('span');
+      label.className = 'featured-label';
+      label.textContent = 'Novo lançamento';
+      const title = document.createElement('h2');
+      title.textContent = release.title;
+      const artist = document.createElement('p');
+      artist.textContent = release.artist;
+      const identity = document.createElement('div');
+      identity.className = 'hero-slide__identity';
+      identity.append(title, artist);
+      const footer = document.createElement('div');
+      footer.className = 'hero-slide__footer';
+      const caption = document.createElement('p');
+      caption.className = 'hero-slide__caption';
+      caption.textContent = release.caption || `Nova música de ${release.artist}! Confira o lançamento.`;
+      footer.append(caption);
+
+      const playableTrack = release.albumId && albums[release.albumId]?.tracks.find((song) =>
+        song.audioDataUrl || song.youtubeUrl
+      );
+      const audioDataUrl = release.audio || playableTrack?.audioDataUrl || '';
+      const youtubeUrl = release.youtubeUrl || playableTrack?.youtubeUrl || '';
+      if (audioDataUrl) {
+        const audio = document.createElement('audio');
+        audio.className = 'hero-slide__audio';
+        audio.controls = true;
+        audio.preload = 'none';
+        audio.setAttribute('aria-label', `Ouvir ${release.title}, de ${release.artist}`);
+        const source = document.createElement('source');
+        source.src = audioDataUrl;
+        source.type = 'audio/mpeg';
+        audio.append(source);
+        audio.addEventListener('play', () => {
+          manuallyPaused = true;
+          syncRotation();
+        });
+        footer.append(audio);
+      } else if (youtubeUrl && getYoutubeVideoId(youtubeUrl)) {
+        const listenLink = document.createElement('a');
+        listenLink.className = 'hero-slide__listen';
+        listenLink.href = youtubeUrl;
+        listenLink.target = '_blank';
+        listenLink.rel = 'noopener noreferrer';
+        listenLink.textContent = '▶ Ouvir';
+        listenLink.setAttribute('aria-label', `Ouvir ${release.title} no YouTube`);
+        footer.append(listenLink);
+      }
+
+      const albumId = release.albumId && albums[release.albumId] ? release.albumId : '';
+      if (albumId) {
+        const albumLink = document.createElement('a');
+        albumLink.className = 'hero-slide__album-link';
+        albumLink.href = `album.html?id=${encodeURIComponent(albumId)}`;
+        albumLink.textContent = 'Ver lançamento';
+        content.append(label, identity, footer, albumLink);
+      } else {
+        content.append(label, identity, footer);
+      }
+
+      slide.append(image, content);
+      track.append(slide);
+
+      const indicator = document.createElement('button');
+      indicator.type = 'button';
+      indicator.setAttribute('aria-label', `Mostrar lançamento ${index + 1}: ${release.title}`);
+      if (index === 0) {
+        indicator.classList.add('is-active');
+        indicator.setAttribute('aria-current', 'true');
+      }
+      indicatorList.append(indicator);
+    });
+
+    const slides = Array.from(heroCarousel.querySelectorAll('.hero-slide'));
+    const indicators = Array.from(indicatorList.querySelectorAll('button'));
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let currentSlide = 0;
     let rotationTimer;
@@ -11067,8 +11975,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const isActive = slideIndex === currentSlide;
         slide.setAttribute('aria-hidden', String(!isActive));
         slide.inert = !isActive;
-        const link = slide.querySelector('.hero-slide__link');
-        if (link) link.tabIndex = isActive ? 0 : -1;
+        if (!isActive) slide.querySelector('audio')?.pause();
       });
 
       indicators.forEach((indicator, indicatorIndex) => {
@@ -11085,6 +11992,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!manuallyPaused && !isHovered && !isFocused && !document.hidden && slides.length > 1) {
         rotationTimer = window.setInterval(() => showSlide(currentSlide + 1), 5000);
       }
+      rotationButton.hidden = slides.length < 2;
+      heroCarousel.querySelectorAll('.hero-carousel__arrow').forEach((button) => {
+        button.hidden = slides.length < 2;
+      });
+      indicatorList.hidden = slides.length < 2;
       rotationButton.textContent = manuallyPaused ? 'Continuar' : 'Pausar';
       rotationButton.setAttribute('aria-label', manuallyPaused ? 'Continuar carrossel' : 'Pausar carrossel');
       rotationButton.setAttribute('aria-pressed', String(manuallyPaused));
@@ -11413,6 +12325,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Monta a lista resumida de músicas e suas avaliações.
     if (trackList) {
+      const renderTrackRatings = (reviews) => {
+        if (!Array.isArray(reviews) || reviews.length === 0) return '';
+
+        return `<div class="track-ratings" aria-label="Notas da faixa">${reviews.map((review) => {
+          const text = String(review).trim();
+          const ratingMatch = text.match(/^([0-5](?:[.,]\d+)?)\s*\/\s*5$/);
+          const rating = ratingMatch ? Number(ratingMatch[1].replace(',', '.')) : NaN;
+
+          if (ratingMatch && rating <= 5) {
+            return `<span class="track-rating" role="img" aria-label="Nota ${escapeHtml(ratingMatch[1])} de 5">
+              <span class="track-rating__star" aria-hidden="true">★</span>
+              <span class="track-rating__value">${escapeHtml(ratingMatch[1])}<span class="track-rating__maximum">/5</span></span>
+            </span>`;
+          }
+
+          return `<span class="track-rating track-rating--text">${escapeHtml(text)}</span>`;
+        }).join('')}</div>`;
+      };
+
       trackList.innerHTML = album.tracks.length
         ? album.tracks.map((track, index) => isPreRelease && !track.preReleaseAvailable
           ? `<div class="track-item track-row track-row--upcoming">
@@ -11432,7 +12363,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <div class="track-item track-row">
             <div class="track-details">
               <strong>${index + 1}. ${escapeHtml(track.name)}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
-              <span class="text-muted">${track.reviews.join(' • ')}</span>
+              ${renderTrackRatings(track.reviews)}
             </div>
             ${audioLink}
             <a class="track-link" href="lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
@@ -11798,7 +12729,7 @@ document.addEventListener('DOMContentLoaded', function () {
       saveArtistButton.disabled = true;
       saveArtistButton.textContent = 'Salvando…';
       try {
-        const profile = {
+        let profile = {
           ...(oldArtistId && savedArtistProfiles[oldArtistId] ? savedArtistProfiles[oldArtistId] : {}),
           name,
           photo: photoFile ? await readArtistImage(photoFile) : oldProfile.photo,
@@ -11807,23 +12738,44 @@ document.addEventListener('DOMContentLoaded', function () {
         const updatedProfiles = { ...savedArtistProfiles };
         if (oldArtistId && oldArtistId !== newArtistId) delete updatedProfiles[oldArtistId];
         updatedProfiles[newArtistId] = profile;
-        localStorage.setItem(artistProfilesStorageKey, JSON.stringify(updatedProfiles));
+        if (window.musicfyCatalogServer === true) {
+          const response = await fetch('/api/admin/catalog/artist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ id: newArtistId, oldId: oldArtistId, profile })
+          });
+          const result = await response.json();
+          if (response.status === 401) {
+            document.dispatchEvent(new CustomEvent('musicfy-admin-logged-out'));
+            throw new Error(result.error || 'Sua sessão expirou. Entre novamente para continuar.');
+          }
+          if (!response.ok) throw new Error(result.error || 'Não foi possível salvar o artista no servidor.');
+          profile = result;
+          if (oldArtistId && oldArtistId !== newArtistId) {
+            delete savedArtistProfiles[oldArtistId];
+            delete window.musicfyCatalog.artistProfiles[oldArtistId];
+          }
+          savedArtistProfiles[newArtistId] = profile;
+          window.musicfyCatalog.artistProfiles[newArtistId] = profile;
+        } else {
+          localStorage.setItem(artistProfilesStorageKey, JSON.stringify(updatedProfiles));
+          Object.assign(savedArtistProfiles, updatedProfiles);
+        }
 
         if (oldArtistId && oldArtistId !== newArtistId) {
-          Object.entries(albums).forEach(([albumId, album]) => {
-            if (getArtistId(album.artist) !== oldArtistId) return;
+          for (const [albumId, album] of Object.entries(albums)) {
+            if (getArtistId(album.artist) !== oldArtistId) continue;
             const updatedAlbum = { ...album, id: albumId, artist: name };
-            persistAlbumRecord(updatedAlbum);
-          });
+            await persistAlbumRecord(updatedAlbum);
+          }
           delete artistProfiles[oldArtistId];
         }
 
-        Object.assign(savedArtistProfiles, updatedProfiles);
         artistProfiles[newArtistId] = profile;
         window.location.href = `artista.html?id=${encodeURIComponent(newArtistId)}`;
       } catch (error) {
         console.error('Não foi possível salvar o perfil do artista.', error);
-        formMessage.textContent = 'Não foi possível salvar o artista. O armazenamento do navegador pode estar cheio; tente imagens menores.';
+        formMessage.textContent = error.message || 'Não foi possível salvar o artista. Verifique a conexão com o servidor.';
       } finally {
         saveArtistButton.disabled = false;
         saveArtistButton.textContent = modeSelect.value === 'edit' ? 'Salvar alterações' : 'Criar artista';
@@ -11837,4 +12789,10 @@ document.addEventListener('DOMContentLoaded', function () {
       updateArtistFormMode();
     }
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeMusicfy, { once: true });
+} else {
+  initializeMusicfy();
+}

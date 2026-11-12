@@ -45,80 +45,24 @@
 
     <!-- Conteúdo Principal -->
     <main class="container my-5">
-        <section class="hero-banner">
-            <div class="hero-copy">
-                <span class="section-pill">Novos lançamentos</span>
-                <h1>Descubra o som que define seu momento.</h1>
-                <p>
-                    Explore álbuns de artistas que estão marcando tendências, descubra novas
-                    referências e avalie cada faixa do jeito que você escuta.
-                </p>
-                <div class="hero-actions">
-                    <a href="explorar.html" class="btn btn-primary btn-lg rounded-pill px-4">Explorar</a>
-                    <a href="#albuns" class="btn btn-outline-primary btn-lg rounded-pill px-4">Ver álbuns</a>
+        <section class="home-releases" aria-labelledby="homeReleasesTitle">
+            <div class="home-releases__heading">
+                <div>
+                    <span class="section-pill">Novidades para ouvir</span>
+                    <h1 id="homeReleasesTitle">Em alta</h1>
+                    <p>Descubra os lançamentos escolhidos para você.</p>
                 </div>
-                <div class="hero-meta">
-                    <div>
-                        <strong>120+</strong>
-                        <span>recomendações</span>
-                    </div>
-                    <div>
-                        <strong>4.8/5</strong>
-                        <span>média</span>
-                    </div>
-                    <div>
-                        <strong>24h</strong>
-                        <span>atualizado</span>
-                    </div>
-                </div>
+                <a href="criar-album.html#homeReleaseManager" class="home-releases__manage">Gerenciar destaques</a>
             </div>
-
-            <div class="hero-visual">
-                <div class="hero-carousel" role="region" aria-roledescription="carrossel" aria-label="Novos álbuns">
-                    <div class="hero-carousel__viewport">
-                        <div class="hero-carousel__track">
-                            <article class="featured-album hero-slide" aria-roledescription="slide" aria-label="1 de 3">
-                                <a href="album.html?id=prima" class="hero-slide__link">
-                                    <img src="src/img/prima_cover.png.jpg" alt="Capa do álbum PRIMA, de ADÉLA">
-                                    <div class="featured-album__body">
-                                        <span class="featured-label">Lançamento recente</span>
-                                        <h2>PRIMA</h2>
-                                        <p>ADÉLA</p>
-                                    </div>
-                                </a>
-                            </article>
-                            <article class="featured-album hero-slide" aria-roledescription="slide" aria-label="2 de 3" aria-hidden="true" inert>
-                                <a href="album.html?id=youSeemPrettySad" class="hero-slide__link" tabindex="-1">
-                                    <img src="src/img/you-seem-pretty-sad-olivia-rodrigo.png" alt="Capa do álbum you seem pretty sad for a girl so in luv">
-                                    <div class="featured-album__body">
-                                        <span class="featured-label">Lançamento recente</span>
-                                        <h2>you seem pretty sad for a girl so in luv</h2>
-                                        <p>Olivia Rodrigo</p>
-                                    </div>
-                                </a>
-                            </article>
-                            <article class="featured-album hero-slide" aria-roledescription="slide" aria-label="3 de 3" aria-hidden="true" inert>
-                                <a href="album.html?id=mansBestFriend" class="hero-slide__link" tabindex="-1">
-                                    <img src="src/img/mans_best_friend_sabrina_carpenter_cover.png" alt="Capa do álbum Man's Best Friend">
-                                    <div class="featured-album__body">
-                                        <span class="featured-label">Lançamento recente</span>
-                                        <h2>Man's Best Friend</h2>
-                                        <p>Sabrina Carpenter</p>
-                                    </div>
-                                </a>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="hero-carousel__controls" aria-label="Controles do carrossel">
-                        <button class="hero-carousel__rotation" type="button" aria-label="Pausar carrossel" aria-pressed="false">Pausar</button>
-                        <button class="hero-carousel__arrow" type="button" data-carousel-direction="previous" aria-label="Álbum anterior">←</button>
-                        <div class="hero-carousel__indicators" aria-label="Escolher álbum">
-                            <button type="button" class="is-active" aria-label="Mostrar álbum 1" aria-current="true"></button>
-                            <button type="button" aria-label="Mostrar álbum 2"></button>
-                            <button type="button" aria-label="Mostrar álbum 3"></button>
-                        </div>
-                        <button class="hero-carousel__arrow" type="button" data-carousel-direction="next" aria-label="Próximo álbum">→</button>
-                    </div>
+            <div class="hero-carousel" role="region" aria-roledescription="carrossel" aria-label="Lançamentos em destaque">
+                <div class="hero-carousel__viewport">
+                    <div class="hero-carousel__track" aria-live="off"></div>
+                </div>
+                <div class="hero-carousel__controls" aria-label="Controles dos lançamentos">
+                    <button class="hero-carousel__arrow" type="button" data-carousel-direction="previous" aria-label="Lançamento anterior">←</button>
+                    <div class="hero-carousel__indicators" aria-label="Escolher lançamento"></div>
+                    <button class="hero-carousel__arrow" type="button" data-carousel-direction="next" aria-label="Próximo lançamento">→</button>
+                    <button class="hero-carousel__rotation" type="button" aria-label="Pausar carrossel" aria-pressed="false">Pausar</button>
                 </div>
             </div>
         </section>
@@ -192,7 +136,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>Ruby</h5><span class="rating-pill">4.8</span></div>
                             <p class="card-text text-muted">JENNIE</p>
-                            <div class="album-tags"><span>Pop</span><span>K-pop</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Alternative</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="ruby">Ver Álbum</button>
                     </article>
@@ -201,9 +145,9 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/fallen_angel_jennie_cover.png" class="card-img-top" alt="Capa do EP FALLEN ANGEL">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>FALLEN ANGEL</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>Fallen Angel</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">JENNIE</p>
-                            <div class="album-tags"><span>EP</span><span>K-pop</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Alternativa</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="fallenAngel">Ver Álbum</button>
                     </article>
@@ -223,20 +167,20 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/press_play_lisa_cover.png" class="card-img-top" alt="Capa do EP PRESS PLAY">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>PRESS PLAY</h5><span class="rating-pill">Pré-save</span></div>
+                            <div class="album-card-top"><h5>PRESS PLAY</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">LISA · 23/10/2026</p>
-                            <div class="album-tags"><span>EP</span><span>6 faixas</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Dance</span></div>
                         </div>
-                        <button class="botao-avaliar" data-album-id="pressPlay">Fazer Pre-Save</button>
+                        <button class="botao-avaliar" data-album-id="pressPlay">Ver Álbum</button>
                     </article>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/mans_best_friend_sabrina_carpenter_cover.png" class="card-img-top" alt="Capa do álbum Man's Best Friend">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>Man's Best Friend</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>Man's Best Friend</h5><span class="rating-pill">4.6</span></div>
                             <p class="card-text text-muted">Sabrina Carpenter</p>
-                            <div class="album-tags"><span>Pop</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Country</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="mansBestFriend">Ver Álbum</button>
                     </article>
@@ -247,7 +191,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>THIS IS FOR</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">TWICE</p>
-                            <div class="album-tags"><span>K-pop</span><span>Pop</span></div>
+                            <div class="album-tags"><span>K-pop</span><span>Eletrônica</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="thisIsFor">Ver Álbum</button>
                     </article>
@@ -256,9 +200,9 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/revive_plus_ive_cover.png" class="card-img-top" alt="Capa do álbum REVIVE+">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>REVIVE+</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>REVIVE+</h5><span class="rating-pill">4.5</span></div>
                             <p class="card-text text-muted">IVE</p>
-                            <div class="album-tags"><span>K-pop</span><span>12 faixas</span></div>
+                            <div class="album-tags"><span>K-pop</span><span>Dance</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="revivePlus">Ver Álbum</button>
                     </article>
@@ -269,7 +213,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>WhyKiiiKiii</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">KiiiKiii</p>
-                            <div class="album-tags"><span>EP</span><span>K-pop</span></div>
+                            <div class="album-tags"><span>K-pop</span><span>Eletrônica</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="whyKiiiKiii">Ver Álbum</button>
                     </article>
@@ -280,7 +224,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>emails i can't send</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">Sabrina Carpenter</p>
-                            <div class="album-tags"><span>Pop</span><span>2 versões</span></div>
+                            <div class="album-tags"><span>Pop</span><span>R&B</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="emailsICantSend">Ver Álbum</button>
                     </article>
@@ -289,7 +233,7 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/hades_melanie_martinez_cover.png" class="card-img-top" alt="Capa do álbum HADES">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>HADES</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>HADES</h5><span class="rating-pill">4.3</span></div>
                             <p class="card-text text-muted">Melanie Martinez</p>
                             <div class="album-tags"><span>Pop</span><span>Alternative</span></div>
                         </div>
@@ -300,9 +244,9 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/eternal_sunshine_cover.png" class="card-img-top" alt="Capa do álbum eternal sunshine">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>eternal sunshine</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>eternal sunshine</h5><span class="rating-pill">4.8</span></div>
                             <p class="card-text text-muted">Ariana Grande</p>
-                            <div class="album-tags"><span>Pop</span><span>2 versões</span></div>
+                            <div class="album-tags"><span>Pop</span><span>R&B</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="eternalSunshine">Ver Álbum</button>
                     </article>
@@ -311,7 +255,7 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/coisas_naturais_marina_sena_cover.png" class="card-img-top" alt="Capa do álbum Coisas Naturais">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>Coisas Naturais</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>Coisas Naturais</h5><span class="rating-pill">4.6</span></div>
                             <p class="card-text text-muted">Marina Sena</p>
                             <div class="album-tags"><span>Pop</span><span>MPB</span></div>
                         </div>
@@ -322,9 +266,9 @@
                     <article class="card album-showcase-card h-100">
                         <img src="src/img/equilibrium_anitta_cover.png" class="card-img-top" alt="Capa do álbum EQUILIBRIUM">
                         <div class="card-body">
-                            <div class="album-card-top"><h5>EQUILIBRIUM</h5><span class="rating-pill">Novo</span></div>
+                            <div class="album-card-top"><h5>EQUILIBRIUM</h5><span class="rating-pill">4.7</span></div>
                             <p class="card-text text-muted">Anitta</p>
-                            <div class="album-tags"><span>Pop</span><span>2 versões</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Funk</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="equilibrium">Ver Álbum</button>
                     </article>
@@ -335,7 +279,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>rosie</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">ROSÉ</p>
-                            <div class="album-tags"><span>Pop</span><span>2 versões</span></div>
+                            <div class="album-tags"><span>Pop</span><span>R&amp;B</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="rosie">Ver Álbum</button>
                     </article>
@@ -368,7 +312,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>wor$t man in america</h5><span class="rating-pill">Pré-save</span></div>
                             <p class="card-text text-muted">Slayyyter · 04/12/2026 às 23h</p>
-                            <div class="album-tags"><span>Pop</span><span>9 faixas</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Hyperpop</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="worstManInAmerica">Fazer Pre-Save</button>
                     </article>
@@ -412,7 +356,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>Music, Fashion, Film</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">Charli xcx</p>
-                            <div class="album-tags"><span>Charli xcx</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Alternativa</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="musicFashionFilm">Ver Álbum</button>
                     </article>
@@ -423,7 +367,7 @@
                         <div class="card-body">
                             <div class="album-card-top"><h5>Wuthering Heights</h5><span class="rating-pill">Novo</span></div>
                             <p class="card-text text-muted">Charli xcx</p>
-                            <div class="album-tags"><span>Pop</span><span>12 faixas</span></div>
+                            <div class="album-tags"><span>Pop</span><span>Alternative</span></div>
                         </div>
                         <button class="botao-avaliar" data-album-id="wutheringHeights">Ver Álbum</button>
                     </article>
@@ -448,6 +392,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="src/scripts/script.js" defer></script>
+    <script src="src/scripts/catalog-bootstrap.js" defer></script>
 </body>
 </html>

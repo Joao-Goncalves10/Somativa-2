@@ -45,10 +45,29 @@
     <div class="create-album-heading">
       <span class="section-pill">Artistas do catálogo</span>
       <h1 id="artistFormTitle">Criar artista</h1>
-      <p>Cadastre o artista e personalize o perfil que aparece junto à discografia.</p>
+      <p>Cadastre o artista e personalize o perfil que aparece junto à discografia. As alterações ficam salvas no servidor.</p>
     </div>
 
-    <form id="artistForm" class="create-album-form" novalidate>
+    <section class="home-release-manager catalog-admin-gate mb-4" aria-labelledby="catalogAdminTitle">
+      <div class="home-release-manager__heading">
+        <h2 id="catalogAdminTitle">Acesso de administrador</h2>
+        <p>Entre para criar ou editar artistas. As alterações ficam disponíveis para todos os visitantes.</p>
+      </div>
+      <form id="catalogAdminLoginForm" class="home-release-login">
+        <label for="catalogAdminPassword" class="form-label">Senha do administrador</label>
+        <div class="home-release-login__fields">
+          <input id="catalogAdminPassword" class="form-control" type="password" autocomplete="current-password" required>
+          <button class="btn btn-primary rounded-pill" type="submit">Entrar</button>
+        </div>
+        <p id="catalogAdminLoginMessage" class="create-album-message" role="status" aria-live="polite"></p>
+      </form>
+      <div id="catalogAdminSession" class="home-release-admin-bar" hidden>
+        <span>Sessão de administrador ativa</span>
+        <button id="catalogAdminLogout" class="btn btn-sm btn-outline-secondary rounded-pill" type="button">Sair</button>
+      </div>
+    </section>
+
+    <form id="artistForm" class="create-album-form" novalidate hidden>
       <div class="create-album-mode-fields">
         <div>
           <label for="artistFormMode" class="form-label">Ação</label>
@@ -100,6 +119,6 @@
 
   <footer class="bg-light py-3 text-center">MUSICFY - todos os direitos reservados</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="src/scripts/script.js" defer></script>
+  <script src="src/scripts/catalog-bootstrap.js" defer></script>
 </body>
 </html>

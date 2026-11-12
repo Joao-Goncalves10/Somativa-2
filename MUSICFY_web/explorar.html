@@ -52,31 +52,29 @@
       </div>
       <div class="explore-stats">
         <div>
-            <strong>13</strong>
+            <strong id="exploreAlbumCount">13</strong>
           <span>Álbuns</span>
         </div>
         <div>
-            <strong>78</strong>
+            <strong id="exploreTrackCount">78</strong>
           <span>Faixas</span>
         </div>
         <div>
-          <strong>7</strong>
+          <strong id="exploreGenreCount">7</strong>
           <span>Gêneros</span>
         </div>
       </div>
     </section>
 
     <section class="mb-4">
-      <div class="filter-bar">
-        <button type="button" class="filter-chip active">Todos</button>
-        <button type="button" class="filter-chip">Pop</button>
-        <button type="button" class="filter-chip">Indie</button>
-        <button type="button" class="filter-chip">Alternativo</button>
-        <button type="button" class="filter-chip">R&B</button>
+      <div class="filter-bar" id="exploreGenreFilters" aria-label="Filtrar por gênero">
+        <button type="button" class="filter-chip active" data-explore-filter="all" aria-pressed="true">Todos</button>
       </div>
     </section>
 
-    <section class="row g-4">
+    <div id="exploreSections" class="explore-sections"></div>
+
+    <section class="row g-4" id="exploreAlbumSource" hidden>
       <div class="col-md-6 col-xl-4">
         <article class="explore-album-card h-100">
           <img src="src/img/SOUR_OliviaRodrigo_cover.jpg" alt="SOUR" />
@@ -676,6 +674,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="src/scripts/script.js"></script>
+  <script src="src/scripts/catalog-bootstrap.js" defer></script>
 </body>
 </html>
