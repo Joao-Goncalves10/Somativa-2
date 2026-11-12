@@ -5,8 +5,8 @@ services:
     plan: free
     rootDir: MUSICFY_web
     buildCommand: npm ci --include=dev && npm run build
-    startCommand: node scripts/start.js
-    healthCheckPath: /healthz
+    startCommand: npm start
+    healthCheckPath: /api/healthz
     envVars:
       - key: NODE_VERSION
         value: 24.13.0

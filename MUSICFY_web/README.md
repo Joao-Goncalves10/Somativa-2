@@ -1,8 +1,7 @@
 # MUSICFY
 
-Catálogo musical com aplicação web Node.js, API de álbuns e armazenamento
-compartilhado. Use SQLite no desenvolvimento local ou PostgreSQL para publicação
-na internet.
+Catálogo musical full-stack com Next.js App Router, APIs serverless e PostgreSQL
+Neon. As páginas e APIs são executadas pela mesma aplicação Next.js.
 
 ## Requisitos
 
@@ -13,12 +12,14 @@ na internet.
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
-Abra `http://localhost:5500`. Sem `DATABASE_URL`, o servidor cria e usa
-`data/musicfy.db` automaticamente. No Windows também é possível iniciar o app
-com `iniciar-site.bat`.
+Abra `http://localhost:5500`. Configure `DATABASE_URL` com a URL pooled do
+PostgreSQL e `NEON_AUTH_BASE_URL` / `NEON_AUTH_JWKS_URL` no `.env.local` para
+testar persistência e autenticação. A aplicação Next.js usa PostgreSQL; SQLite
+continua disponível somente no servidor antigo de compatibilidade e na
+ferramenta de importação.
 
 Para configurar variáveis localmente, copie `.env.example` para `.env`. O
 arquivo `.env` é ignorado pelo Git e não deve ser publicado.
@@ -46,7 +47,7 @@ no ambiente do servidor.
    `NEON_AUTH_JWKS_URL` geradas pelo Neon. Mantenha privada a URL do banco; as
    URLs de autenticação são configuração pública.
    Para testar cadastro localmente, adicione também a origem usada pelo
-   servidor de desenvolvimento:
+   servidor de desenvolvimento Next.js:
 
    ```bash
    neon neon-auth domain add http://localhost:5500
@@ -54,7 +55,7 @@ no ambiente do servidor.
 
 4. No [Render](https://render.com/), crie um **Blueprint** usando o repositório
    e informe `MUSICFY_web/render.yaml` como caminho do Blueprint. Esse arquivo
-   configura a pasta-raiz da aplicação, a instalação e inicialização, a versão
+   configura a pasta-raiz da aplicação, a instalação e inicialização Next.js, a versão
    do Node, as variáveis de ambiente e a verificação de saúde.
 5. Configure `DATABASE_URL` como variável secreta no Render, usando a URL pooled
    copiada do Neon. Configure também `NEON_AUTH_BASE_URL` e
@@ -76,17 +77,17 @@ no ambiente do servidor.
 
 8. O Render exibirá um endereço HTTPS público, por exemplo
    `https://musicfy.onrender.com`. Abra esse endereço para acessar o site.
-9. Confirme que `/healthz` responde com `{"status":"ok"}`. Entre em
-   `https://<seu-endereco-render>/criar-album.html` com a senha de administrador
+9. Confirme que `/api/healthz` responde com `{"status":"ok"}`. Entre em
+   `https://<seu-endereco-render>/criar-album` com a senha de administrador
    para publicar. O servidor cria as tabelas PostgreSQL automaticamente.
 
 Se preferir criar o serviço sem Blueprint, escolha **New > Web Service**, use
 este repositório, configure o comando de build `npm ci --include=dev && npm run build`,
-o comando de início `node scripts/start.js`, o health check `/healthz`, Node `24.13.0` e as variáveis
+o comando de início `npm start`, o health check `/api/healthz`, Node `24.13.0` e as variáveis
 `DATABASE_URL`, `ADMIN_PASSWORD`, `NEON_AUTH_BASE_URL` e `NEON_AUTH_JWKS_URL`.
 
-Se `DATABASE_URL` não for configurada, o servidor em produção falhará ao iniciar,
-em vez de criar silenciosamente um banco SQLite temporário. O servidor também
+Se `DATABASE_URL` não for configurada, os endpoints que acessam o banco falharão
+explicitamente, em vez de criar silenciosamente um banco SQLite temporário. O servidor também
 exige `ADMIN_PASSWORD` em produção; nunca armazena a senha no banco, na página
 HTML ou no JavaScript enviado aos visitantes.
 
@@ -138,7 +139,7 @@ versionado.
 Se os álbuns antigos ainda estiverem somente no `localStorage` do navegador,
 inicie esta versão localmente com `DATABASE_URL` definido em `.env` e, no mesmo
 navegador e perfil usados antes, abra `http://localhost:5500` e
-`http://localhost:5500/criar-album.html`. O app envia esses álbuns ao banco
+`http://localhost:5500/criar-album`. O app envia esses álbuns ao banco
 PostgreSQL e remove a cópia local somente após confirmar a sincronização. Faça
 isso antes de trocar de endereço local ou perder o acesso ao perfil antigo do
 navegador. Defina `ADMIN_PASSWORD` com pelo menos 16 caracteres em `.env.local`
@@ -155,14 +156,30 @@ login e sincronização entre navegadores.
 
 ```bash
 npm run check
+npm test
 ```
 
 ## Estrutura
 
 ```text
-public/           páginas e assets servidos ao navegador
-server/           servidor HTTP, API e acesso ao banco
+app/              páginas App Router e Route Handlers da API
+lib/              acesso PostgreSQL Neon e autenticação server-side
+public/           imagens, estilos legados e compatibilidade da interface
+server/           servidor antigo mantido para migração/importação SQLite
 scripts/          ferramentas de manutenção e migração
 data/             SQLite de desenvolvimento, criado localmente
-render.yaml       configuração de deploy do Render
+render.yaml       configuração de deploy Next.js no Render
 ```
+
+## Rotas Next.js
+
+- Páginas: `/`, `/explorar`, `/artistas`, `/artista/[id]`, `/album/[id]`,
+  `/criar-album`, `/lyrics/[id]` e `/perfil`.
+- API: `/api/albums`, `/api/account`, `/api/account/profile`,
+  `/api/account/follows`, `/api/account/presaves`, `/api/reviews`,
+  `/api/admin/session`, `/api/auth/config` e `/api/healthz`.
+
+As páginas já são servidas pelo App Router e mantêm temporariamente a interface
+legada para preservar os fluxos enquanto o código imperativo de
+`public/assets/js/app.js` é substituído, página a página, por componentes React
+com estado e efeitos. O banco e a API Next.js não dependem do servidor antigo.

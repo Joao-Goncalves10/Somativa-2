@@ -8,19 +8,27 @@
   },
   "dependencies": {
     "@neon/config": "^1.8.4",
-    "@neondatabase/auth": "0.6.0-beta",
     "@neon/env": "^1.5.1",
+    "@neondatabase/auth": "0.6.0-beta",
+    "@neondatabase/serverless": "^1.2.0",
     "jose": "^6.2.12",
-    "pg": "^8.16.3"
+    "next": "^16.4.1",
+    "pg": "^8.16.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3"
   },
   "scripts": {
-    "build": "esbuild public/assets/js/auth-client.js --bundle --format=iife --outfile=public/assets/js/auth-client.bundle.js",
-    "start": "node scripts/start.js",
-    "prestart": "npm run build",
-    "check": "node --check server/index.js && node --check server/database.js && node --check server/admin-auth.js && node --check server/user-auth.js && node --check scripts/start.js && node --check scripts/load-env.js && node --check scripts/import-sqlite.js && node --check public/assets/js/app.js",
+    "dev": "next dev -p 5500",
+    "prebuild": "esbuild public/assets/js/auth-client.js --bundle --format=iife --outfile=public/assets/js/auth-client.bundle.js",
+    "build": "next build",
+    "start": "next start",
+    "check": "tsc --noEmit && node --check server/index.js && node --check server/database.js && node --check server/admin-auth.js && node --check server/user-auth.js && node --check scripts/start.js && node --check scripts/load-env.js && node --check scripts/import-sqlite.js && node --check public/assets/js/app.js",
     "import:sqlite": "node scripts/import-sqlite.js",
     "test": "node --test"
   }

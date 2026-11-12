@@ -9670,7 +9670,7 @@ async function loadAccountSession() {
 function requireAccountForAction() {
   if (accountState.user) return true;
   const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-  window.location.href = `perfil.html?redirect=${encodeURIComponent(returnTo)}`;
+  window.location.href = `/perfil?redirect=${encodeURIComponent(returnTo)}`;
   return false;
 }
 
@@ -9773,7 +9773,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const message = document.createElement('p');
     message.append(`Seu Pre-Save de ${releasedAlbum.name}, de ${releasedAlbum.artist}, já está disponível! `);
     const albumLink = document.createElement('a');
-    albumLink.href = `album.html?id=${encodeURIComponent(releasedAlbumId)}`;
+    albumLink.href = `/album/${encodeURIComponent(releasedAlbumId)}`;
     albumLink.textContent = 'Abrir EP';
     message.append(albumLink);
     const dismissButton = document.createElement('button');
@@ -10021,7 +10021,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         createdAlbums.push(result);
         albums[result.id] = result;
-        window.location.href = 'index.html#albuns';
+        window.location.href = '/#albuns';
       } catch (error) {
         console.error('Não foi possível salvar o álbum criado.', error);
         message.textContent = error.message || 'Não foi possível salvar o álbum no banco de dados. Verifique a conexão com o servidor.';
@@ -10193,7 +10193,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       lyricsExplicit.textContent = '(E)';
       lyricsTitle.appendChild(lyricsExplicit);
     }
-    document.getElementById('lyricsAlbumLink').href = `album.html?id=${lyricsAlbumId}`;
+    document.getElementById('lyricsAlbumLink').href = `/album/${lyricsAlbumId}`;
     document.getElementById('lyricsText').textContent = lyricsTrack.lyrics || 'A letra desta música ainda não foi cadastrada.';
     document.getElementById('translationText').textContent = lyricsTrack.translation || 'A tradução será exibida quando houver uma versão autorizada cadastrada.';
   }
@@ -10259,7 +10259,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       if (album) {
         const link = document.createElement('a');
-        link.href = `album.html?id=${encodeURIComponent(review.albumId)}`;
+        link.href = `/album/${encodeURIComponent(review.albumId)}`;
         link.className = 'text-link';
         link.textContent = 'Abrir álbum';
         body.append(link);
@@ -10492,7 +10492,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       // O ID acompanha o próprio cartão, então a ordem visual não altera o destino.
       const id = button.dataset.albumId;
       if (id) {
-        window.location.href = `album.html?id=${id}`;
+        window.location.href = `/album/${id}`;
       }
     });
   });
@@ -10520,7 +10520,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (albumTypeLabel) albumTypeLabel.textContent = album.type || 'Álbum';
     if (albumArtist) {
       albumArtist.textContent = album.artist;
-      albumArtist.href = `artista.html?id=${encodeURIComponent(getArtistId(album.artist))}`;
+      albumArtist.href = `/artista/${encodeURIComponent(getArtistId(album.artist))}`;
     }
     const albumVersions = document.getElementById('albumVersions');
     const albumVersionSelect = document.getElementById('albumVersionSelect');
@@ -10533,7 +10533,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           `<option value="${encodeURIComponent(id)}" ${id === albumId ? 'selected' : ''}>${version.versionLabel}</option>`
         ).join('');
         albumVersionSelect.addEventListener('change', function () {
-          window.location.href = `album.html?id=${albumVersionSelect.value}`;
+          window.location.href = `/album/${albumVersionSelect.value}`;
         });
       }
     }
@@ -10661,7 +10661,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               <strong>${index + 1}. ${escapeHtml(track.name)}${track.explicit ? ' <span class="explicit-badge">(E)</span>' : ''}</strong>
               <span class="text-muted">${track.reviews.join(' • ')}</span>
             </div>
-            <a class="track-link" href="lyrics.html?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
+            <a class="track-link" href="/lyrics/${index}?album=${encodeURIComponent(albumId)}&track=${index}">Ver letra</a>
           </div>`)
           .join('')
         : '<p class="track-item text-muted">As faixas deste álbum ainda não foram cadastradas.</p>';
@@ -10898,7 +10898,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       artistBanner.alt = '';
       document.getElementById('artistAlbumCount').textContent = String(artistAlbums.length);
       document.getElementById('artistPlayBtn').addEventListener('click', function () {
-        window.location.href = `album.html?id=${encodeURIComponent(artistAlbums[0][0])}`;
+        window.location.href = `/album/${encodeURIComponent(artistAlbums[0][0])}`;
       });
 
       const followButton = document.getElementById('artistFollowBtn');
@@ -10948,7 +10948,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             <h3>${escapeHtml(album.name)}</h3>
             <p>${album.tracks.length ? `Álbum · ${album.tracks.length} ${album.tracks.length === 1 ? 'faixa' : 'faixas'}` : 'Álbum · Faixas em breve'}</p>
           </div>
-          <a class="artist-release-row__link" href="album.html?id=${encodeURIComponent(id)}" aria-label="Explorar o álbum ${escapeHtml(album.name)}">
+          <a class="artist-release-row__link" href="/album/${encodeURIComponent(id)}" aria-label="Explorar o álbum ${escapeHtml(album.name)}">
             Explorar <span aria-hidden="true">↗</span>
           </a>
         </article>
@@ -10977,7 +10977,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const profile = artistProfiles[getArtistId(name)];
         const link = document.createElement('a');
         link.className = 'artist-directory-card';
-        link.href = `artista.html?id=${encodeURIComponent(getArtistId(name))}`;
+        link.href = `/artista/${encodeURIComponent(getArtistId(name))}`;
         link.setAttribute('aria-label', `Ver perfil de ${name}`);
 
         const image = document.createElement('img');
